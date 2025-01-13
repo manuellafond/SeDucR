@@ -1,1 +1,0 @@
-/home/Manuel/git/SimPhy/bin/simphy -sb f:0.000001 -gb u:-20,-15 -gt f:0.0 -gg f:0.0 -gp f:0.0 -ld f:0.00000001 -lb f:ld -lt f:0.0 -lg f:0.0 -rs 1 -rl f:99 -rg 1 -o s9_100 -sp f:2 -su f:0.00001 -sg f:1 -sl f:25 -st f:1000000 -om 1 -v 3 -od 1 -op 1 -oc 1 -on 1 -ol 1 -cs 25774 
