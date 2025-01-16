@@ -5,10 +5,10 @@ import time
 import re
 
 #directories
-segdupDir = "~/Documents/segdup/"
-kowhaiDir = "~/Documents/software/kowhai/"
-multrecDir = "~/Documents/software/MultRec/Multrec/"
-segrecDir = "~/Documents/segrec-bnb/build/"
+segdupDir = "~/segdup/"
+kowhaiDir = "~/software/kowhai/"
+multrecDir = "~/software/MultRec/Multrec/"
+segrecDir = "~/segrec-bnb/build/"
 
 #kowhai options
 nH = 20
@@ -34,20 +34,20 @@ for opt, arg in opts:
         l = int(arg)
     elif opt == "--segdup-dir":
         segdupDir = arg
-        if segdupDir[-1] != "\/":
-            segdupDir = segdupDir + "\/"
+        if segdupDir[-1] != "/":
+            segdupDir = segdupDir + "/"
     elif opt == "--kowhai-dir":
         kowhaiDir = arg
-        if kowhaiDir[-1] != "\/":
-            kowhaiDir = kowhaiDir + "\/"
+        if kowhaiDir[-1] != "/":
+            kowhaiDir = kowhaiDir + "/"
     elif opt == "--multrec-dir":
         multrecDir = arg
-        if multrecDir[-1] != "\/":
-            multrecDir = multrecDir + "\/"
+        if multrecDir[-1] != "/":
+            multrecDir = multrecDir + "/"
     elif opt == "--segrec-dir":
         segrecDir = arg
-        if segrecDir[-1] != "\/":
-            segrecDir = segrecDir + "\/"
+        if segrecDir[-1] != "/":
+            segrecDir = segrecDir + "/"
     elif opt == "--nH":
         nH = int(arg)
     elif opt == "--nP":
@@ -66,6 +66,7 @@ for opt, arg in opts:
 system("rm summary.csv")
 
 mrResults = []
+srResults = []
 
 sdTime = []
 
@@ -105,25 +106,25 @@ for r in range(replicates):
     #parse input for segrec
     srSpecies = open("segrec-sp.txt", "w")
     srGenes = open("segrec-genes.txt", "w")
-    srSpecies.write(re.sub("v\d+", "'&'", multrecInput[4:multrecInput.find(';')+1]))
-    geneslist = multrecInput[multrecInput.find(';')+2:].split(" -g ")
-    srGenes.write(re.sub("\"", "", "\n".join(geneslist)))
-
+    srSpecies.write(re.sub(r"v\d+", r"'\g<0>'", multrecInput[4:multrecInput.find(';')+1]))
+    srGenes.write(re.sub("; ", ";\n", multrecInput[multrecInput.find(';')+7:-2]))
     srSpecies.close()
     srGenes.close()
-    exit(0)
 
     #run segrec
     system(f'{segrecDir}ybrec -sf segrec-sp.txt -gf segrec-genes.txt -d {d} -l {l} > segrec-output.txt')
 
     #parse segrec output
     segrecOutput = open("segrec-output.txt")
-
+    for line in segrecOutput:
+        if line[:7] == "Species":
+            srResults.append(tuple(re.findall(r'\d+', line)))
+    segrecOutput.close()
 
 f = open("summary.csv")
 output = open("results.csv", "w")
 
-output.write("nCospec,nIndividualDups,nAllDupEvents,nJointDups,nXtinc,nHostSwitch,nLineageSort,codivs,dups,losses,cost,sdTime,mrDups,mrLosses,mrCost,mrTime\n")
+output.write("nCospec,nIndividualDups,nAllDupEvents,nJointDups,nXtinc,nHostSwitch,nLineageSort,codivs,dups,losses,cost,sdTime,mrDups,mrLosses,mrCost,mrTime,srCost,srDups,srLosses\n")
 
 rep = 0
 headerRead = False
@@ -141,7 +142,8 @@ for line in f:
         continue
 
     segdupOutput = next(f).rstrip()
-    output.write(kowhaiOutput + segdupOutput + "," + str(sdTime[rep]) + "," + ",".join([str(i) for i in mrResults[rep]]) + "\n")
+    output.write(kowhaiOutput + segdupOutput + "," + str(sdTime[rep]) + "," + ",".join([str(i) for i in mrResults[rep]]))
+    output.write(f',{",".join([str(i) for i in srResults[rep]])}\n')
     rep = rep + 1
     headerRead = False
 
