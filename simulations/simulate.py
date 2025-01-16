@@ -5,10 +5,10 @@ import time
 import re
 
 #directories
-segdupDir = "~/segdup/"
-kowhaiDir = "~/software/kowhai/"
-multrecDir = "~/software/MultRec/Multrec/"
-segrecDir = "~/segrec-bnb/build/"
+segdupDir = "~/Documents/segdup/"
+kowhaiDir = "~/Documents/software/kowhai/"
+multrecDir = "~/Documents/software/MultRec/Multrec/"
+segrecDir = "~/Documents/segrec-bnb/build/"
 
 #kowhai options
 nH = 20
@@ -105,13 +105,20 @@ for r in range(replicates):
     #parse input for segrec
     srSpecies = open("segrec-sp.txt", "w")
     srGenes = open("segrec-genes.txt", "w")
-    sptree = multrecInput[4:multrecInput.find(';')+1]
-    srSpecies.write(re.sub("v\d\+", "'&'", sptree))
+    srSpecies.write(re.sub("v\d+", "'&'", multrecInput[4:multrecInput.find(';')+1]))
+    geneslist = multrecInput[multrecInput.find(';')+2:].split(" -g ")
+    srGenes.write(re.sub("\"", "", "\n".join(geneslist)))
+
     srSpecies.close()
     srGenes.close()
     exit(0)
 
     #run segrec
+    system(f'{segrecDir}ybrec -sf segrec-sp.txt -gf segrec-genes.txt -d {d} -l {l} > segrec-output.txt')
+
+    #parse segrec output
+    segrecOutput = open("segrec-output.txt")
+
 
 f = open("summary.csv")
 output = open("results.csv", "w")
