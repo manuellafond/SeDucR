@@ -112,19 +112,21 @@ for r in range(replicates):
     srGenes.close()
 
     #run segrec
+    curTime = time.time()
     system(f'{segrecDir}ybrec -sf segrec-sp.txt -gf segrec-genes.txt -d {d} -l {l} > segrec-output.txt')
+    srTime = time.time() - curTime
 
     #parse segrec output
     segrecOutput = open("segrec-output.txt")
     for line in segrecOutput:
         if line[:7] == "Species":
-            srResults.append(tuple(re.findall(r'\d+', line)))
+            srResults.append(tuple(re.findall(r'\d+', line)) + (srTime,))
     segrecOutput.close()
 
 f = open("summary.csv")
 output = open("results.csv", "w")
 
-output.write("nCospec,nIndividualDups,nAllDupEvents,nJointDups,nXtinc,nHostSwitch,nLineageSort,codivs,dups,losses,cost,sdTime,mrDups,mrLosses,mrCost,mrTime,srCost,srDups,srLosses\n")
+output.write("nCospec,nIndividualDups,nAllDupEvents,nJointDups,nXtinc,nHostSwitch,nLineageSort,codivs,dups,losses,cost,sdTime,mrDups,mrLosses,mrCost,mrTime,srCost,srDups,srLosses,srTime\n")
 
 rep = 0
 headerRead = False
