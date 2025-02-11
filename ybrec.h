@@ -95,6 +95,8 @@ public:
     int loss_cost;
     int dup_cost;
 
+    YBCost cost_upper_bound;
+
     //max_remap_dist is the distance that a gene tree node can be remmapped to wrt lca.  Default = 5
     //eg if max_remap_dist = 3, then a gene node can only be moved "up" by 3 from its lca mapping.
     int max_remap_dist;
@@ -235,6 +237,20 @@ public:
                 ++it;
             }
         }
+    }
+
+    //compute cost of LCA map as upper bound
+    void compute_upper_bound() {
+	    int dups = 0;
+	    int losses = 0;
+
+	    //count duplications
+         vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
+	    for (SNode* x : species_nodes) {
+	    }
+
+	    //count losses
+
     }
 
 
@@ -477,6 +493,13 @@ public:
                     }
                 }
             }
+
+		  //Bounding - YBC 11/02/25
+		  for (auto V : active_sets[x]) {
+			  set<GNode*> V_set = bitmap_to_nodeset(V);
+
+			  //Calculate lower bound for x, V
+		  }
 
 
 
