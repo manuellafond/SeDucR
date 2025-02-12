@@ -111,6 +111,8 @@ public:
 
     map< SNode*, set<GNode*> > rev_leafmap;     //rev_leafmap[x] = set of gene tree leaves mapped to s
     map<int, GNode*> id_genes;                  //id_genes[i] = the gene tree node with id = i
+									   
+    map< SNode*, set<GNode*> > rev_lcamap;     //same as rev_leafmap, but for LCA
 
 
     //the c(A, x) values from the YB algorithm.  Indexed by species, then by the desired set
@@ -239,19 +241,6 @@ public:
         }
     }
 
-    //compute cost of LCA map as upper bound
-    void compute_upper_bound() {
-	    int dups = 0;
-	    int losses = 0;
-
-	    //count duplications
-         vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
-	    for (SNode* x : species_nodes) {
-	    }
-
-	    //count losses
-
-    }
 
 
     //returns V_l cross V_r
@@ -312,6 +301,64 @@ public:
             d++;
         }
         return d;
+    }
+
+
+    //compute cost of LCA map as upper bound
+    void compute_lca_upper_bound() {
+	    int dups = 0;
+	    int losses = 0;
+
+	    //calculate reverse LCA map
+         for (GNode* g_root : genetrees)
+		   for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+                Node* g = *it;
+
+			 rev_lcamap[lcamap[g]].insert(g);
+		   }
+
+	    //count duplications
+         vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
+	    for (SNode* x : species_nodes) {
+		    //get duplication height at x
+		    int max_dup_height = 0;
+		    for (GNode* g : rev_lcamap[x]) {
+			    Node* cur = g;
+			    int height = 0;
+			
+			    //looks like it counts speciations, but it doesn't: the lowest node is always a speciation, so -1 to dup height
+			    while (!cur->is_root() && lcamap[cur->get_parent()] == x) {
+				    cur = cur->get_parent();
+				    height++;
+			    }
+
+			    max_dup_height = max(max_dup_height, height);
+		    }
+
+		    dups += max_dup_height;
+	    }
+
+	    //count losses
+	    for (GNode* g_root : genetrees) 
+		    for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+			    Node* g = *it;
+
+			    if (!g->is_root()) {
+				    //probably not the most efficient
+				    int l = get_species_distance(lcamap[g],lcamap[g->get_parent()]);
+				    int l2 = get_species_distance(lcamap[g->get_sibling()],lcamap[g->get_parent()]);
+
+				    if (l > 0 && l2 > 0)
+					    losses += l-1;
+				    else
+					    losses += l;
+			    }
+		    }
+
+	    //store
+	    cost_upper_bound.nb_dups = dups;
+	    cost_upper_bound.nb_losses = losses;
+	    cost_upper_bound.cost = dup_cost * dups + loss_cost * losses;
     }
 
 
@@ -376,6 +423,9 @@ public:
         init_indices();
         compute_rev_leafmap();
         compute_lca_map();
+	   compute_lca_upper_bound();
+
+	   cout << "LCA upper bound = " << cost_upper_bound.cost << endl;
 
         vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
         for (SNode* x : species_nodes) {
