@@ -113,6 +113,7 @@ public:
     map<int, GNode*> id_genes;                  //id_genes[i] = the gene tree node with id = i
 									   
     map< SNode*, set<GNode*> > rev_lcamap;     //same as rev_leafmap, but for LCA
+    map< SNode*, int > lca_dupheight;
 
 
     //the c(A, x) values from the YB algorithm.  Indexed by species, then by the desired set
@@ -224,21 +225,43 @@ public:
 
 
     //preprocessing to compute lcamap
+    //Now also computes rev_lcamap and lca_dupheight
     void compute_lca_map() {
         for (GNode* g_root : genetrees) {
-
-            auto it = g_root->begin();
-            while (it != g_root->end()) {
+		  for (auto it = g_root->begin(); it != g_root->end(); ++it) {
                 Node* g = *it;
+
                 if (g->is_leaf()) {
                     lcamap[g] = leafmap[g];
                 }
                 else {
                     lcamap[g] = lcamap[g->get_child(0)]->get_lca_with(lcamap[g->get_child(1)]);
                 }
-                ++it;
+
+			 rev_lcamap[lcamap[g]].insert(g);
             }
         }
+
+	   //Count duplication heights
+        for (GNode* g_root : genetrees) {
+		  for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+                Node* g = *it;
+
+			 int height = 0;
+
+		    //looks like it counts speciations, but it doesn't: the lowest node is always a speciation, so -1 to dup height
+			 while (!g->is_root() && lcamap[g->get_parent()] == lcamap[g]) {
+				 g = g->get_parent();
+			 	 height++;
+			 }
+
+			 if (!lca_dupheight[lcamap[g]])
+				 lca_dupheight[lcamap[g]] = height;
+			 else
+			      lca_dupheight[lcamap[g]] = max(height, lca_dupheight[lcamap[g]]);
+
+		  }
+	   }
     }
 
 
@@ -309,33 +332,11 @@ public:
 	    int dups = 0;
 	    int losses = 0;
 
-	    //calculate reverse LCA map
-         for (GNode* g_root : genetrees)
-		   for (auto it = g_root->begin(); it != g_root->end(); ++it) {
-                Node* g = *it;
-
-			 rev_lcamap[lcamap[g]].insert(g);
-		   }
 
 	    //count duplications
          vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
 	    for (SNode* x : species_nodes) {
-		    //get duplication height at x
-		    int max_dup_height = 0;
-		    for (GNode* g : rev_lcamap[x]) {
-			    Node* cur = g;
-			    int height = 0;
-			
-			    //looks like it counts speciations, but it doesn't: the lowest node is always a speciation, so -1 to dup height
-			    while (!cur->is_root() && lcamap[cur->get_parent()] == x) {
-				    cur = cur->get_parent();
-				    height++;
-			    }
-
-			    max_dup_height = max(max_dup_height, height);
-		    }
-
-		    dups += max_dup_height;
+		    dups += lca_dupheight[x];
 	    }
 
 	    //count losses
@@ -346,9 +347,9 @@ public:
 			    if (!g->is_root()) {
 				    //probably not the most efficient
 				    int l = get_species_distance(lcamap[g],lcamap[g->get_parent()]);
-				    int l2 = get_species_distance(lcamap[g->get_sibling()],lcamap[g->get_parent()]);
 
-				    if (l > 0 && l2 > 0)
+				    if (l > 0 && lcamap[g->get_sibling()] != lcamap[g->get_parent()])
+					    //parent of g is speciation
 					    losses += l-1;
 				    else
 					    losses += l;
@@ -543,14 +544,88 @@ public:
                     }
                 }
             }
-
-		  //Bounding - YBC 11/02/25
+/*
+		  //Bounding - YBC
 		  for (auto V : active_sets[x]) {
 			  set<GNode*> V_set = bitmap_to_nodeset(V);
+			  int lower_bound = get_cost(x, V);
 
 			  //Calculate lower bound for x, V
-		  }
+			  //Bound duplications
+			  dups = 0;
+			  vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
+			  SNode* y = species_nodes.begin();
+			  while (y != x)
+				  y = species_nodes.next();
+			  //Only consider species vertices higher than x (or non-comparable)
+			  for (y = species_nodes.next(); y != species_nodes.end(); y = species_nodes.next()) {
+				    //get duplication height at y
+				    //Should fold into upper bound computation so it is only counted once
+				    //Also, it's not right: should include nodes above V, and then I can't use the hacky way of counting speciations either
+				    int max_dup_height = 0;
 
+				    if (y == x->get_parent()) {
+					    //set all nodes above (but not including) V up to rev_lcamap[y] at y
+				    }
+				    else {
+					    //just all LCA nodes
+					    for (GNode* g : rev_lcamap[y]) {
+						    Node* cur = g;
+						    int height = 0;
+						
+						    //looks like it counts speciations, but it doesn't: the lowest node is always a speciation, so -1 to dup height
+						    //definitely not the most efficient
+						    while (!cur->is_root() && lcamap[cur->get_parent()] == y) {
+							    cur = cur->get_parent();
+							    height++;
+						    }
+
+						    max_dup_height = max(max_dup_height, height);
+					    }
+				    }
+
+				    dups += max_dup_height;
+			  }
+			  lower_bound += dups * dup_cost;
+
+			  //Bound losses
+			  losses = 0;
+			  for (GNode* g_root : genetrees)
+			  	for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+					Node *g = *it;
+					int l, ls;
+
+					//V contains g
+					if (V_set.find(g) != V_set.end()) {
+						l = get_species_distance(x, lcamap[g->get_parent()]);
+					}
+					//g is not descendant to V
+					else if (!g->is_descendant_to(V_set)) {
+						l = get_species_distance(lcamap[g], lcamap[g->get_parent()]);
+					}
+
+					//Lemma: if g is not descendant to V, then sibling of g is also not descendant to V.
+					//V contains g's sibling
+					if (V_set.find(g->get_sibling()) != V_set.end()) {
+						ls = get_species_distance(x, lcamap[g->get_parent()]);
+					}
+					//g's sibling is not descendant to V
+					else if (!g->get_sibling()->is_descendant_to(V_set)) {
+						ls = get_species_distance(lcamap[g->get_sibling()], lcamap[g->get_parent()]);
+					}
+
+				    if (l > 0 && ls > 0)
+					    losses += l-1;
+				    else
+					    losses += l;
+				}
+			  lower_bound += losses * loss_cost;
+			  
+			  //Remove if x, V cannot result in optimal reconciliation
+			  if (lower_bound > cost_upper_bound)
+				  active_sets[x].erase(V);	
+		  }
+*/
 
 
             cout << "Done with species " << x->id << " " << (x->is_leaf() ? "(leaf " + x->label + ")" : "")

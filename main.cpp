@@ -116,7 +116,8 @@ int main(int argc, char** argv)
             for (int l = 0; l < lines.size(); l++) {
                 vector<string> trees_on_line = Util::Split(lines[l], ";", false);
                 for (int t = 0; t < trees_on_line.size(); t++) {
-                    if (trees_on_line[t] != "")
+				 //hack because one of my systems isn't parsing properly :( - YBC
+                    if (trees_on_line[t] != "" && trees_on_line[t].length() > 1)
                         gstrs.push_back(trees_on_line[t]);
                 }
             }
