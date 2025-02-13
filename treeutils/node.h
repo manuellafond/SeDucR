@@ -260,6 +260,22 @@ public:
         return nullptr;
     }
 
+    /**
+	 Returns true if this is descended from V - cannot be IN V
+	 **/
+    bool is_descendant_to(std::set<Node*> V) {
+	    Node* cur = this;
+
+	    while (!cur->is_root()) {
+		    cur = cur->get_parent();
+
+		    if (V.find(cur) != V.end())
+			    return true;
+	    }
+
+	    return false;
+    }
+
 
     /**
       Returns true iif ancestor is on the path between current node and the root (inclusively)

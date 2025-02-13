@@ -544,88 +544,86 @@ public:
                     }
                 }
             }
-/*
+
+		  
 		  //Bounding - YBC
-		  for (auto V : active_sets[x]) {
-			  set<GNode*> V_set = bitmap_to_nodeset(V);
-			  int lower_bound = get_cost(x, V);
+		  if (!x->is_root()) {
+			  for (auto V : active_sets[x]) {
+				  set<GNode*> V_set = bitmap_to_nodeset(V);
+				  YBCost lower_bound = get_cost(x, V);
 
-			  //Calculate lower bound for x, V
-			  //Bound duplications
-			  dups = 0;
-			  vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
-			  SNode* y = species_nodes.begin();
-			  while (y != x)
-				  y = species_nodes.next();
-			  //Only consider species vertices higher than x (or non-comparable)
-			  for (y = species_nodes.next(); y != species_nodes.end(); y = species_nodes.next()) {
-				    //get duplication height at y
-				    //Should fold into upper bound computation so it is only counted once
-				    //Also, it's not right: should include nodes above V, and then I can't use the hacky way of counting speciations either
-				    int max_dup_height = 0;
+				  //Calculate lower bound for x, V
+				  //Bound duplications
+				  int dups = 0;
+				  for (GNode* g_root : genetrees)
+					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+						Node *g = *it;
 
-				    if (y == x->get_parent()) {
-					    //set all nodes above (but not including) V up to rev_lcamap[y] at y
-				    }
-				    else {
-					    //just all LCA nodes
-					    for (GNode* g : rev_lcamap[y]) {
-						    Node* cur = g;
-						    int height = 0;
-						
-						    //looks like it counts speciations, but it doesn't: the lowest node is always a speciation, so -1 to dup height
-						    //definitely not the most efficient
-						    while (!cur->is_root() && lcamap[cur->get_parent()] == y) {
-							    cur = cur->get_parent();
-							    height++;
-						    }
+						//g is in V or a leaf not descended from V
+						if (V_set.find(g) == V_set.end() || (g->is_leaf() && !g->is_descendant_to(V_set)) ) {
+							Node* cur = g;
+							int dupheight = 0;
 
-						    max_dup_height = max(max_dup_height, height);
-					    }
-				    }
+							while (!cur->is_root()) {
+								if (lcamap[cur->get_parent()] == lcamap[cur] || lcamap[cur->get_parent()] == lcamap[cur->get_sibling()])
+									dupheight++;
 
-				    dups += max_dup_height;
+								cur = cur->get_parent();
+							}
+
+							dups = max(dups, dupheight);
+						}
+					}
+				  lower_bound.nb_dups += dups;
+				  lower_bound.cost += dups * dup_cost;
+
+				  //Bound losses
+				  int losses = 0;
+				  map< GNode*, SNode* > newrec;
+				  for (GNode* g_root : genetrees)
+					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+						Node *g = *it;
+
+						if (!g->is_descendant_to(V_set)) {
+							//g is not descendant of V - can be in V or above or outside
+								
+							if (V_set.find(g) != V_set.end()) {
+								//g is in V
+								newrec[g] = x;
+							}
+							else if (g->is_ancestral_to(V_set)) {
+								newrec[g] = x->get_parent()->get_lca_with(lcamap[g]);
+							}
+							else
+								newrec[g] = lcamap[g];
+						}
+					}
+
+				  for (GNode* g_root : genetrees)
+					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+						Node *g = *it;
+						//this is still wrong - have to determine if gp is a speciation
+						//also what if g is a root??
+
+						int l = get_species_distance(newrec[g], newrec[g->get_parent()]);
+
+						if (l = 0 && newrec[g->get_sibling()] != newrec[g->get_parent()])
+							losses += l-1;
+						else
+							losses += l;
+						}
+					}
+				  lower_bound.nb_losses += losses;
+				  lower_bound.cost += losses * loss_cost;
+
+				  cout << "lower bound = " << lower_bound.cost << ", upper bound = " << cost_upper_bound.cost << endl;
+				  
+				  //Remove if x, V cannot result in optimal reconciliation
+				  if (lower_bound.cost > cost_upper_bound.cost)
+					  active_sets[x].erase(V);	
 			  }
-			  lower_bound += dups * dup_cost;
-
-			  //Bound losses
-			  losses = 0;
-			  for (GNode* g_root : genetrees)
-			  	for (auto it = g_root->begin(); it != g_root->end(); ++it) {
-					Node *g = *it;
-					int l, ls;
-
-					//V contains g
-					if (V_set.find(g) != V_set.end()) {
-						l = get_species_distance(x, lcamap[g->get_parent()]);
-					}
-					//g is not descendant to V
-					else if (!g->is_descendant_to(V_set)) {
-						l = get_species_distance(lcamap[g], lcamap[g->get_parent()]);
-					}
-
-					//Lemma: if g is not descendant to V, then sibling of g is also not descendant to V.
-					//V contains g's sibling
-					if (V_set.find(g->get_sibling()) != V_set.end()) {
-						ls = get_species_distance(x, lcamap[g->get_parent()]);
-					}
-					//g's sibling is not descendant to V
-					else if (!g->get_sibling()->is_descendant_to(V_set)) {
-						ls = get_species_distance(lcamap[g->get_sibling()], lcamap[g->get_parent()]);
-					}
-
-				    if (l > 0 && ls > 0)
-					    losses += l-1;
-				    else
-					    losses += l;
-				}
-			  lower_bound += losses * loss_cost;
-			  
-			  //Remove if x, V cannot result in optimal reconciliation
-			  if (lower_bound > cost_upper_bound)
-				  active_sets[x].erase(V);	
 		  }
-*/
+
 
 
             cout << "Done with species " << x->id << " " << (x->is_leaf() ? "(leaf " + x->label + ")" : "")
