@@ -578,39 +578,37 @@ public:
 				  lower_bound.cost += dups * dup_cost;
 
 				  //Bound losses
+				  //Set feasible reconciliation
 				  int losses = 0;
 				  map< GNode*, SNode* > newrec;
 				  for (GNode* g_root : genetrees)
 					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
 						Node *g = *it;
 
-						if (!g->is_descendant_to(V_set)) {
-							//g is not descendant of V - can be in V or above or outside
-								
-							if (V_set.find(g) != V_set.end()) {
-								//g is in V
-								newrec[g] = x;
-							}
-							else if (g->is_ancestral_to(V_set)) {
-								newrec[g] = x->get_parent()->get_lca_with(lcamap[g]);
-							}
-							else
-								newrec[g] = lcamap[g];
-						}
+						if (V_set.find(g) != V_set.end())
+							newrec[g] = x->get_parent();
+						else if (g->is_leaf())
+							newrec[g] = leafmap[g];
+						else
+							newrec[g] = newrec[g->get_child(0)]->get_lca_with(newrec[g->get_child(1)]);
 					}
+			  	  for (GNode* g : V_set)
+					  newrec[g] = x;
 
+				  //calculate losses
 				  for (GNode* g_root : genetrees)
 					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
 						Node *g = *it;
-						//this is still wrong - have to determine if gp is a speciation
-						//also what if g is a root??
 
-						int l = get_species_distance(newrec[g], newrec[g->get_parent()]);
+						if (!g->is_root() && !g->is_descendant_to(V_set)) {
 
-						if (l = 0 && newrec[g->get_sibling()] != newrec[g->get_parent()])
-							losses += l-1;
-						else
-							losses += l;
+							int l = get_species_distance(newrec[g], newrec[g->get_parent()]);
+
+							if (l > 0 && newrec[g->get_sibling()] != newrec[g->get_parent()] && newrec[g->get_parent()] == lcamap[g->get_parent()])
+								//parent of g is speciation
+								losses += l-1;
+							else
+								losses += l;
 						}
 					}
 				  lower_bound.nb_losses += losses;
@@ -619,8 +617,8 @@ public:
 				  cout << "lower bound = " << lower_bound.cost << ", upper bound = " << cost_upper_bound.cost << endl;
 				  
 				  //Remove if x, V cannot result in optimal reconciliation
-				  if (lower_bound.cost > cost_upper_bound.cost)
-					  active_sets[x].erase(V);	
+				  /*if (lower_bound.cost > cost_upper_bound.cost)
+					  active_sets[x].erase(V);	*/
 			  }
 		  }
 
