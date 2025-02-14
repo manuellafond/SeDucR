@@ -548,7 +548,9 @@ public:
 		  
 		  //Bounding - YBC
 		  if (!x->is_root()) {
-			  for (auto V : active_sets[x]) {
+			  list< bitmap > active_sets_bound_queue(active_sets[x].begin(), active_sets[x].end());
+
+			  for (auto V : active_sets_bound_queue) {
 				  set<GNode*> V_set = bitmap_to_nodeset(V);
 				  YBCost lower_bound = get_cost(x, V);
 
@@ -560,7 +562,7 @@ public:
 						Node *g = *it;
 
 						//g is in V or a leaf not descended from V
-						if (V_set.find(g) == V_set.end() || (g->is_leaf() && !g->is_descendant_to(V_set)) ) {
+						if (V_set.find(g) != V_set.end() || (g->is_leaf() && !g->is_descendant_to(V_set)) ) {
 							Node* cur = g;
 							int dupheight = 0;
 
@@ -579,12 +581,12 @@ public:
 
 				  //Bound losses
 				  //Set feasible reconciliation
-				  int losses = 0;
 				  map< GNode*, SNode* > newrec;
 				  for (GNode* g_root : genetrees)
 					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
 						Node *g = *it;
 
+						//start by setting elements of V mapped to parent of x, then LCA mapping...
 						if (V_set.find(g) != V_set.end())
 							newrec[g] = x->get_parent();
 						else if (g->is_leaf())
@@ -592,10 +594,12 @@ public:
 						else
 							newrec[g] = newrec[g->get_child(0)]->get_lca_with(newrec[g->get_child(1)]);
 					}
+				  //then drop elements of V down to x
 			  	  for (GNode* g : V_set)
 					  newrec[g] = x;
 
 				  //calculate losses
+				  int losses = 0;
 				  for (GNode* g_root : genetrees)
 					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
 						Node *g = *it;
@@ -614,11 +618,9 @@ public:
 				  lower_bound.nb_losses += losses;
 				  lower_bound.cost += losses * loss_cost;
 
-				  cout << "lower bound = " << lower_bound.cost << ", upper bound = " << cost_upper_bound.cost << endl;
-				  
 				  //Remove if x, V cannot result in optimal reconciliation
-				  /*if (lower_bound.cost > cost_upper_bound.cost)
-					  active_sets[x].erase(V);	*/
+				  if (lower_bound.cost > cost_upper_bound.cost)
+					  active_sets[x].erase(V);	
 			  }
 		  }
 
