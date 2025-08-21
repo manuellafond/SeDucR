@@ -128,7 +128,7 @@ public:
         DEBUG = false;
         dup_cost = 5;
         loss_cost = 1;
-        max_remap_dist = 5;
+        max_remap_dist = 100; //changed by YBC
     }
 
 
@@ -243,25 +243,25 @@ public:
         }
 
 	   //Count duplication heights
-        for (GNode* g_root : genetrees) {
-		  for (auto it = g_root->begin(); it != g_root->end(); ++it) {
-                Node* g = *it;
+      for (GNode* g_root : genetrees) {
+        for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+                  Node* g = *it;
 
-			 int height = 0;
+        int height = 0;
 
-		    //looks like it counts speciations, but it doesn't: the lowest node is always a speciation, so -1 to dup height
-			 while (!g->is_root() && lcamap[g->get_parent()] == lcamap[g]) {
-				 g = g->get_parent();
-			 	 height++;
-			 }
+          //looks like it counts speciations, but it doesn't: the lowest node is always a speciation, so -1 to dup height
+        while (!g->is_root() && lcamap[g->get_parent()] == lcamap[g]) {
+          g = g->get_parent();
+          height++;
+        }
 
-			 if (!lca_dupheight[lcamap[g]])
-				 lca_dupheight[lcamap[g]] = height;
-			 else
-			      lca_dupheight[lcamap[g]] = max(height, lca_dupheight[lcamap[g]]);
+        if (!lca_dupheight[lcamap[g]])
+          lca_dupheight[lcamap[g]] = height;
+        else
+              lca_dupheight[lcamap[g]] = max(height, lca_dupheight[lcamap[g]]);
 
-		  }
-	   }
+        }
+      }
     }
 
 
@@ -586,19 +586,16 @@ public:
 					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
 						Node *g = *it;
 
-						//start by setting elements of V mapped to parent of x, then LCA mapping...
+						//set elements of V mapped to parent of x, then LCA mapping
 						if (V_set.find(g) != V_set.end())
-							newrec[g] = x->get_parent();
+							newrec[g] = x;
 						else if (g->is_leaf())
 							newrec[g] = leafmap[g];
 						else
 							newrec[g] = newrec[g->get_child(0)]->get_lca_with(newrec[g->get_child(1)]);
 					}
-				  //then drop elements of V down to x
-			  	  for (GNode* g : V_set)
-					  newrec[g] = x;
 
-				  //calculate losses
+				  //calculate losses, update lower bound
 				  int losses = 0;
 				  for (GNode* g_root : genetrees)
 					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
@@ -618,9 +615,46 @@ public:
 				  lower_bound.nb_losses += losses;
 				  lower_bound.cost += losses * loss_cost;
 
+          //calculate duplications in feasible solution
+          map< SNode*, int > feasible_dupheight;
+
+				  for (GNode* g_root : genetrees)
+					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+						Node *g = *it;
+
+            if (!g->is_root() && !g->is_descendant_to(V_set)) {
+              int height = 0;
+
+              while (!g->is_root() && newrec[g->get_parent()] == newrec[g]) {
+                g = g->get_parent();
+                height++;
+              }
+
+              if (!feasible_dupheight[newrec[g]])
+                feasible_dupheight[newrec[g]] = height;
+              else
+                feasible_dupheight[newrec[g]] = max(height, feasible_dupheight[newrec[g]]);
+            }
+          }
+
+          //use feasible reconciliation to recalculate upper bound
+				  YBCost upper_bound = get_cost(x, V);
+				  upper_bound.nb_losses += losses;
+				  upper_bound.cost += losses * loss_cost;
+          int feasible_dups = 0;
+          for (SNode* y : species_nodes) {
+            if (!y->has_ancestor(x) || y == x) {
+              feasible_dups += feasible_dupheight[y];
+            }
+          }
+          upper_bound.nb_dups += feasible_dups;
+          upper_bound.cost += feasible_dups * dup_cost;
+          if (upper_bound.cost < cost_upper_bound.cost)
+            cost_upper_bound = upper_bound;
+
 				  //Remove if x, V cannot result in optimal reconciliation
 				  if (lower_bound.cost > cost_upper_bound.cost)
-					  active_sets[x].erase(V);	
+				   active_sets[x].erase(V);
 			  }
 		  }
 

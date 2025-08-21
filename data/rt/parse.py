@@ -24,7 +24,8 @@ srSpecies.write(re.sub(r"\w+", r"'\g<0>'", input[4 : input.find('"', 5)] + ";"))
 srSpecies.close()
 
 srGenes = open("rt-genes.txt", "w")
-genesList = input[input.find('"', 5) + 1 :].split(" -G ")[1:-1]
+genesList = input[input.find('"', 5) + 5 :].rstrip().split(" -G ")
+print(genesList)
 for gtree in genesList:
     maps = gtree[gtree.find('"', 1) + 3 : -1]
     maps = dict(e.split(":") for e in maps.split(" "))
