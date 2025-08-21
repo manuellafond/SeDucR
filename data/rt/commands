@@ -1,0 +1,1 @@
+../../build/ybrec -gf rt-genes.txt -sf rt-sp.txt -d 5 -l 1
