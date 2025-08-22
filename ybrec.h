@@ -453,7 +453,7 @@ public:
       for (auto it = g_root->begin(); it != g_root->end(); ++it) {
         Node *g = *it;
 
-        //start by setting elements of V mapped to parent of x (if events at x not allowed), then LCA mapping...
+        //start by setting elements of V mapped to x (if events at x allowed) parent of x (if events at x not allowed), then LCA mapping...
         if (V_set.find(g) != V_set.end()) {
           if (allow_events_at_x)
             newrec[g] = x;
@@ -468,7 +468,7 @@ public:
       //then drop elements of V down to x (if events at x not allowed)
       if (!allow_events_at_x)
         for (GNode* g : V_set)
-              newrec[g] = x;
+           newrec[g] = x;
 
       //calculate losses, update lower bound
       int losses = 0;
@@ -491,14 +491,15 @@ public:
       lower_bound.cost += losses * loss_cost;
 
 
-      //calculate duplications in feasible solution
+      //calculate duplications in feasible solution - this is wrong somehow
+    /*
       map< SNode*, int > feasible_dupheight;
 
       for (GNode* g_root : genetrees)
       for (auto it = g_root->begin(); it != g_root->end(); ++it) {
         Node *g = *it;
 
-        if (!g->is_root() && !g->is_descendant_to(V_set)) {
+        if (!g->is_descendant_to(V_set)) {
           int height = 0;
 
           while (!g->is_root() && newrec[g->get_parent()] == newrec[g]) {
@@ -520,14 +521,20 @@ public:
       upper_bound.cost += losses * loss_cost;
       int feasible_dups = 0;
       for (SNode* y : species_nodes) {
-        if (!y->has_ancestor(x) || y == x) {
+        if (!y->has_ancestor(x) || (allow_events_at_x && y == x)) {
           feasible_dups += feasible_dupheight[y];
         }
       }
       upper_bound.nb_dups += feasible_dups;
       upper_bound.cost += feasible_dups * dup_cost;
-      if (upper_bound.cost < cost_upper_bound.cost)
+      if (upper_bound.cost < cost_upper_bound.cost) {
+        // cout << "updating upper bound from " << cost_upper_bound.cost << " to " << upper_bound.cost << endl;
+        // cout << upper_bound.nb_dups << '\t' << upper_bound.nb_losses << endl;
+        // if (allow_events_at_x)
+        //   cout << "allow x" << endl;
         cost_upper_bound = upper_bound;
+      }
+      */
 
       //Remove (return true) if x, V cannot result in optimal reconciliation
       if (lower_bound.cost > cost_upper_bound.cost)
@@ -605,7 +612,7 @@ public:
                         //add_cost(x, v_cross, cost);
             
                         //apply bounding here - YBC
-                         // if (!bound(v_cross, x, true))
+                        if (!bound(v_cross, x, true))
                           active_sets[x].insert(v_cross);
 
                         if (active_sets[x].size() % 10000 == 0) {
@@ -639,10 +646,10 @@ public:
                     //apply bounding here - YBC
                     YBCost xV_cost = get_cost(x, V);
                     set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
-                    // if (!bound(Vprime, x, true)) {
+                    if (!bound(Vprime, x, true)) {
                       active_sets[x].insert(Vprime);
                       active_sets_queue.push_back(Vprime);
-                    // }
+                    }
 
                     bool is_U_forced = false;
                     //if someone is trying to go too far, we have to do the dup here
