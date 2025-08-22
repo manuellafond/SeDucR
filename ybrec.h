@@ -605,7 +605,7 @@ public:
                         //add_cost(x, v_cross, cost);
             
                         //apply bounding here - YBC
-                         if (!bound(v_cross, x, true))
+                         // if (!bound(v_cross, x, true))
                           active_sets[x].insert(v_cross);
 
                         if (active_sets[x].size() % 10000 == 0) {
@@ -639,11 +639,10 @@ public:
                     //apply bounding here - YBC
                     YBCost xV_cost = get_cost(x, V);
                     set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
-                    if (!bound(Vprime, x, true)) {
+                    // if (!bound(Vprime, x, true)) {
                       active_sets[x].insert(Vprime);
                       active_sets_queue.push_back(Vprime);
-
-                    }
+                    // }
 
                     bool is_U_forced = false;
                     //if someone is trying to go too far, we have to do the dup here
