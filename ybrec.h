@@ -415,8 +415,126 @@ public:
         }
     }
 
+    //Return true if (x,V) can be removed
+    bool bound(bitmap V, SNode* x, bool allow_events_at_x) {
+      vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
+      set<GNode*> V_set = bitmap_to_nodeset(V);
+      YBCost lower_bound = get_cost(x, V);
+
+      //Calculate lower bound for x, V
+      //Bound duplications
+      int dups = 0;
+      for (GNode* g_root : genetrees)
+      for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+        Node *g = *it;
+
+        //g is in V or a leaf not descended from V
+        if (V_set.find(g) != V_set.end() || (g->is_leaf() && !g->is_descendant_to(V_set)) ) {
+          Node* cur = g;
+          int dupheight = 0;
+
+          while (!cur->is_root()) {
+            if (lcamap[cur->get_parent()] == lcamap[cur] || lcamap[cur->get_parent()] == lcamap[cur->get_sibling()])
+              dupheight++;
+
+            cur = cur->get_parent();
+          }
+
+          dups = max(dups, dupheight);
+        }
+      }
+      lower_bound.nb_dups += dups;
+      lower_bound.cost += dups * dup_cost;
+
+      //Bound losses
+      //Set feasible reconciliation
+      map< GNode*, SNode* > newrec;
+      for (GNode* g_root : genetrees)
+      for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+        Node *g = *it;
+
+        //start by setting elements of V mapped to parent of x (if events at x not allowed), then LCA mapping...
+        if (V_set.find(g) != V_set.end()) {
+          if (allow_events_at_x)
+            newrec[g] = x;
+          else
+            newrec[g] = x->get_parent();
+        }
+        else if (g->is_leaf())
+          newrec[g] = leafmap[g];
+        else
+          newrec[g] = newrec[g->get_child(0)]->get_lca_with(newrec[g->get_child(1)]);
+      }
+      //then drop elements of V down to x (if events at x not allowed)
+      if (!allow_events_at_x)
+        for (GNode* g : V_set)
+              newrec[g] = x;
+
+      //calculate losses, update lower bound
+      int losses = 0;
+      for (GNode* g_root : genetrees)
+      for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+        Node *g = *it;
+
+        if (!g->is_root() && !g->is_descendant_to(V_set)) {
+
+          int l = get_species_distance(newrec[g], newrec[g->get_parent()]);
+
+          if (l > 0 && newrec[g->get_sibling()] != newrec[g->get_parent()] && newrec[g->get_parent()] == lcamap[g->get_parent()])
+            //parent of g is speciation
+            losses += l-1;
+          else
+            losses += l;
+        }
+      }
+      lower_bound.nb_losses += losses;
+      lower_bound.cost += losses * loss_cost;
 
 
+      //calculate duplications in feasible solution
+      map< SNode*, int > feasible_dupheight;
+
+      for (GNode* g_root : genetrees)
+      for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+        Node *g = *it;
+
+        if (!g->is_root() && !g->is_descendant_to(V_set)) {
+          int height = 0;
+
+          while (!g->is_root() && newrec[g->get_parent()] == newrec[g]) {
+            g = g->get_parent();
+            height++;
+          }
+
+          if (!feasible_dupheight[newrec[g]])
+            feasible_dupheight[newrec[g]] = height;
+          else
+            feasible_dupheight[newrec[g]] = max(height, feasible_dupheight[newrec[g]]);
+        }
+      }
+
+
+      //use feasible reconciliation to recalculate upper bound
+      YBCost upper_bound = get_cost(x, V);
+      upper_bound.nb_losses += losses;
+      upper_bound.cost += losses * loss_cost;
+      int feasible_dups = 0;
+      for (SNode* y : species_nodes) {
+        if (!y->has_ancestor(x) || y == x) {
+          feasible_dups += feasible_dupheight[y];
+        }
+      }
+      upper_bound.nb_dups += feasible_dups;
+      upper_bound.cost += feasible_dups * dup_cost;
+      if (upper_bound.cost < cost_upper_bound.cost)
+        cost_upper_bound = upper_bound;
+
+      //Remove (return true) if x, V cannot result in optimal reconciliation
+      if (lower_bound.cost > cost_upper_bound.cost)
+        return true;
+      else
+        return false;
+    }
 
     void reconcile() {
 
@@ -485,8 +603,10 @@ public:
                         //int cost = get_cost(xl, V_l) + get_cost(xr, V_r) +
                         //    this->loss_cost * (2 * v_cross.numberOfOnes() - V_l.numberOfOnes() - V_r.numberOfOnes());
                         //add_cost(x, v_cross, cost);
-
-                        active_sets[x].insert(v_cross);
+            
+                        //apply bounding here - YBC
+                         if (!bound(v_cross, x, true))
+                          active_sets[x].insert(v_cross);
 
                         if (active_sets[x].size() % 10000 == 0) {
                             cout << "Sp x=" << x->id << "  Ax size is now " << active_sets[x].size();
@@ -516,12 +636,14 @@ public:
                     set<GNode*> Vprime_set = get_cross_set(bitmap_to_nodeset(V), bitmap_to_nodeset(V));   //not sure that works, I think it does - so it probably doesn't work
                     bitmap Vprime = nodeset_to_bitmap(Vprime_set);
 
-                    active_sets[x].insert(Vprime);
-                    active_sets_queue.push_back(Vprime);
-
+                    //apply bounding here - YBC
                     YBCost xV_cost = get_cost(x, V);
                     set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
-                    
+                    if (!bound(Vprime, x, true)) {
+                      active_sets[x].insert(Vprime);
+                      active_sets_queue.push_back(Vprime);
+
+                    }
 
                     bool is_U_forced = false;
                     //if someone is trying to go too far, we have to do the dup here
@@ -551,110 +673,8 @@ public:
 			  list< bitmap > active_sets_bound_queue(active_sets[x].begin(), active_sets[x].end());
 
 			  for (auto V : active_sets_bound_queue) {
-				  set<GNode*> V_set = bitmap_to_nodeset(V);
-				  YBCost lower_bound = get_cost(x, V);
-
-				  //Calculate lower bound for x, V
-				  //Bound duplications
-				  int dups = 0;
-				  for (GNode* g_root : genetrees)
-					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
-						Node *g = *it;
-
-						//g is in V or a leaf not descended from V
-						if (V_set.find(g) != V_set.end() || (g->is_leaf() && !g->is_descendant_to(V_set)) ) {
-							Node* cur = g;
-							int dupheight = 0;
-
-							while (!cur->is_root()) {
-								if (lcamap[cur->get_parent()] == lcamap[cur] || lcamap[cur->get_parent()] == lcamap[cur->get_sibling()])
-									dupheight++;
-
-								cur = cur->get_parent();
-							}
-
-							dups = max(dups, dupheight);
-						}
-					}
-				  lower_bound.nb_dups += dups;
-				  lower_bound.cost += dups * dup_cost;
-
-				  //Bound losses
-				  //Set feasible reconciliation
-				  map< GNode*, SNode* > newrec;
-				  for (GNode* g_root : genetrees)
-					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
-						Node *g = *it;
-
-						//set elements of V mapped to parent of x, then LCA mapping
-						if (V_set.find(g) != V_set.end())
-							newrec[g] = x;
-						else if (g->is_leaf())
-							newrec[g] = leafmap[g];
-						else
-							newrec[g] = newrec[g->get_child(0)]->get_lca_with(newrec[g->get_child(1)]);
-					}
-
-				  //calculate losses, update lower bound
-				  int losses = 0;
-				  for (GNode* g_root : genetrees)
-					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
-						Node *g = *it;
-
-						if (!g->is_root() && !g->is_descendant_to(V_set)) {
-
-							int l = get_species_distance(newrec[g], newrec[g->get_parent()]);
-
-							if (l > 0 && newrec[g->get_sibling()] != newrec[g->get_parent()] && newrec[g->get_parent()] == lcamap[g->get_parent()])
-								//parent of g is speciation
-								losses += l-1;
-							else
-								losses += l;
-						}
-					}
-				  lower_bound.nb_losses += losses;
-				  lower_bound.cost += losses * loss_cost;
-
-          //calculate duplications in feasible solution
-          map< SNode*, int > feasible_dupheight;
-
-				  for (GNode* g_root : genetrees)
-					for (auto it = g_root->begin(); it != g_root->end(); ++it) {
-						Node *g = *it;
-
-            if (!g->is_root() && !g->is_descendant_to(V_set)) {
-              int height = 0;
-
-              while (!g->is_root() && newrec[g->get_parent()] == newrec[g]) {
-                g = g->get_parent();
-                height++;
-              }
-
-              if (!feasible_dupheight[newrec[g]])
-                feasible_dupheight[newrec[g]] = height;
-              else
-                feasible_dupheight[newrec[g]] = max(height, feasible_dupheight[newrec[g]]);
-            }
-          }
-
-          //use feasible reconciliation to recalculate upper bound
-				  YBCost upper_bound = get_cost(x, V);
-				  upper_bound.nb_losses += losses;
-				  upper_bound.cost += losses * loss_cost;
-          int feasible_dups = 0;
-          for (SNode* y : species_nodes) {
-            if (!y->has_ancestor(x) || y == x) {
-              feasible_dups += feasible_dupheight[y];
-            }
-          }
-          upper_bound.nb_dups += feasible_dups;
-          upper_bound.cost += feasible_dups * dup_cost;
-          if (upper_bound.cost < cost_upper_bound.cost)
-            cost_upper_bound = upper_bound;
-
-				  //Remove if x, V cannot result in optimal reconciliation
-				  if (lower_bound.cost > cost_upper_bound.cost)
-				   active_sets[x].erase(V);
+          if (bound(V, x, false))   //do not allow further events at x
+            active_sets[x].erase(V);
 			  }
 		  }
 
