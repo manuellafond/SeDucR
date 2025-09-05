@@ -417,6 +417,8 @@ public:
 
     //Return true if (x,V) can be removed
     bool bound(bitmap V, SNode* x, bool allow_events_at_x) {
+      // return false;
+
       vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
       set<GNode*> V_set = bitmap_to_nodeset(V);
       YBCost lower_bound = get_cost(x, V);
@@ -491,8 +493,7 @@ public:
       lower_bound.cost += losses * loss_cost;
 
 
-      //calculate duplications in feasible solution - this is wrong somehow
-    /*
+      //calculate duplications in feasible solution
       map< SNode*, int > feasible_dupheight;
 
       for (GNode* g_root : genetrees)
@@ -501,6 +502,10 @@ public:
 
         if (!g->is_descendant_to(V_set)) {
           int height = 0;
+
+          //corner case where a duplication is counted as a speciation mistakenly
+          if (newrec[g] == x->get_parent() && newrec[g->get_child(0)] == x && newrec[g->get_child(1)] == x)
+            height++;
 
           while (!g->is_root() && newrec[g->get_parent()] == newrec[g]) {
             g = g->get_parent();
@@ -534,7 +539,6 @@ public:
         //   cout << "allow x" << endl;
         cost_upper_bound = upper_bound;
       }
-      */
 
       //Remove (return true) if x, V cannot result in optimal reconciliation
       if (lower_bound.cost > cost_upper_bound.cost)
