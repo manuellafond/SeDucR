@@ -650,8 +650,8 @@ public:
                     //apply bounding here - YBC
                     YBCost xV_cost = get_cost(x, V);
 
-				//remove previous set if new set is already better
-				if (get_cost(x, Vprime).cost < xV_cost.cost + this->dup_cost)
+				//remove previous set if new set is already better (or as good)
+				if (get_cost(x, Vprime).cost <= xV_cost.cost)
 					active_sets[x].erase(V);
 
                     set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
