@@ -616,10 +616,10 @@ public:
                         //add_cost(x, v_cross, cost);
             
                         //apply bounding here - YBC
-                        if (!bound(v_cross, x, true))
+                        //if (!bound(v_cross, x, true))
                           active_sets[x].insert(v_cross);
 
-                        if (active_sets[x].size() % 10000 == 0) {
+                        if (active_sets[x].size() % 10000 == 0 && active_sets[x].size() > 0) {
                             cout << "Sp x=" << x->id << "  Ax size is now " << active_sets[x].size();
                             cout << " Axl=" << active_sets[xl].size() << "  Axr=" << active_sets[xr].size() << endl;
 
@@ -649,11 +649,16 @@ public:
 
                     //apply bounding here - YBC
                     YBCost xV_cost = get_cost(x, V);
+
+				//remove previous set if new set is already better
+				if (get_cost(x, Vprime).cost < xV_cost.cost + this->dup_cost)
+					active_sets[x].erase(V);
+
                     set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
-                    if (!bound(Vprime, x, true)) {
+                    //if (!bound(Vprime, x, true)) {
                       active_sets[x].insert(Vprime);
                       active_sets_queue.push_back(Vprime);
-                    }
+                    //}
 
                     bool is_U_forced = false;
                     //if someone is trying to go too far, we have to do the dup here
@@ -679,19 +684,27 @@ public:
 
 		  
 		  //Bounding - YBC
-		  if (!x->is_root()) {
+		  /*if (!x->is_root()) {
 			  list< bitmap > active_sets_bound_queue(active_sets[x].begin(), active_sets[x].end());
 
 			  for (auto V : active_sets_bound_queue) {
-          if (bound(V, x, false))   //do not allow further events at x
-            active_sets[x].erase(V);
+				if (bound(V, x, false))   //do not allow further events at x
+				  active_sets[x].erase(V);
 			  }
-		  }
+		  }*/
 
 
 
             cout << "Done with species " << x->id << " " << (x->is_leaf() ? "(leaf " + x->label + ")" : "")
                 << " A_x size = " << active_sets[x].size() << endl;
+
+		  /*for (auto s : active_sets[x]) {
+				set<GNode*> V = bitmap_to_nodeset(s);
+				for (auto n : V)
+					cout << n->label << ",";
+				cout << endl;
+				cout << get_cost(x,s).cost << endl;
+		  }*/
         }
 
 
