@@ -76,6 +76,7 @@ int main(int argc, char** argv)
         int species_index = 0;
         int dupcost = 5;
         int losscost = 1;
+	   int bound_option = 0;
 
 
         //parse dup loss cost and max dup height
@@ -170,6 +171,10 @@ int main(int argc, char** argv)
             species_index = Util::ToInt(args["spindex"]);
         }
 
+	   //parse bounding option
+	   if (args.find("bound") != args.end()) {
+		   bound_option = Util::ToInt(args["bound"]);
+	   }
 
 
 
@@ -204,7 +209,7 @@ int main(int argc, char** argv)
 
 
 
-        reconciler.reconcile();
+        reconciler.reconcile(bound_option);
 
         for (GNode* g : geneTrees)
             delete g;
