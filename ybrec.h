@@ -61,10 +61,6 @@ struct BCmp {
 
 
 
-
-
-
-
 /**
 YBRec class
 Stores all info necessary to apply the YB dynamic programming algorithm, given
@@ -415,6 +411,27 @@ public:
         }
     }
 
+	//return true if all elements of V are descendant from elements of Vprime
+	bool is_below(bitmap V, bitmap Vprime) {
+		set<GNode*> Vset = bitmap_to_nodeset(V);
+		set<GNode*> Vpset = bitmap_to_nodeset(Vprime);
+
+		bool is_below = true;
+
+		for (auto n : Vset) {
+			GNode* cur = n;
+
+			while (Vpset.find(cur) == Vpset.end()) {
+				if (cur->is_root())
+					return false;
+				
+				cur = cur->get_parent();
+			}
+		}
+
+		return true;
+	}
+
     //Return true if (x,V) can be removed
     bool bound(bitmap V, SNode* x, bool allow_events_at_x) {
       // return false;
@@ -687,13 +704,28 @@ public:
             }
 
 		  
-		  //Bounding - YBC
-		  if (bound_option >= 1 && !x->is_root()) {
+		  //Remove active sets that are already worse than something above them
+		  //Also bounding - YBC
+		  if (!x->is_root()) {
 			  list< bitmap > active_sets_bound_queue(active_sets[x].begin(), active_sets[x].end());
 
 			  for (auto V : active_sets_bound_queue) {
-				if (bound(V, x, false))   //do not allow further events at x
-				  active_sets[x].erase(V);
+				  bool remove = false;
+
+				  for (auto Vprime : active_sets_bound_queue) {
+					  if (get_cost(x, Vprime).cost <= get_cost(x, V).cost && is_below(V, Vprime) && V != Vprime)
+					  {
+						  remove = true;
+						  break;
+					 }
+
+				  }
+
+				if (!remove && bound_option >= 1 && bound(V, x, false))   //do not allow further events at x
+					remove = true;
+
+				if (remove)
+					active_sets[x].erase(V);
 			  }
 		  }
 
