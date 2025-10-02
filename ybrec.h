@@ -683,8 +683,9 @@ public:
 
                     bool is_U_forced = false;
                     //if someone is trying to go too far, we have to do the dup here
+				//also have to do it if it's the root of the species tree
                     for (GNode* g : U) {
-                        if ((float)get_species_distance(lcamap[g], x) == max_remap_dist)
+                        if (x->is_root() || (float)get_species_distance(lcamap[g], x) == max_remap_dist)
                             is_U_forced = true;
                     }
 
