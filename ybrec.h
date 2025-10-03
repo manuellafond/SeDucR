@@ -830,6 +830,9 @@ public:
 		
 
 		SegmentalReconciliation segrec;
+		segrec.dup_cost = dup_cost;
+        segrec.loss_cost = loss_cost;
+		
 		
 		if (!min_species){
 			cout<<"ERROR: no species has all_groots as an active set..."<<endl;
