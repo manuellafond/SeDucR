@@ -38,22 +38,22 @@ struct BCmp {
             if (ita != a.end()) {
                 if (itb != a.end()) {
                     if (*ita < *itb)
-                        return true;
-                    else if (*itb < *ita)
                         return false;
+                    else if (*itb < *ita)
+                        return true;
                     else {
                         ++ita;
                         ++itb;
                     }
                 }
                 else
-                    return true;
+                    return false;
             }
             else {
                 if (itb != b.end())
-                    return true;
+                    return false;
                 else
-                    return false;    //both end
+                    return true;    //both end
             }
         }
     }
