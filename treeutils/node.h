@@ -8,6 +8,7 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
+#include <climits>
 
 
 
@@ -321,8 +322,32 @@ public:
 
 
 
-
-
+	/**
+	If v is an ancestor or descendant of this, returns the distance between the this and v  (number of edges).
+	If incomparable, returns INT_MAX
+	**/
+	int get_distance_to(Node* v){
+		Node* cur = nullptr;
+		Node* end = nullptr;
+		if (this->has_ancestor(v)){
+			cur = this;
+			end = v;
+		}
+		else if (v->has_ancestor(this)){
+			cur = v;
+			end = this;
+		}
+		else{
+			return INT_MAX;
+		}
+		
+		int dist = 0;
+		while (cur != end){
+			cur = cur->get_parent();
+			dist++;
+		}
+		return dist;
+	}
     
 
 

@@ -11,6 +11,8 @@
 #include "treeutils/node.h"
 #include "treeutils/newicklex.h"
 
+#include "segmentalreconciliation.h"
+
 
 //NOTE: GNode, SNode and GSMap are defined in genespeciestreeutil
 #include "genespeciestreeutil.h"
@@ -20,6 +22,7 @@
 
 
 typedef ewah::EWAHBoolArray<uint32_t> bitmap;
+
 
 
 
@@ -84,13 +87,19 @@ public:
         int nb_losses;
         int nb_dups;
         int cost;
-
+		
+		//for backtracking, remember originator(s) of current cost (there can be 1 or 2, or 0 for leaves)
+		size_t nb_originators = 0;
+		pair<SNode*, bitmap> origin1;
+		pair<SNode*, bitmap> origin2;
+		
         vector<string> debug;
+		
     };
 
 
-    Node* speciestree;
-    vector<Node*> genetrees;
+    SNode* speciestree;
+    vector<GNode*> genetrees;
 
     int loss_cost;
     int dup_cost;
@@ -132,31 +141,39 @@ public:
     }
 
 
-    //sets the cost c(gnodes, x).  Only updated if entry does not exist of cost is smaller than current cost
-    /*void add_cost(SNode* x, const bitmap& gnodes, int cost) {
-
-        int best_cost = INT_MAX;
-        if (costs_table.count(x) && costs_table[x].count(gnodes)) {
-            best_cost = costs_table[x][gnodes];
-        }
-        costs_table[x][gnodes] = min(best_cost, cost);
-    }*/
+    
+	
+	
+	//Assumes that cost_exists(x, V) is true
+	void set_cost_origin(SNode* x, bitmap& V, SNode* orig_x, bitmap& orig_V){
+		YBCost& ybcost = get_cost(x, V);	//careful not to copy the YBCost object
+		ybcost.nb_originators = 1;
+		ybcost.origin1 = make_pair(orig_x, orig_V);
+	}
+	
+	//Assumes that cost_exists(x, V) is true	
+	void set_cost_origins(SNode* x, bitmap& V, SNode* orig_x1, bitmap& orig_V1, SNode* orig_x2, bitmap& orig_V2){
+		YBCost& ybcost = get_cost(x, V);	//careful not to copy the YBCost object
+		ybcost.nb_originators = 2;
+		ybcost.origin1 = make_pair(orig_x1, orig_V1);
+		ybcost.origin2 = make_pair(orig_x2, orig_V2);
+	}
 
 
     //sets c(x, V).  Updates only if cost is smaller than previous entry, or if such an entry does not exist.
-    // We must specify the number of dups and losses.  For debugging, we can pass 
-    //debug messages to combine.  If not debugging, just ignore.
-    void set_cost(SNode* x, const bitmap& gnodes, int nb_dups, int nb_losses, 
+    // We must specify the number of dups and losses.  
+	// return true if costs table was updated with new value, false otherwise
+	//For debugging, we can pass debug messages to combine.  If not debugging, just ignore.
+    bool set_cost(SNode* x, const bitmap& gnodes, int nb_dups, int nb_losses, 
                         vector<string>* dbg1 = nullptr, vector<string>* dbg2 = nullptr, string dbg = "") {
 
         bool update_cost = false;
         int newcost = this->dup_cost * nb_dups + this->loss_cost * nb_losses;
         
-        if (costs_table.count(x) && costs_table[x].count(gnodes)) {
-            YBCost& best_cost = costs_table[x][gnodes];
-            if (newcost < best_cost.cost) {
+        if (cost_exists(x, gnodes)) {
+            YBCost& best_cost = get_cost(x, gnodes);
+            if (newcost < best_cost.cost)
                 update_cost = true;
-            }
         }
         else
             update_cost = true;
@@ -175,9 +192,9 @@ public:
                 new_ybcost.debug.push_back(dbg);
 
             costs_table[x][gnodes] = new_ybcost;
-
-            
         }
+		
+		return update_cost;
         
     }
 
@@ -193,16 +210,16 @@ public:
     }*/
 
 
-    //returns c(gnodes, x)
-    YBCost get_cost(SNode* x, bitmap& gnodes) {
+	//returns true iff cost has been set for species/active_set combo
+	bool cost_exists(SNode* x, const bitmap& gnodes){
+		return costs_table.count(x) && costs_table[x].count(gnodes);
+	}
 
-        if (costs_table.count(x) && costs_table[x].count(gnodes)) {
-            return costs_table[x][gnodes];
-        }
 
-        YBCost dummy_cost;
-        dummy_cost.cost = INT_MAX;
-        return dummy_cost;
+    //returns a reference to the cost object associated with species/active_set combo.
+	//ASSUMES THAT cost_exists(x, gnodes) is true, does not do that verification!
+    YBCost& get_cost(SNode* x, const bitmap& gnodes) {
+         return costs_table[x][gnodes];
     }
 
 
@@ -245,21 +262,20 @@ public:
 	   //Count duplication heights
       for (GNode* g_root : genetrees) {
         for (auto it = g_root->begin(); it != g_root->end(); ++it) {
-                  Node* g = *it;
+            Node* g = *it;
 
-        int height = 0;
+			int height = 0;
 
-          //looks like it counts speciations, but it doesn't: the lowest node is always a speciation, so -1 to dup height
-        while (!g->is_root() && lcamap[g->get_parent()] == lcamap[g]) {
-          g = g->get_parent();
-          height++;
-        }
+			//looks like it counts speciations, but it doesn't: the lowest node is always a speciation, so -1 to dup height
+			while (!g->is_root() && lcamap[g->get_parent()] == lcamap[g]) {
+			  g = g->get_parent();
+			  height++;
+			}
 
-        if (!lca_dupheight[lcamap[g]])
-          lca_dupheight[lcamap[g]] = height;
-        else
-              lca_dupheight[lcamap[g]] = max(height, lca_dupheight[lcamap[g]]);
-
+			if (!lca_dupheight[lcamap[g]])
+				lca_dupheight[lcamap[g]] = height;
+			else
+				lca_dupheight[lcamap[g]] = max(height, lca_dupheight[lcamap[g]]);
         }
       }
     }
@@ -314,7 +330,7 @@ public:
 
 
 
-    //get nuber of edges from lower_sp to higher_sp
+    //get number of edges from lower_sp to higher_sp
     //TODO: make this function faster - also, lower_sp MUST be a descendant of higher_sp
     int get_species_distance(SNode* lower_sp, SNode* higher_sp) {
         int d = 0;
@@ -421,7 +437,11 @@ public:
 
       vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
       set<GNode*> V_set = bitmap_to_nodeset(V);
-      YBCost lower_bound = get_cost(x, V);
+	  
+	  if (!cost_exists(x, V))
+		  throw "Trying to find a lower bound for a non-existing active set";
+	  
+      YBCost lower_bound = get_cost(x, V);	//note: this copies the current cost object, so modifying lower_bound is safe
 
       //Calculate lower bound for x, V
       //Bound duplications
@@ -547,15 +567,15 @@ public:
         return false;
     }
 
-    void reconcile() {
+    SegmentalReconciliation reconcile() {
 
 
         init_indices();
         compute_rev_leafmap();
         compute_lca_map();
-	   compute_lca_upper_bound();
+	    compute_lca_upper_bound();
 
-	   cout << "LCA upper bound = " << cost_upper_bound.cost << endl;
+	    cout << "LCA upper bound = " << cost_upper_bound.cost << endl;
 
         vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
         for (SNode* x : species_nodes) {
@@ -565,7 +585,6 @@ public:
                 bitmap bnodes = nodeset_to_bitmap(rev_leafmap[x]);
 
                 set_cost(x, bnodes, 0, 0);
-                //add_cost(x, bnodes, 0);
 
                 active_sets[x].insert(bnodes);
             }
@@ -573,7 +592,7 @@ public:
                 SNode* xl = x->get_child(0);
                 SNode* xr = x->get_child(1);
 
-
+				size_t output_counter = 0;
                 //build all the possible active sets from those of x's children
                 for (bitmap V_l : active_sets[xl]) {
                     for (bitmap V_r : active_sets[xr]) {
@@ -594,8 +613,8 @@ public:
                         //so, v_cross is the set we get if we pair xl and xr guys into a speciation
                         //when they have a common parent, and "raise" all the other ones.
                         //Each such raise causes one loss that must be counted, hence the second line of the cost
-                        YBCost leftcost = get_cost(xl, V_l);
-                        YBCost rightcost = get_cost(xr, V_r);
+                        YBCost& leftcost = get_cost(xl, V_l);
+                        YBCost& rightcost = get_cost(xr, V_r);
                         
                         int extra_losses = (2 * v_cross.numberOfOnes() - V_l.numberOfOnes() - V_r.numberOfOnes());
                         extra_losses -= nb_roots_vl_vr;
@@ -616,13 +635,16 @@ public:
                         //add_cost(x, v_cross, cost);
             
                         //apply bounding here - YBC
-                        //if (!bound(v_cross, x, true))
+						//if (!bound(v_cross, x, true))}
                           active_sets[x].insert(v_cross);
+						  set_cost_origins(x, v_cross, xl, V_l, xr, V_r);
+						  
+						//}
 
-                        if (active_sets[x].size() % 10000 == 0 && active_sets[x].size() > 0) {
-                            cout << "Sp x=" << x->id << "  Ax size is now " << active_sets[x].size();
+						++output_counter;
+                        if (output_counter % 10000 == 0) {
+                            cout << "output_counter="<<output_counter <<"  Sp x=" << x->id << "  Ax size is now " << active_sets[x].size();
                             cout << " Axl=" << active_sets[xl].size() << "  Axr=" << active_sets[xr].size() << endl;
-
                         }
                     }
                 }
@@ -648,13 +670,16 @@ public:
                     bitmap Vprime = nodeset_to_bitmap(Vprime_set);
 
                     //apply bounding here - YBC
-                    YBCost xV_cost = get_cost(x, V);
+                    YBCost& xV_cost = get_cost(x, V);
 
-				//remove previous set if new set is already better (or as good)
-				if (get_cost(x, Vprime).cost <= xV_cost.cost)
-					active_sets[x].erase(V);
+					//remove previous set if new set is already better (or as good)
+					if (cost_exists(x, Vprime) && get_cost(x, Vprime).cost <= xV_cost.cost)
+						active_sets[x].erase(V);	//could we just continue to the next loop if we get here?
 
-                    set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
+                    bool updated = set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
+					if (updated){
+						set_cost_origin(x, Vprime, x, V);
+					}
                     //if (!bound(Vprime, x, true)) {
                       active_sets[x].insert(Vprime);
                       active_sets_queue.push_back(Vprime);
@@ -676,7 +701,7 @@ public:
 
 
                     nb_iter++;
-                    if (nb_iter % 5000 == 0) {
+                    if (nb_iter % 10000 == 0) {
                         cout << "nb_iter = " << nb_iter << "  Ax.size = " << active_sets[x].size() << "   queue size = " << active_sets_queue.size() << endl;
                     }
                 }
@@ -714,7 +739,10 @@ public:
 
 
 
-        std::cout << std::endl << "*** Outputting all c(x, V) entries for V = {all roots of G} ***" << std::endl;
+        //std::cout << std::endl << "*** Outputting all c(x, V) entries for V = {all roots of G} ***" << std::endl;
+
+		
+
 
         std::set<GNode*> all_groots_set;
         for (GNode* gtree : this->genetrees) {
@@ -722,37 +750,100 @@ public:
         }
         bitmap all_groots = nodeset_to_bitmap(all_groots_set);
         
+		GNode* min_species = nullptr;
+		int mincost = INT_MAX;
+		
         for (auto it = speciestree->begin(); it != speciestree->end(); ++it) {
             SNode* x = *it;
 
-            YBCost cost = get_cost(x, all_groots);
-            
-            
-            if (cost.cost != INT_MAX) {
-                std::cout << "Species " << x->label << "  cost=" << cost.cost
-                    << "  nbdups=" << cost.nb_dups
-                    << "  nblosses=" << cost.nb_losses << std::endl;
+			if (cost_exists(x, all_groots)){
+				YBCost& cost = get_cost(x, all_groots);
+				
+				if (cost.cost < mincost){
+					mincost = cost.cost;
+					min_species = x;
+				}
+				
+				std::cout<<"Best cost found."<<std::endl;
+				std::cout << "Species " << x->label << "  cost=" << cost.cost
+					<< "  nbdups=" << cost.nb_dups
+					<< "  nblosses=" << cost.nb_losses << std::endl;
 
-                if (DEBUG) {
-                    for (string s : cost.debug) {
-                        std::cout << s << std::endl;
-                    }
-                }
-            }
-            
+				if (DEBUG) {
+					
+					for (string s : cost.debug) {
+						std::cout << s << std::endl;
+					}
+				}
+				
+			}
         }
+		
 
-
-
-
-
+		SegmentalReconciliation segrec;
+		
+		if (!min_species){
+			cout<<"ERROR: no species has all_groots as an active set..."<<endl;
+			return segrec;
+		}
+		
+		
+		map<SNode*, set< set<GNode*> > > dups_per_species;
+		build_reconciliation_recursively(min_species, all_groots, dups_per_species);
+		
+		
+		segrec.init_with_gsmap(speciestree, genetrees, lcamap);
+		segrec.build_from_segmental_dups(dups_per_species);
+		
+		//sanity check, remove if slows down things
+		YBCost& best_cost = get_cost(min_species, all_groots);
+		if (best_cost.nb_losses != segrec.get_nb_losses()){
+			cout<<"ERROR: DP cost differs from reconciliation cost"<<endl;
+			cout<<"ybrec.nb_losses="<<best_cost.nb_losses<<"   segrec.nb_losses="<<segrec.get_nb_losses()<<endl;
+		}
+		if (best_cost.nb_dups != segrec.get_dup_height_sum()){
+			cout<<"ERROR: DP cost differs from reconciliation cost"<<endl;
+			cout<<"ybrec.nb_dups="<<best_cost.nb_dups<<"   segrec.nb_dups="<<segrec.get_dup_height_sum()<<endl;
+		}
+		
+		return segrec;
     }
 
 
 
 
 
+
     
+	
+	
+	void build_reconciliation_recursively(SNode* x, bitmap& active_set, map<SNode*, set< set<GNode*> > >& dups_per_species){
+		
+		set<GNode*> gnodes = bitmap_to_nodeset(active_set);
+		
+		YBCost& cost = get_cost(x, active_set);
+		
+		//active set created from another in the same species --> it's a dup
+		if (cost.nb_originators == 1){	
+			dups_per_species[x].insert(gnodes);
+			
+			if (cost.origin1.first != x){
+				cout<<"ERROR: active set has 1 origin, but from an active set in another species"<<endl;
+			}
+			build_reconciliation_recursively(cost.origin1.first, cost.origin1.second, dups_per_species);
+		}
+		//active set created from two other in lower species
+		else if (cost.nb_originators == 2){
+			if (cost.origin1.first == x || cost.origin2.first == x || cost.origin1.first == cost.origin2.first){
+				cout<<"ERROR: active set has 2 origins, but origins are equal to either themselves or ot x"<<endl;
+			}
+			build_reconciliation_recursively(cost.origin1.first, cost.origin1.second, dups_per_species);
+			build_reconciliation_recursively(cost.origin2.first, cost.origin2.second, dups_per_species);
+			
+		}
+		
+
+	}		
 
 
 

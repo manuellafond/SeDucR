@@ -202,9 +202,9 @@ int main(int argc, char** argv)
         reconciler.leafmap = leafmap;
 
 
-
-
-        reconciler.reconcile();
+        SegmentalReconciliation segrec = reconciler.reconcile();
+		
+		//cout << segrec.get_output_string();
 
         for (GNode* g : geneTrees)
             delete g;
