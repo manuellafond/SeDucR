@@ -64,10 +64,6 @@ struct BCmp {
 
 
 
-
-
-
-
 /**
 YBRec class
 Stores all info necessary to apply the YB dynamic programming algorithm, given
@@ -431,6 +427,27 @@ public:
         }
     }
 
+	//return true if all elements of V are descendant from elements of Vprime
+	bool is_below(bitmap V, bitmap Vprime) {
+		set<GNode*> Vset = bitmap_to_nodeset(V);
+		set<GNode*> Vpset = bitmap_to_nodeset(Vprime);
+
+		bool is_below = true;
+
+		for (auto n : Vset) {
+			GNode* cur = n;
+
+			while (Vpset.find(cur) == Vpset.end()) {
+				if (cur->is_root())
+					return false;
+				
+				cur = cur->get_parent();
+			}
+		}
+
+		return true;
+	}
+
     //Return true if (x,V) can be removed
     bool bound(bitmap V, SNode* x, bool allow_events_at_x) {
       // return false;
@@ -567,7 +584,8 @@ public:
         return false;
     }
 
-    SegmentalReconciliation reconcile() {
+
+    SegmentalReconciliation reconcile(int bound_option) {
 
 
         init_indices();
@@ -619,8 +637,8 @@ public:
                         int extra_losses = (2 * v_cross.numberOfOnes() - V_l.numberOfOnes() - V_r.numberOfOnes());
                         extra_losses -= nb_roots_vl_vr;
 
-                        set_cost(x, v_cross, leftcost.nb_dups + rightcost.nb_dups,
-                            leftcost.nb_losses + rightcost.nb_losses + extra_losses, 
+                        bool update = set_cost(x, v_cross, leftcost.nb_dups + rightcost.nb_dups,
+												leftcost.nb_losses + rightcost.nb_losses + extra_losses, 
                             
                             //passing debugging stuff if activated, horrible stuff
                             (DEBUG ? &leftcost.debug : nullptr), 
@@ -629,17 +647,18 @@ public:
                                 "(" + Util::ToString(leftcost.nb_losses) + " + " + Util::ToString(rightcost.nb_losses) + ")"
                                 : "")
                         );
+						
+						if (update)
+							set_cost_origins(x, v_cross, xl, V_l, xr, V_r);
                         
                         //int cost = get_cost(xl, V_l) + get_cost(xr, V_r) +
                         //    this->loss_cost * (2 * v_cross.numberOfOnes() - V_l.numberOfOnes() - V_r.numberOfOnes());
                         //add_cost(x, v_cross, cost);
             
                         //apply bounding here - YBC
-						//if (!bound(v_cross, x, true))}
+                        if (bound_option < 2 || !bound(v_cross, x, true)){
                           active_sets[x].insert(v_cross);
-						  set_cost_origins(x, v_cross, xl, V_l, xr, V_r);
-						  
-						//}
+						}
 
 						++output_counter;
                         if (output_counter % 10000 == 0) {
@@ -670,25 +689,40 @@ public:
                     bitmap Vprime = nodeset_to_bitmap(Vprime_set);
 
                     //apply bounding here - YBC
-                    YBCost& xV_cost = get_cost(x, V);
 
-					//remove previous set if new set is already better (or as good)
-					if (cost_exists(x, Vprime) && get_cost(x, Vprime).cost <= xV_cost.cost)
-						active_sets[x].erase(V);	//could we just continue to the next loop if we get here?
+					YBCost& xV_cost = get_cost(x, V);
+					int vprime_cost = INT_MAX;
 
-                    bool updated = set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
-					if (updated){
-						set_cost_origin(x, Vprime, x, V);
+					if (cost_exists(x, Vprime)){
+						YBCost& xVprime_cost = get_cost(x, Vprime);
+						vprime_cost = xVprime_cost.cost;
 					}
-                    //if (!bound(Vprime, x, true)) {
-                      active_sets[x].insert(Vprime);
-                      active_sets_queue.push_back(Vprime);
-                    //}
+						
+					//remove previous set if new set is already better (or as good) than previous set
+					if (vprime_cost <= xV_cost.cost)
+						active_sets[x].erase(V);
+					
+					//add dup unless new set already has a better cost than previous set + dup
+					if (xV_cost.cost + dup_cost < vprime_cost) {
+						bool updated = set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
+						if (updated){
+							set_cost_origin(x, Vprime, x, V);
+						}
+						
+						if (bound_option < 2 || !bound(Vprime, x, true)) {
+						  active_sets[x].insert(Vprime);
+						  active_sets_queue.push_back(Vprime);
+						}
+					}
+						
+					
+
 
                     bool is_U_forced = false;
                     //if someone is trying to go too far, we have to do the dup here
+				//also have to do it if it's the root of the species tree
                     for (GNode* g : U) {
-                        if ((float)get_species_distance(lcamap[g], x) == max_remap_dist)
+                        if (x->is_root() || (float)get_species_distance(lcamap[g], x) == max_remap_dist)
                             is_U_forced = true;
                     }
 
@@ -708,15 +742,30 @@ public:
             }
 
 		  
-		  //Bounding - YBC
-		  /*if (!x->is_root()) {
+		  //Remove active sets that are already worse than something above them
+		  //Also bounding - YBC
+		  if (!x->is_root()) {
 			  list< bitmap > active_sets_bound_queue(active_sets[x].begin(), active_sets[x].end());
 
 			  for (auto V : active_sets_bound_queue) {
-				if (bound(V, x, false))   //do not allow further events at x
-				  active_sets[x].erase(V);
+				  bool remove = false;
+
+				  for (auto Vprime : active_sets_bound_queue) {
+					  if (get_cost(x, Vprime).cost <= get_cost(x, V).cost && is_below(V, Vprime) && V != Vprime)
+					  {
+						  remove = true;
+						  break;
+					 }
+
+				  }
+
+				if (!remove && bound_option >= 1 && bound(V, x, false))   //do not allow further events at x
+					remove = true;
+
+				if (remove)
+					active_sets[x].erase(V);
 			  }
-		  }*/
+		  }
 
 
 
@@ -797,13 +846,23 @@ public:
 		
 		//sanity check, remove if slows down things
 		YBCost& best_cost = get_cost(min_species, all_groots);
+		bool err = false;
 		if (best_cost.nb_losses != segrec.get_nb_losses()){
 			cout<<"ERROR: DP cost differs from reconciliation cost"<<endl;
 			cout<<"ybrec.nb_losses="<<best_cost.nb_losses<<"   segrec.nb_losses="<<segrec.get_nb_losses()<<endl;
+			err = true;
 		}
 		if (best_cost.nb_dups != segrec.get_dup_height_sum()){
 			cout<<"ERROR: DP cost differs from reconciliation cost"<<endl;
 			cout<<"ybrec.nb_dups="<<best_cost.nb_dups<<"   segrec.nb_dups="<<segrec.get_dup_height_sum()<<endl;
+			err = true;
+		}
+		if (!segrec.is_time_consistent()){
+			err = true;
+		}
+		
+		if (!err){
+			cout<<"Reconciliation cost agrees with DP, reconciliation is time-consistent, good!"<<endl;
 		}
 		
 		return segrec;
@@ -823,13 +882,23 @@ public:
 		
 		YBCost& cost = get_cost(x, active_set);
 		
-		//active set created from another in the same species --> it's a dup
+		//active set created from another in the same species --> all the nodes in active_set but not in originator are dups
 		if (cost.nb_originators == 1){	
-			dups_per_species[x].insert(gnodes);
-			
+		
 			if (cost.origin1.first != x){
 				cout<<"ERROR: active set has 1 origin, but from an active set in another species"<<endl;
 			}
+		
+			set<GNode*> desc_gnodes = bitmap_to_nodeset(cost.origin1.second);
+		
+			set<GNode*> dup_nodes;
+			for (GNode* g : gnodes){
+				if (!desc_gnodes.count(g))
+					dup_nodes.insert(g);
+			}
+		
+			dups_per_species[x].insert(dup_nodes);
+			
 			build_reconciliation_recursively(cost.origin1.first, cost.origin1.second, dups_per_species);
 		}
 		//active set created from two other in lower species

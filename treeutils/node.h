@@ -323,7 +323,7 @@ public:
 
 
 	/**
-	If v is an ancestor or descendant of this, returns the distance between the this and v  (number of edges).
+	If v is an ancestor or descendant of this, returns the distance between this and v  (number of edges).
 	If incomparable, returns INT_MAX
 	**/
 	int get_distance_to(Node* v){
