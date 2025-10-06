@@ -53,7 +53,7 @@ struct BCmp {
                 if (itb != b.end())
                     return false;
                 else
-                    return true;    //both end
+                    return false;    //both end
             }
         }
     }
@@ -647,15 +647,15 @@ public:
 
 
 
-            list< bitmap > active_sets_queue(active_sets[x].begin(), active_sets[x].end());
+            priority_queue< bitmap, vector<bitmap>, BCmp > active_sets_queue(active_sets[x].begin(), active_sets[x].end());
 
             //set< set<GNode*> > active_sets_to_insert;
             //set< set<GNode*> > active_sets_to_delete;
             int nb_iter = 0;
 
             while (!active_sets_queue.empty()) {
-                bitmap V = active_sets_queue.front();
-                active_sets_queue.pop_front();
+                bitmap V = active_sets_queue.top();
+                active_sets_queue.pop();
 
                 set<GNode*> U = get_common_parents(bitmap_to_nodeset(V));
 
@@ -677,7 +677,7 @@ public:
 					set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
 					if (bound_option < 2 || !bound(Vprime, x, true)) {
 					  active_sets[x].insert(Vprime);
-					  active_sets_queue.push_back(Vprime);
+					  active_sets_queue.push(Vprime);
 					}
 				}
 
