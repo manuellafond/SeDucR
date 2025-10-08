@@ -405,7 +405,14 @@ public:
         return gset;
     }
 
+    int bitmap_size(bitmap& b) {
+	    int s = 0;
 
+	    for (int i : b)
+		    s++;
+
+	    return s;
+    }
 
 
     //preprocessing to assign a unique id to each gnode and snode.  This fills id_genes map.
@@ -741,6 +748,7 @@ public:
 
 		  
 		  //Remove active sets that are already worse than something above them
+		  //Currently quadratic but no better solution for now
 		  //Also bounding - YBC
 		  if (!x->is_root()) {
 			  list< bitmap > active_sets_bound_queue(active_sets[x].begin(), active_sets[x].end());
@@ -749,7 +757,9 @@ public:
 				  bool remove = false;
 
 				  for (auto Vprime : active_sets_bound_queue) {
-					  if (get_cost(x, Vprime).cost <= get_cost(x, V).cost && is_below(V, Vprime) && V != Vprime)
+					  //allow a slightly higher cost for Vprime corresponding to extra losses
+					  if (get_cost(x, Vprime).cost <= get_cost(x, V).cost + loss_cost*(bitmap_size(V)-bitmap_size(Vprime))
+							  && is_below(V, Vprime) && V != Vprime)
 					  {
 						  remove = true;
 						  break;
