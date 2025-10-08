@@ -41,20 +41,20 @@ struct BCmp {
             if (ita != a.end()) {
                 if (itb != a.end()) {
                     if (*ita < *itb)
-                        return true;
-                    else if (*itb < *ita)
                         return false;
+                    else if (*itb < *ita)
+                        return true;
                     else {
                         ++ita;
                         ++itb;
                     }
                 }
                 else
-                    return true;
+                    return false;
             }
             else {
                 if (itb != b.end())
-                    return true;
+                    return false;
                 else
                     return false;    //both end
             }
@@ -670,16 +670,15 @@ public:
             }
 
 
-
-            list< bitmap > active_sets_queue(active_sets[x].begin(), active_sets[x].end());
+		  priority_queue< bitmap, vector<bitmap>, BCmp > active_sets_queue(active_sets[x].begin(), active_sets[x].end());
 
             //set< set<GNode*> > active_sets_to_insert;
             //set< set<GNode*> > active_sets_to_delete;
             int nb_iter = 0;
 
             while (!active_sets_queue.empty()) {
-                bitmap V = active_sets_queue.front();
-                active_sets_queue.pop_front();
+                bitmap V = active_sets_queue.top();
+                active_sets_queue.pop();
 
                 set<GNode*> U = get_common_parents(bitmap_to_nodeset(V));
 
@@ -688,34 +687,33 @@ public:
                     set<GNode*> Vprime_set = get_cross_set(bitmap_to_nodeset(V), bitmap_to_nodeset(V));   //not sure that works, I think it does - so it probably doesn't work
                     bitmap Vprime = nodeset_to_bitmap(Vprime_set);
 
-                    //apply bounding here - YBC
 
-					YBCost& xV_cost = get_cost(x, V);
-					int vprime_cost = INT_MAX;
+				YBCost& xV_cost = get_cost(x, V);
+				int vprime_cost = INT_MAX;
 
-					if (cost_exists(x, Vprime)){
-						YBCost& xVprime_cost = get_cost(x, Vprime);
-						vprime_cost = xVprime_cost.cost;
-					}
-						
-					//remove previous set if new set is already better (or as good) than previous set
-					if (vprime_cost <= xV_cost.cost)
-						active_sets[x].erase(V);
+				if (cost_exists(x, Vprime)){
+					YBCost& xVprime_cost = get_cost(x, Vprime);
+					vprime_cost = xVprime_cost.cost;
+				}
 					
-					//add dup unless new set already has a better cost than previous set + dup
-					if (xV_cost.cost + dup_cost < vprime_cost) {
-						bool updated = set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
-						if (updated){
-							set_cost_origin(x, Vprime, x, V);
-						}
-						
-						if (bound_option < 2 || !bound(Vprime, x, true)) {
-						  active_sets[x].insert(Vprime);
-						  active_sets_queue.push_back(Vprime);
-						}
+				//remove previous set if new set is already better (or as good) than previous set
+				if (vprime_cost <= xV_cost.cost)
+					active_sets[x].erase(V);
+				
+				//add dup unless new set already has a better cost than previous set + dup
+				if (xV_cost.cost + dup_cost < vprime_cost) {
+					bool updated = set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
+					if (updated){
+						set_cost_origin(x, Vprime, x, V);
 					}
-						
 					
+					//apply bounding here - YBC
+					if (bound_option < 2 || !bound(Vprime, x, true)) {
+					  active_sets[x].insert(Vprime);
+					  active_sets_queue.push(Vprime);
+					}
+				}
+						
 
 
                     bool is_U_forced = false;
