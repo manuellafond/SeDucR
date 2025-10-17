@@ -22,24 +22,28 @@ unordered_map<Node*, Node*> GeneSpeciesTreeUtil::get_leaf_species_map(Node* gene
             throw "Gene label " + lbl + " malformed.";
         }
 
-        // if data is from simphy
-        if (!sz[species_index].empty() && g->is_leaf()) {
-            // Add single quotes at the beginning and end of sz[speciesIndex]
-            sz[species_index].insert(sz[species_index].begin(), std::string::value_type('\''));
-            sz[species_index] += std::string::value_type('\'');
-        }
+        
 
         Node* s = species_tree->get_leaf_by_label(sz[species_index]);
 
-        if (s)
-        {
+        if (s){
             mapping[g] = s;
         }
-        else
-        {
-            string msg = "Could not find species for gene " + lbl;
-            cout << msg << endl;
-            throw msg;
+        else{
+			// maybe we did not find it because simphy adds quotes randomly around labels, so try that
+			sz[species_index].insert(sz[species_index].begin(), std::string::value_type('\''));
+			sz[species_index] += std::string::value_type('\'');
+			
+			s = species_tree->get_leaf_by_label(sz[species_index]);
+
+			if (s){
+				mapping[g] = s;
+			}
+			else{			
+				string msg = "Could not find species for gene " + lbl;
+				cout << msg << endl;
+				throw msg;
+			}
         }
     }
     

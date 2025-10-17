@@ -27,6 +27,22 @@ public:
 	}
 	
 	
+	//TODO: this does not compute dups_per_species, so output will be incomplete
+	void apply_lca_mapping(){
+		for (int i = 0; i < gene_trees.size(); i++) {
+			GNode* genetree = gene_trees[i];
+
+			for (auto it = genetree->begin(); it != genetree->end(); ++it){
+				GNode* g = *it;
+			
+				if (!g->is_leaf()){
+					gsmap[g] = gsmap[g->get_child(0)]->get_lca_with(gsmap[g->get_child(1)]);
+				}
+			}
+		}
+	}
+	
+	
 	void build_from_segmental_dups(map<SNode*, set< set<GNode*> > >& _dups_per_species){
 		
 		this->dups_per_species = _dups_per_species;
