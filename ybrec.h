@@ -29,11 +29,19 @@ typedef ewah::EWAHBoolArray<uint32_t> bitmap;
 
 
 
-
+//must return true iff a < b (if equal, must return false)
 //a comparator function for bitmaps, so that we can store them in sets and maps
 struct BCmp {
     bool operator()(const bitmap& a, const bitmap& b) const {
-        auto ita = a.begin();
+        
+		if (a.numberOfOnes() > 0 && b.numberOfOnes() == 0)
+			return false;
+		if (a.numberOfOnes() == 0 && b.numberOfOnes() == 0)
+			return false;
+		if (a.numberOfOnes() == 0 && b.numberOfOnes() > 0)
+			return true;
+		
+		auto ita = a.begin();
         auto itb = b.begin();
 
 
@@ -665,6 +673,8 @@ public:
                         //apply bounding here - YBC
                         if (bound_option < 2 || !bound(v_cross, x, true)){
                           active_sets[x].insert(v_cross);
+						  if (x->label == "9")
+					cout<<"adding to 9"<<endl;
 						}
 
 						++output_counter;
@@ -822,7 +832,7 @@ public:
 				}
 				
 				std::cout<<"Best cost found."<<std::endl;
-				std::cout << "Species " << x->label << "  cost=" << cost.cost
+				std::cout << "Species " << x->label << " (isroot=" << x->is_root() <<")  cost=" << cost.cost
 					<< "  nbdups=" << cost.nb_dups
 					<< "  nblosses=" << cost.nb_losses << std::endl;
 

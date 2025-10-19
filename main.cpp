@@ -19,10 +19,10 @@ using namespace std;
 
 
 /**
-That function is defined at the end of the .cpp
-It generates a full binary species tree of height h = height, so, 2^h leaves (and an outgroup just because)
-Then for each species leaf x, it generates one gene tree x that has dups only in x.  It takes the species tree 
-and replaces leaf x with a subtree of height subheight leaves, all mapped to x.  
+That function generate_worst_case is defined at the end of the .cpp
+It generates a full binary species tree of height h = height, so 2^h leaves (and an outgroup just because)
+Then for each species leaf x, it generates one gene tree that has dups only in x.  It takes the species tree 
+and replaces leaf x with a subtree of height "subheight" leaves, all mapped to x.  
 If subheight = 0, you just get the species tree, if subheight = 1, you get one dup with two x children, etc.
 
 The sp tree is written in ../data/sp_[height]_[subheight].newick.  Gene trees are also written in that directory.
@@ -31,7 +31,7 @@ Output location is hardcoded for now.
 To use this:
 ./ybrec --mode "worstcase" --height 6 --subheight 1
 
-For curiosity, there's also a three leaves mode, where each gene tree has three leaves, two mapped to x, plus an outgroup.
+For curiosity, there's also a "three leaves" mode, where each gene tree has three leaves, two mapped to x, plus an outgroup.
 ./ybrec --mode "worstcase" --height 6 --subheight 1 --threeleaves true
 
 **/
