@@ -334,24 +334,31 @@ void generate_worst_case(int height, int subheight, bool three_leaves_mode){
 	
 	
 	int cpt = 1;
+	int cpt_internalnode = 1;
 	for (auto it = stree->begin(); it != stree->end(); ++it){
 		SNode* x = *it;
 		if (x->is_leaf()){
 			x->label = Util::ToString(cpt);
 			cpt++;
 		}
+		else{
+			x->label = "SI_" + Util::ToString(cpt_internalnode);
+			cpt_internalnode++;
+		}
 	}
 	
 	//gene trees 
 	//for each sp leaf x, create a gene tree of the form ((x, x), outgroup);
 	vector<GNode*> gtrees;
+	cpt_internalnode = 1;
 	for (auto it = stree->begin(); it != stree->end(); ++it){
 		SNode* x = *it;
 		if (x->is_leaf()){
 			
 			
 			if (three_leaves_mode){
-				string gs = "((" + x->label + ", " + x->label + ")," + outgroup_label + ")";
+				string gs = "((" + x->label + ", " + x->label + ")," + outgroup_label + ");";
+				cpt_internalnode += 2;
 				GNode* g = NewickLex::ParseNewickString(gs);
 				gtrees.push_back(g);
 			}
@@ -377,6 +384,7 @@ void generate_worst_case(int height, int subheight, bool three_leaves_mode){
 						
 						cpt++;
 					}
+					
 				}
 				gtrees.push_back(gnode);
 			}
@@ -392,10 +400,18 @@ void generate_worst_case(int height, int subheight, bool three_leaves_mode){
 					(three_leaves_mode ? "_threeleaves" : "") + ".newick", sstr);
 	delete stree;
 	
+	cpt_internalnode = 1;
 	string gstr = "";
-	for (GNode* g : gtrees){
-		gstr += NewickLex::ToNewickString(g) + "\n";
-		delete g;
+	for (GNode* groot : gtrees){	//i am groot
+		for (auto it = groot->begin(); it != groot->end(); ++it){
+			GNode* g = *it;
+			if (!g->is_leaf()){
+				g->label = "GI_" + Util::ToString(cpt_internalnode);
+				cpt_internalnode++;
+			}
+		}
+		gstr += NewickLex::ToNewickString(groot) + "\n";
+		delete groot;
 	}
 	Util::WriteFileContent("../data/gt" + Util::ToString(height) + "_" + Util::ToString(subheight) + 
 					(three_leaves_mode ? "_threeleaves" : "") + ".newick", gstr);
