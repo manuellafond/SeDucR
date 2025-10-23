@@ -476,32 +476,7 @@ public:
       YBCost lower_bound = get_cost(x, V);	//note: this copies the current cost object, so modifying lower_bound is safe
 
       //Calculate lower bound for x, V
-      //Bound duplications
-      int dups = 0;
-      for (GNode* g_root : genetrees)
-      for (auto it = g_root->begin(); it != g_root->end(); ++it) {
-        Node *g = *it;
-
-        //g is in V or a leaf not descended from V
-        if (V_set.find(g) != V_set.end() || (g->is_leaf() && !g->is_descendant_to(V_set)) ) {
-          Node* cur = g;
-          int dupheight = 0;
-
-          while (!cur->is_root()) {
-            if (lcamap[cur->get_parent()] == lcamap[cur] || lcamap[cur->get_parent()] == lcamap[cur->get_sibling()])
-              dupheight++;
-
-            cur = cur->get_parent();
-          }
-
-          dups = max(dups, dupheight);
-        }
-      }
-      lower_bound.nb_dups += dups;
-      lower_bound.cost += dups * dup_cost;
-
-      //Bound losses
-      //Set feasible reconciliation
+      //Set feasible reconciliation (LCA completion)
       map< GNode*, SNode* > newrec;
       for (GNode* g_root : genetrees)
       for (auto it = g_root->begin(); it != g_root->end(); ++it) {
@@ -524,6 +499,34 @@ public:
         for (GNode* g : V_set)
            newrec[g] = x;
 
+
+      //Bound duplications
+      int dups = 0;
+      for (GNode* g_root : genetrees)
+      for (auto it = g_root->begin(); it != g_root->end(); ++it) {
+        Node *g = *it;
+
+        //g is in V or a leaf not descended from V
+        if (V_set.find(g) != V_set.end() || (g->is_leaf() && !g->is_descendant_to(V_set)) ) {
+          Node* cur = g;
+          int dupheight = 0;
+
+          while (!cur->is_root()) {
+			//if cur->get_parent is a duplication in the LCA completion
+			if ( newrec[cur->get_parent()] != lcamap[cur->get_parent()] || (newrec[cur->get_parent()] == newrec[cur] || newrec[cur->get_parent()] == newrec[cur->get_sibling()]) )
+				dupheight++;
+
+			cur = cur->get_parent();
+          }
+
+          dups = max(dups, dupheight);
+        }
+      }
+      lower_bound.nb_dups += dups;
+      lower_bound.cost += dups * dup_cost;
+
+
+      //Bound losses
       //calculate losses, update lower bound
       int losses = 0;
       for (GNode* g_root : genetrees)
@@ -790,12 +793,13 @@ public:
             cout << "Done with species " << x->id << " " << (x->is_leaf() ? "(leaf " + x->label + ")" : "")
                 << " A_x size = " << active_sets[x].size() << endl;
 
+		  //test output for active sets
 		  /*for (auto s : active_sets[x]) {
 				set<GNode*> V = bitmap_to_nodeset(s);
 				for (auto n : V)
 					cout << n->label << ",";
 				cout << endl;
-				cout << get_cost(x,s).cost << endl;
+				cout << "cost " << get_cost(x,s).cost << endl;
 		  }*/
         }
 
