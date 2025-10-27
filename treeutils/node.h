@@ -308,6 +308,19 @@ public:
     }
 
 
+    std::vector<Node*> get_preordered_nodes() {
+        std::vector<Node*> vec;
+        get_preordered_nodes_helper(this, vec);
+        return vec;
+    }
+
+    void get_preordered_nodes_helper(Node* cur, std::vector<Node*>& to_fill) {
+        to_fill.push_back(cur);
+        for (Node* v : cur->children)
+            get_preordered_nodes_helper(v, to_fill);
+    }
+
+
     Node* get_leaf_by_label(std::string lbl) {
         
         for (auto it = this->begin(); it != this->end(); ++it) {

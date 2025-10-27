@@ -74,13 +74,14 @@ int main(int argc, char** argv)
     else
     {
         //ML's ad-hoc testing stuff, please ignore.
-        /*
-        string file_prefix = "C:\\cygwin64\\home\\Manuel\\git\\SegmentalReconciler-Greedy-Version\\supplementaries\\s25";
-        args["gf"] = file_prefix + "\\sim_9\\all_genetrees_edited.txt";
-        args["sf"] = file_prefix + "\\sim_9\\s_tree.newick";
-        args["d"] = "5";
+        
+        /*string file_prefix = "C:\\cygwin64\\home\\Manuel\\git\\ybrec";
+        args["gf"] = file_prefix + "\\data\\gt6_1.newick";
+        args["sf"] = file_prefix + "\\data\\sp6_1.newick";
+        args["d"] = "15";
         args["l"] = "1";
-        */
+		args["o"] = file_prefix + "\\data\\out.txt";*/
+        
         
         
 

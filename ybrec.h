@@ -11,11 +11,15 @@
 #include "treeutils/node.h"
 #include "treeutils/newicklex.h"
 
+//NOTE: GNode, SNode and GSMap are defined in genespeciestreeutil
+#include "genespeciestreeutil.h"
+
+#include "activesettrie.h"
+
 #include "segmentalreconciliation.h"
 
 
-//NOTE: GNode, SNode and GSMap are defined in genespeciestreeutil
-#include "genespeciestreeutil.h"
+
 
 //library for compressed set representations
 #include "treeutils/ewah/ewah.h"
@@ -25,50 +29,6 @@ typedef ewah::EWAHBoolArray<uint32_t> bitmap;
 
 
 
-
-
-
-
-//must return true iff a < b (if equal, must return false)
-//a comparator function for bitmaps, so that we can store them in sets and maps
-struct BCmp {
-    bool operator()(const bitmap& a, const bitmap& b) const {
-        
-		if (a.numberOfOnes() > 0 && b.numberOfOnes() == 0)
-			return false;
-		if (a.numberOfOnes() == 0 && b.numberOfOnes() == 0)
-			return false;
-		if (a.numberOfOnes() == 0 && b.numberOfOnes() > 0)
-			return true;
-		
-		auto ita = a.begin();
-        auto itb = b.begin();
-
-
-        while (true) {  //never do a while (true)
-            if (ita != a.end()) {
-                if (itb != a.end()) {
-                    if (*ita < *itb)
-                        return false;
-                    else if (*itb < *ita)
-                        return true;
-                    else {
-                        ++ita;
-                        ++itb;
-                    }
-                }
-                else
-                    return false;
-            }
-            else {
-                if (itb != b.end())
-                    return false;
-                else
-                    return false;    //both end
-            }
-        }
-    }
-};
 
 
 
@@ -82,24 +42,7 @@ todo: for now everything is just public, cleanup later
 class YBRec {
 public:
 
-    /*
-    Structure to hold cost information in the c table.  So, c(x, V) stores a YBCost 
-    object, which remembers the number of losses and segmental dups (and total cost).
-    We can also give it debug messages, useful for, well, debugging.
-    */
-    struct YBCost {
-        int nb_losses;
-        int nb_dups;
-        int cost;
-		
-		//for backtracking, remember originator(s) of current cost (there can be 1 or 2, or 0 for leaves)
-		size_t nb_originators = 0;
-		pair<SNode*, bitmap> origin1;
-		pair<SNode*, bitmap> origin2;
-		
-        vector<string> debug;
-		
-    };
+    
 
 
     SNode* speciestree;
@@ -117,23 +60,18 @@ public:
     //the A_x sets from the YB algorithm.  
     //key = species
     //value = the active sets for that species (each set is represented as a bitmap in an attempt to save memory)
-    map< SNode*, set<bitmap, BCmp> > active_sets;
+    map< SNode*, Trie > active_sets;
 
     GSMap leafmap;
     GSMap lcamap;
 
-    map< SNode*, set<GNode*> > rev_leafmap;     //rev_leafmap[x] = set of gene tree leaves mapped to s
+    map< SNode*, set_gnodes > rev_leafmap;     //rev_leafmap[x] = set of gene tree leaves mapped to s
     map<int, GNode*> id_genes;                  //id_genes[i] = the gene tree node with id = i
 									   
-    map< SNode*, set<GNode*> > rev_lcamap;     //same as rev_leafmap, but for LCA
+    map< SNode*, set_gnodes > rev_lcamap;     //same as rev_leafmap, but for LCA
     map< SNode*, int > lca_dupheight;
 
-
-    //the c(A, x) values from the YB algorithm.  Indexed by species, then by the desired set
-    //costs_table[x][my_set] = the cost.  Previous version stored only cost, now we have whole struct
-    //map< SNode*, map<bitmap, int, BCmp > > costs_table;    //could be slow to hash keys
-    map< SNode*, map<bitmap, YBCost, BCmp > > costs_table;    //could be slow to hash keys
-
+	map< int, GNode* > gnode_by_id;
 
     bool DEBUG;
 
@@ -149,14 +87,14 @@ public:
 	
 	
 	//Assumes that cost_exists(x, V) is true
-	void set_cost_origin(SNode* x, bitmap& V, SNode* orig_x, bitmap& orig_V){
+	void set_cost_origin(SNode* x, set_gnodes& V, SNode* orig_x, set_gnodes& orig_V){
 		YBCost& ybcost = get_cost(x, V);	//careful not to copy the YBCost object
 		ybcost.nb_originators = 1;
 		ybcost.origin1 = make_pair(orig_x, orig_V);
 	}
 	
 	//Assumes that cost_exists(x, V) is true	
-	void set_cost_origins(SNode* x, bitmap& V, SNode* orig_x1, bitmap& orig_V1, SNode* orig_x2, bitmap& orig_V2){
+	void set_cost_origins(SNode* x, set_gnodes& V, SNode* orig_x1, set_gnodes& orig_V1, SNode* orig_x2, set_gnodes& orig_V2){
 		YBCost& ybcost = get_cost(x, V);	//careful not to copy the YBCost object
 		ybcost.nb_originators = 2;
 		ybcost.origin1 = make_pair(orig_x1, orig_V1);
@@ -167,9 +105,7 @@ public:
     //sets c(x, V).  Updates only if cost is smaller than previous entry, or if such an entry does not exist.
     // We must specify the number of dups and losses.  
 	// return true if costs table was updated with new value, false otherwise
-	//For debugging, we can pass debug messages to combine.  If not debugging, just ignore.
-    bool set_cost(SNode* x, const bitmap& gnodes, int nb_dups, int nb_losses, 
-                        vector<string>* dbg1 = nullptr, vector<string>* dbg2 = nullptr, string dbg = "") {
+    bool set_cost(SNode* x, set_gnodes& gnodes, int nb_dups, int nb_losses) {
 
         bool update_cost = false;
         int newcost = this->dup_cost * nb_dups + this->loss_cost * nb_losses;
@@ -183,19 +119,13 @@ public:
             update_cost = true;
 
         if (update_cost) {
+			
             YBCost new_ybcost;
             new_ybcost.nb_dups = nb_dups;
             new_ybcost.nb_losses = nb_losses;
             new_ybcost.cost = newcost;
             
-            if (dbg1)
-                new_ybcost.debug.insert(new_ybcost.debug.end(), dbg1->begin(), dbg1->end());
-            if (dbg2)
-                new_ybcost.debug.insert(new_ybcost.debug.end(), dbg2->begin(), dbg2->end());
-            if (dbg != "")
-                new_ybcost.debug.push_back(dbg);
-
-            costs_table[x][gnodes] = new_ybcost;
+            active_sets[x][gnodes] = new_ybcost;
         }
 		
 		return update_cost;
@@ -215,15 +145,15 @@ public:
 
 
 	//returns true iff cost has been set for species/active_set combo
-	bool cost_exists(SNode* x, const bitmap& gnodes){
-		return costs_table.count(x) && costs_table[x].count(gnodes);
+	bool cost_exists(SNode* x, set_gnodes& gnodes){
+		return active_sets.count(x) && active_sets[x].search(gnodes);
 	}
 
 
     //returns a reference to the cost object associated with species/active_set combo.
 	//ASSUMES THAT cost_exists(x, gnodes) is true, does not do that verification!
-    YBCost& get_cost(SNode* x, const bitmap& gnodes) {
-         return costs_table[x][gnodes];
+    YBCost& get_cost(SNode* x, const set_gnodes& gnodes) {
+         return active_sets[x][gnodes];
     }
 
 
@@ -287,8 +217,8 @@ public:
 
 
     //returns V_l cross V_r
-    set<GNode*> get_cross_set(const set<GNode*>& V_l, const set<GNode*>& V_r) {
-        set<GNode*> ret;
+    set_gnodes get_cross_set(const set_gnodes& V_l, const set_gnodes& V_r) {
+        set_gnodes ret;
 
         //pass 1: for every gl in V_l, check if gl's sibling is in V_r.  If so, they get "fused" 
         //and the common parent is inserted.  If not, gl is kept.
@@ -317,8 +247,8 @@ public:
 
 
     //returns the set of nodes whose children are both in V
-    set<GNode*> get_common_parents(const set<GNode*>& V) {
-        set<GNode*> ret;
+    set_gnodes get_common_parents(const set_gnodes& V) {
+        set_gnodes ret;
 
         for (GNode* g1 : V) {
             GNode* g2 = g1->get_sibling();
@@ -384,48 +314,10 @@ public:
 
 
 
-    //converts a set of GNodes to a bitmap, based on the id of GNodes.
-    bitmap nodeset_to_bitmap(const set<GNode*>& gset) {
-        bitmap b;
-
-        set<int> ids;
-        //NOTE: bitmaps need set to be called in increasing order.  This works ONLY because sets iterate in sorted order.
-        for (auto it = gset.begin(); it != gset.end(); ++it) {
-            ids.insert((*it)->id);
-        }
-        for (auto id : ids) {
-            b.set(id);
-        }
-
-        return b;
-    }
-
-
-
-    //converts bitmap to set of gnodes, based on id
-    set<GNode*> bitmap_to_nodeset(bitmap& b) {
-        set<GNode*> gset;
-
-        for (int i : b) {
-            gset.insert(id_genes[i]);
-        }
-
-        return gset;
-    }
-
-    int bitmap_size(bitmap& b) {
-	    int s = 0;
-
-	    for (int i : b)
-		    s++;
-
-	    return s;
-    }
-
 
     //preprocessing to assign a unique id to each gnode and snode.  This fills id_genes map.
     void init_indices() {
-        auto snodes = speciestree->get_postordered_nodes();
+        auto snodes = speciestree->get_preordered_nodes();
         for (int i = 0; i < snodes.size(); ++i) {
             snodes[i]->id = i;
         }
@@ -433,7 +325,7 @@ public:
 
         int cpt = 0;
         for (GNode* groot : genetrees) {
-            auto gnodes = groot->get_postordered_nodes();
+            auto gnodes = groot->get_preordered_nodes();
             for (GNode* g : gnodes) {
                 g->id = cpt;
                 id_genes[cpt] = g;
@@ -442,17 +334,32 @@ public:
         }
     }
 
-	//return true if all elements of V are descendant from elements of Vprime
-	bool is_below(bitmap V, bitmap Vprime) {
-		set<GNode*> Vset = bitmap_to_nodeset(V);
-		set<GNode*> Vpset = bitmap_to_nodeset(Vprime);
 
+	/**
+	 Returns true if this is descended from V - cannot be IN V
+	 **/
+    bool is_descendant_to(GNode* g, set_gnodes V) {
+	    Node* cur = g;
+
+	    while (!cur->is_root()) {
+		    cur = cur->get_parent();
+
+		    if (V.find(cur) != V.end())
+			    return true;
+	    }
+
+	    return false;
+    } 
+
+	//return true if all elements of V are descendant from elements of Vprime
+	bool is_below(set_gnodes& V, set_gnodes& Vprime) {
+		
 		bool is_below = true;
 
-		for (auto n : Vset) {
+		for (auto n : V) {
 			GNode* cur = n;
 
-			while (Vpset.find(cur) == Vpset.end()) {
+			while (Vprime.find(cur) == Vprime.end()) {
 				if (cur->is_root())
 					return false;
 				
@@ -464,11 +371,11 @@ public:
 	}
 
     //Return true if (x,V) can be removed
-    bool bound(bitmap V, SNode* x, bool allow_events_at_x) {
+    bool bound(set_gnodes& V, SNode* x, bool allow_events_at_x) {
       // return false;
 
       vector<SNode*> species_nodes = speciestree->get_postordered_nodes();
-      set<GNode*> V_set = bitmap_to_nodeset(V);
+      set_gnodes V_set = V;	//todo trie:  update this
 	  
 	  if (!cost_exists(x, V))
 		  throw "Trying to find a lower bound for a non-existing active set";
@@ -507,7 +414,7 @@ public:
         Node *g = *it;
 
         //g is in V or a leaf not descended from V
-        if (V_set.find(g) != V_set.end() || (g->is_leaf() && !g->is_descendant_to(V_set)) ) {
+        if (V_set.find(g) != V_set.end() || (g->is_leaf() && !is_descendant_to(g, V_set)) ) {
           Node* cur = g;
           int dupheight = 0;
 
@@ -533,7 +440,7 @@ public:
       for (auto it = g_root->begin(); it != g_root->end(); ++it) {
         Node *g = *it;
 
-        if (!g->is_root() && !g->is_descendant_to(V_set)) {
+        if (!g->is_root() && !is_descendant_to(g, V_set)) {
 
           int l = get_species_distance(newrec[g], newrec[g->get_parent()]);
 
@@ -555,7 +462,7 @@ public:
       for (auto it = g_root->begin(); it != g_root->end(); ++it) {
         Node *g = *it;
 
-        if (!g->is_descendant_to(V_set)) {
+        if (!is_descendant_to(g, V_set)) {
           int height = 0;
 
           //corner case where a duplication is counted as a speciation mistakenly
@@ -617,12 +524,7 @@ public:
         for (SNode* x : species_nodes) {
 
             if (x->is_leaf()) {
-
-                bitmap bnodes = nodeset_to_bitmap(rev_leafmap[x]);
-
-                set_cost(x, bnodes, 0, 0);
-
-                active_sets[x].insert(bnodes);
+                set_cost(x, rev_leafmap[x], 0, 0);
             }
             else {
                 SNode* xl = x->get_child(0);
@@ -630,19 +532,22 @@ public:
 
 				size_t output_counter = 0;
                 //build all the possible active sets from those of x's children
-                for (bitmap V_l : active_sets[xl]) {
-                    for (bitmap V_r : active_sets[xr]) {
-                        set<GNode*> v_cross_set = get_cross_set(bitmap_to_nodeset(V_l), bitmap_to_nodeset(V_r));
-                        
-                        bitmap v_cross = nodeset_to_bitmap(v_cross_set);
+                for (auto it = active_sets[xl].begin(); it != active_sets[xl].end(); ++it){
+					for (auto it2 = active_sets[xr].begin(); it2 != active_sets[xr].end(); ++it2){
+				//for (auto& V_l : : active_sets[xl]) {
+                //    for (auto& V_r : active_sets[xr]) {
+						set_gnodes& V_l = *it;
+						set_gnodes& V_r = *it2;
+					
+                        set_gnodes v_cross = get_cross_set(V_l, V_r);
                         
                         int nb_roots_vl_vr = 0;
-                        for (int i : V_l) {
-                            if (this->id_genes[i]->is_root())
+                        for (GNode* tempnode : V_l) {
+                            if (tempnode->is_root())
                                 nb_roots_vl_vr++;
                         }
-                        for (int i : V_r) {
-                            if (this->id_genes[i]->is_root())
+                        for (GNode* tempnode : V_r) {
+                            if (tempnode->is_root())
                                 nb_roots_vl_vr++;
                         }
 
@@ -652,32 +557,22 @@ public:
                         YBCost& leftcost = get_cost(xl, V_l);
                         YBCost& rightcost = get_cost(xr, V_r);
                         
-                        int extra_losses = (2 * v_cross.numberOfOnes() - V_l.numberOfOnes() - V_r.numberOfOnes());
+                        int extra_losses = (2 * v_cross.size() - V_l.size() - V_r.size());
                         extra_losses -= nb_roots_vl_vr;
-
+						
+						
                         bool update = set_cost(x, v_cross, leftcost.nb_dups + rightcost.nb_dups,
-												leftcost.nb_losses + rightcost.nb_losses + extra_losses, 
-                            
-                            //passing debugging stuff if activated, horrible stuff
-                            (DEBUG ? &leftcost.debug : nullptr), 
-                            (DEBUG ? &rightcost.debug : nullptr),
-                            (DEBUG ? Util::ToString(extra_losses) + " losses in " + Util::ToString(x->id) + 
-                                "(" + Util::ToString(leftcost.nb_losses) + " + " + Util::ToString(rightcost.nb_losses) + ")"
-                                : "")
-                        );
+												leftcost.nb_losses + rightcost.nb_losses + extra_losses);
+                        
 						
 						if (update)
 							set_cost_origins(x, v_cross, xl, V_l, xr, V_r);
                         
-                        //int cost = get_cost(xl, V_l) + get_cost(xr, V_r) +
-                        //    this->loss_cost * (2 * v_cross.numberOfOnes() - V_l.numberOfOnes() - V_r.numberOfOnes());
-                        //add_cost(x, v_cross, cost);
             
-                        //apply bounding here - YBC
-                        if (bound_option < 2 || !bound(v_cross, x, true)){
-                          active_sets[x].insert(v_cross);
-						  if (x->label == "9")
-					cout<<"adding to 9"<<endl;
+                        //apply bounding here - YBC 
+						//if bound is bad, active set is erased
+                        if ( ! (bound_option < 2 || !bound(v_cross, x, true))){
+                          active_sets[x].erase(v_cross);
 						}
 
 						++output_counter;
@@ -690,136 +585,160 @@ public:
             }
 
 
-		  priority_queue< bitmap, vector<bitmap>, BCmp > active_sets_queue(active_sets[x].begin(), active_sets[x].end());
+		    //priority_queue< set_gnodes, vector<set_gnodes>, GNodeCmp > active_sets_queue(active_sets[x].begin(), active_sets[x].end());
+			list<set_gnodes> active_sets_queue;
+			for (auto it = active_sets[x].begin(); it != active_sets[x].end(); ++it){
+				active_sets_queue.push_back(*it);
+			}
 
             //set< set<GNode*> > active_sets_to_insert;
             //set< set<GNode*> > active_sets_to_delete;
             int nb_iter = 0;
 
             while (!active_sets_queue.empty()) {
-                bitmap V = active_sets_queue.top();
-                active_sets_queue.pop();
+                //set_gnodes V = active_sets_queue.top();
+                //active_sets_queue.pop();
+				set_gnodes V = active_sets_queue.front();
+				active_sets_queue.pop_front();
+				
+				//V was erased, so point in checking it again
+				if (!active_sets[x].search(V)){
+					continue;
+				}
 
-                set<GNode*> U = get_common_parents(bitmap_to_nodeset(V));
+                set_gnodes U = get_common_parents(V);
 
                 if (!U.empty()) {  //if there are actually dups that can be applied
 
-                    set<GNode*> Vprime_set = get_cross_set(bitmap_to_nodeset(V), bitmap_to_nodeset(V));   //not sure that works, I think it does - so it probably doesn't work
-                    bitmap Vprime = nodeset_to_bitmap(Vprime_set);
-
-
-				YBCost& xV_cost = get_cost(x, V);
-				int vprime_cost = INT_MAX;
-
-				if (cost_exists(x, Vprime)){
-					YBCost& xVprime_cost = get_cost(x, Vprime);
-					vprime_cost = xVprime_cost.cost;
-				}
-					
-				//remove previous set if new set is already better (or as good) than previous set
-				if (vprime_cost <= xV_cost.cost)
-					active_sets[x].erase(V);
-				
-				//add dup unless new set already has a better cost than previous set + dup
-				if (xV_cost.cost + dup_cost < vprime_cost) {
-					bool updated = set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
-					if (updated){
-						set_cost_origin(x, Vprime, x, V);
+                    set_gnodes Vprime = get_cross_set(V, V);   //not sure that works, I think it does - so it probably doesn't work
+                    
+					if (!cost_exists(x, V)){
+						cout<<"ERROR, cost for "<<x->label<<" does not exist"<<endl;
+						continue;
 					}
-					
-					//apply bounding here - YBC
-					if (bound_option < 2 || !bound(Vprime, x, true)) {
-					  active_sets[x].insert(Vprime);
-					  active_sets_queue.push(Vprime);
+					YBCost& xV_cost = get_cost(x, V);
+					int vprime_cost = INT_MAX;
+
+					if (cost_exists(x, Vprime)){
+						YBCost& xVprime_cost = get_cost(x, Vprime);
+						vprime_cost = xVprime_cost.cost;
 					}
-				}
 						
+					//remove previous set if new set is already better (or as good) than previous set
+					if (vprime_cost <= xV_cost.cost)
+						active_sets[x].erase(V);
+					else{
+						//add dup unless new set already has a better cost than previous set + dup
+						if (xV_cost.cost + dup_cost < vprime_cost) {
+							bool updated = set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
+							if (updated){
+								set_cost_origin(x, Vprime, x, V);
+							}
+							
+							//apply bounding here - YBC
+							//if cost is good, add to the queue, otherwise remove it
+							if (bound_option < 2 || !bound(Vprime, x, true)) {
+								active_sets_queue.push_back(Vprime);
+							}
+							else{
+								active_sets[x].erase(Vprime);
+							}
+						}
+					}
+							
 
 
-                    bool is_U_forced = false;
-                    //if someone is trying to go too far, we have to do the dup here
-				//also have to do it if it's the root of the species tree
-                    for (GNode* g : U) {
-                        if (x->is_root() || (float)get_species_distance(lcamap[g], x) == max_remap_dist)
-                            is_U_forced = true;
-                    }
+					bool is_U_forced = false;
+					//if someone is trying to go too far, we have to do the dup here
+					//also have to do it if it's the root of the species tree
+					for (GNode* g : U) {
+						if (x->is_root() || (float)get_species_distance(lcamap[g], x) == max_remap_dist)
+							is_U_forced = true;
+					}
 
-                    if (U.size() >= dup_cost / loss_cost)   //TODO: I'm assuming this ratio is an integer
-                        is_U_forced = true;
-
-
-                    if (is_U_forced)
-                        active_sets[x].erase(V);
+					if (U.size() >= dup_cost / loss_cost)   //TODO: I'm assuming this ratio is an integer
+						is_U_forced = true;
 
 
-                    nb_iter++;
-                    if (nb_iter % 10000 == 0) {
-                        cout << "nb_iter = " << nb_iter << "  Ax.size = " << active_sets[x].size() << "   queue size = " << active_sets_queue.size() << endl;
-                    }
+					if (is_U_forced)
+						active_sets[x].erase(V);
+
+
+					nb_iter++;
+					if (nb_iter % 10000 == 0) {
+						cout << "nb_iter = " << nb_iter << "  Ax.size = " << active_sets[x].size() << "   queue size = " << active_sets_queue.size() << endl;
+					}
                 }
             }
 
 		  
-		  //Remove active sets that are already worse than something above them
-		  //Currently quadratic but no better solution for now
-		  //Also bounding - YBC
-		  if (!x->is_root()) {
-			  list< bitmap > active_sets_bound_queue(active_sets[x].begin(), active_sets[x].end());
+			//Remove active sets that are already worse than something above them
+			//Currently quadratic but no better solution for now
+			//Also bounding - YBC
+            set<set_gnodes> marked_for_deletion;
+			if (!x->is_root()) {
+                auto it = active_sets[x].begin();
+                while (it != active_sets[x].end()) {
+                    set_gnodes& V = *it;
 
-			  for (auto V : active_sets_bound_queue) {
-				  bool remove = false;
+                    
+                    
+                    bool remove = false;
+                    if (active_sets[x].has_successor_with_lower_cost(V))
+                        remove = true;
 
-				  for (auto Vprime : active_sets_bound_queue) {
-					  //allow a slightly higher cost for Vprime corresponding to extra losses
-					  if (get_cost(x, Vprime).cost <= get_cost(x, V).cost + loss_cost*(bitmap_size(V)-bitmap_size(Vprime))
-							  && is_below(V, Vprime) && V != Vprime)
-					  {
-						  remove = true;
-						  break;
-					 }
+                    
+                    if (!remove && bound_option >= 1 && bound(V, x, false))
+                        remove = true;
 
-				  }
+                    //if (remove)
+                    //    marked_for_deletion.insert(V);
+                    //++it;
 
-				if (!remove && bound_option >= 1 && bound(V, x, false))   //do not allow further events at x
-					remove = true;
+                    if (remove)
+                        it = active_sets[x].erase(it);
+                    else
+                        ++it;
+                    
+                }
 
-				if (remove)
-					active_sets[x].erase(V);
-			  }
-		  }
+                //for (auto& V : marked_for_deletion) {
+                //    active_sets[x].erase(V);
+                //}
+           
+
+				/*for (auto V : active_sets_bound_queue) {
+					bool remove = false;
+
+					for (auto Vprime : active_sets_bound_queue) {
+						//allow a slightly higher cost for Vprime corresponding to extra losses
+						if (get_cost(x, Vprime).cost <= get_cost(x, V).cost + loss_cost*(bitmap_size(V)-bitmap_size(Vprime))
+							  && is_below(V, Vprime) && V != Vprime){
+							remove = true;
+							break;
+						}
+
+					}
+
+					if (!remove && bound_option >= 1 && bound(V, x, false))   //do not allow further events at x
+						remove = true;
+
+					if (remove)
+						active_sets[x].erase(V);
+				}*/
+			}
 
 
 
             cout << "Done with species " << x->id << " " << (x->is_leaf() ? "(leaf " + x->label + ")" : "")
                 << " A_x size = " << active_sets[x].size() << endl;
+		}
 
-		  //test output for active sets
-		  /*for (auto s : active_sets[x]) {
-				set<GNode*> V = bitmap_to_nodeset(s);
-				for (auto n : V)
-					cout << n->label << ",";
-				cout << endl;
-				cout << "cost " << get_cost(x,s).cost << endl;
-		  }*/
-        }
-
-
-
-
-
-
-
-
-        //std::cout << std::endl << "*** Outputting all c(x, V) entries for V = {all roots of G} ***" << std::endl;
-
-		
-
-
-        std::set<GNode*> all_groots_set;
+        set_gnodes all_groots;
         for (GNode* gtree : this->genetrees) {
-            all_groots_set.insert(gtree);
+            all_groots.insert(gtree);
         }
-        bitmap all_groots = nodeset_to_bitmap(all_groots_set);
+        
         
 		GNode* min_species = nullptr;
 		int mincost = INT_MAX;
@@ -840,12 +759,6 @@ public:
 					<< "  nbdups=" << cost.nb_dups
 					<< "  nblosses=" << cost.nb_losses << std::endl;
 
-				if (DEBUG) {
-					
-					for (string s : cost.debug) {
-						std::cout << s << std::endl;
-					}
-				}
 				
 			}
         }
@@ -862,12 +775,20 @@ public:
 		}
 		
 		
-		map<SNode*, set< set<GNode*> > > dups_per_species;
+		map<SNode*, set< set_gnodes > > dups_per_species;
 		build_reconciliation_recursively(min_species, all_groots, dups_per_species);
 		
 		
 		segrec.init_with_gsmap(speciestree, genetrees, lcamap);
-		segrec.build_from_segmental_dups(dups_per_species);
+		
+		map<SNode*, set< set<GNode* > > > converted_dups_per_species;
+		for (auto key : dups_per_species){
+			for (auto& the_gset : key.second){
+				converted_dups_per_species[key.first].insert( set<GNode*>( the_gset.begin(), the_gset.end() ) );
+			}
+		}
+		
+		segrec.build_from_segmental_dups(converted_dups_per_species);
 		
 		//sanity check, remove if slows down things
 		YBCost& best_cost = get_cost(min_species, all_groots);
@@ -901,11 +822,10 @@ public:
     
 	
 	
-	void build_reconciliation_recursively(SNode* x, bitmap& active_set, map<SNode*, set< set<GNode*> > >& dups_per_species){
+	void build_reconciliation_recursively(SNode* x, set_gnodes& gnodes, map<SNode*, set< set_gnodes > >& dups_per_species){
 		
-		set<GNode*> gnodes = bitmap_to_nodeset(active_set);
 		
-		YBCost& cost = get_cost(x, active_set);
+		YBCost& cost = get_cost(x, gnodes);
 		
 		//active set created from another in the same species --> all the nodes in active_set but not in originator are dups
 		if (cost.nb_originators == 1){	
@@ -914,9 +834,9 @@ public:
 				cout<<"ERROR: active set has 1 origin, but from an active set in another species"<<endl;
 			}
 		
-			set<GNode*> desc_gnodes = bitmap_to_nodeset(cost.origin1.second);
+			set_gnodes desc_gnodes = cost.origin1.second;
 		
-			set<GNode*> dup_nodes;
+			set_gnodes dup_nodes;
 			for (GNode* g : gnodes){
 				if (!desc_gnodes.count(g))
 					dup_nodes.insert(g);
@@ -943,265 +863,6 @@ public:
 
 };
 
-
-
-
-
-
-//This is an old attempt in which active sets were stored as "set" objects.  This also used an old tree library.
-//That took too much memory, but it's there to preserve the history.
-/*class YBRec {
-public:
-
-    Node* speciestree;
-    vector<Node*> genetrees;
-
-    int loss_cost;
-    int dup_cost;
-
-    map< SNode*, set<set<GNode*>> > active_sets;
-
-    GSMap leafmap;
-    GSMap lcamap;
-    map< SNode*, set<GNode*> > rev_leafmap;
-
-
-    map< pair<SNode*, set<GNode*>>, int > costs_table;    //could be slow to hash keys
-
-
-
-    void add_cost(SNode* x, set<GNode*>& gnodes, int cost) {
-        auto key = make_pair(x, gnodes);
-
-        int best_cost = 9999999;
-        if (costs_table.count(key)) {
-            best_cost = costs_table[key];
-        }
-        costs_table[key] = min(best_cost, cost);
-    }
-
-
-    int get_cost(SNode* x, set<GNode*>& gnodes) {
-        auto key = make_pair(x, gnodes);
-
-        if (costs_table.count(key)) {
-            return costs_table[key];
-        }
-
-        return 999999;
-    }
-
-
-    void compute_rev_leafmap() {
-
-        for (GNode* g_root : genetrees) {
-
-            TreeIterator* it = g_root->GetPostOrderIterator();
-            while (Node* g = it->next()) {
-                if (g->IsLeaf()) {
-                    rev_leafmap[leafmap[g]].insert(g);
-                }
-            }
-            g_root->CloseIterator(it);
-
-        }
-    }
-
-
-    void compute_lca_map() {
-        for (GNode* g_root : genetrees) {
-
-            TreeIterator* it = g_root->GetPostOrderIterator();
-            while (Node* g = it->next()) {
-                if (g->IsLeaf()) {
-                    lcamap[g] = leafmap[g];
-                }
-                else {
-                    lcamap[g] = lcamap[g->GetChild(0)]->FindLCAWith(lcamap[g->GetChild(1)]);
-                }
-            }
-            g_root->CloseIterator(it);
-
-        }
-    }
-
-
-    set<GNode*> get_cross_set(set<GNode*>& V_l, set<GNode*>& V_r) {
-        set<GNode*> ret;
-
-        //pass 1: for every gl in V_l, check if gl's sibling is in V_l.  If so, they get "fused"
-        //and the common parent is inserted.  If not, gl is kept.
-        for (GNode* gl : V_l) {
-            GNode* gr = gl->GetSibling();
-
-            if (gr && V_r.count(gr)) {
-                ret.insert(gl->GetParent());
-            }
-            else {
-                ret.insert(gl);
-            }
-        }
-
-        //pass 2: add every gr in V_r whose parent was not added.
-        for (GNode* gr : V_r) {
-            if (!gr->GetParent() || !ret.count(gr->GetParent())) {
-                ret.insert(gr);
-            }
-        }
-
-        return ret;
-    }
-
-
-
-
-    //returns the set of nodes whose children are both in V
-
-    set<GNode*> get_common_parents(set<GNode*>& V) {
-        set<GNode*> ret;
-
-        for (GNode* g1 : V) {
-            GNode* g2 = g1->GetSibling();
-
-            if (g2 && V.count(g2)) {
-                ret.insert(g1->GetParent());
-            }
-        }
-
-        return ret;
-    }
-
-
-
-
-
-    //TODO: make this function faster - also, lower_sp MUST be a descendant of higher_sp
-    int get_species_distance(SNode* lower_sp, SNode* higher_sp) {
-        int d = 0;
-
-        while (lower_sp != higher_sp) {
-            lower_sp = lower_sp->GetParent();
-            d++;
-        }
-        return d;
-    }
-
-
-    void reconcile() {
-
-
-        int max_remap_dist = 5;
-
-        compute_rev_leafmap();
-        compute_lca_map();
-
-        TreeIterator* species_it = speciestree->GetPostOrderIterator();
-        while (SNode* x = species_it->next()) {
-
-            if (x->IsLeaf()) {
-
-                add_cost(x, rev_leafmap[x], 0);
-
-                active_sets[x].insert(rev_leafmap[x]);
-            }
-            else {
-                SNode* xl = x->GetChild(0);
-                SNode* xr = x->GetChild(1);
-
-
-                //build all the possible active sets from those of x's children
-                for (set<GNode*> V_l : active_sets[xl]) {
-                    for (set<GNode*> V_r : active_sets[xr]) {
-                        set<GNode*> v_cross = get_cross_set(V_l, V_r);
-
-                        //TODO: if non-merged V_l and V_r is too large, we should abort
-
-                        //so, v_cross is the set we get if we pair xl and xr guys into a speciation
-                        //when they have a common parent, and raise all the other ones.
-                        //Each such raise causes one loss that must be counted, hence the second line of the cost
-                        int cost = get_cost(xl, V_l) + get_cost(xr, V_r) +
-                            this->loss_cost * (2 * v_cross.size() - V_l.size() - V_r.size());
-                        add_cost(x, v_cross, cost);
-
-                        active_sets[x].insert(v_cross);
-
-                        if (active_sets[x].size() % 10000 == 0) {
-                            cout << "Sp x=" << x->GetIndex() << "  Ax size is now " << active_sets[x].size();
-                            cout << " Axl=" << active_sets[xl].size() << "  Axr=" << active_sets[xr].size() << endl;
-
-                        }
-                    }
-                }
-            }
-
-
-
-            list< set<GNode*> > active_sets_queue(active_sets[x].begin(), active_sets[x].end());
-
-            //set< set<GNode*> > active_sets_to_insert;
-            //set< set<GNode*> > active_sets_to_delete;
-            int nb_iter = 0;
-
-            while (!active_sets_queue.empty()){
-                set<GNode*> V = active_sets_queue.front();
-                active_sets_queue.pop_front();
-
-                set<GNode*> U = get_common_parents(V);
-
-                if (!U.empty()) {  //if there are actually dups that can be applied
-
-                    set<GNode*> Vprime = get_cross_set(V, V);   //not sure that works, I think it does - so it probably doesn't work
-
-
-                    bool isVprimeBad = false;
-                    for (GNode* g : Vprime) {
-                        if ((float)get_species_distance(lcamap[g], x) > max_remap_dist) {
-                            isVprimeBad = true;
-                            break;
-                        }
-                    }
-
-                    if (!isVprimeBad){
-                        active_sets[x].insert(Vprime);
-                        active_sets_queue.push_back(Vprime);
-
-                        add_cost(x, Vprime, get_cost(x, V) + dup_cost);
-
-                        bool is_U_forced = false;
-                        //if someone is trying to go too far, we have to do the dup here
-                        for (GNode* g : U) {
-                            if ((float)get_species_distance(lcamap[g], x) == max_remap_dist)
-                                is_U_forced = true;
-                        }
-
-                        if (U.size() >= dup_cost / loss_cost)
-                            is_U_forced = true;
-
-
-                        if (is_U_forced)
-                            //active_sets_to_delete.insert(V);
-                            active_sets[x].erase(V);
-                    }
-
-                    nb_iter++;
-                    if (nb_iter % 5000 == 0) {
-                        cout << "nb_iter = " << nb_iter << "  Ax.size = " << active_sets[x].size() << "   queue size = " << active_sets_queue.size() << endl;
-                    }
-                }
-
-            }
-
-
-
-            cout << "Done with species " << x->GetIndex() << "  A_x size = " << active_sets[x].size() << endl;
-        }
-        speciestree->CloseIterator(species_it);
-    }
-
-
-
-};
-*/
 
 
 
