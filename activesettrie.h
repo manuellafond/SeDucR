@@ -280,7 +280,7 @@ public:
             if (v_it == V.end()) {
                 //C is a container active set if it ends at an end
                 if (tcur && tcur->isEnd && V != C){
-					if ((*this)[V].cost <= (*this)[C].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
+					if ((*this)[C].cost <= (*this)[V].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
 						return true;
 					}
 				}

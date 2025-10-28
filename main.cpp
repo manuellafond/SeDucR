@@ -76,9 +76,12 @@ int main(int argc, char** argv)
         //ML's ad-hoc testing stuff, please ignore.
         
         /*string file_prefix = "C:\\cygwin64\\home\\Manuel\\git\\ybrec";
+		file_prefix = "C:/Users/Manue/Desktop/tmp/sims/";
         args["gf"] = file_prefix + "\\data\\gt6_1.newick";
+		args["gf"] = file_prefix + "sim_1WGD_D7/sim_22/all_genetrees_edited.txt";
         args["sf"] = file_prefix + "\\data\\sp6_1.newick";
-        args["d"] = "15";
+		args["sf"] = file_prefix + "sim_1WGD_D7/sim_22/s_tree.newick";
+        args["d"] = "20";
         args["l"] = "1";
 		args["o"] = file_prefix + "\\data\\out.txt";*/
         

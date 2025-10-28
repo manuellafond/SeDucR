@@ -531,6 +531,9 @@ public:
                 SNode* xr = x->get_child(1);
 
 				size_t output_counter = 0;
+                if (active_sets[xl].size() == 0 || active_sets[xr].size() == 0) {
+                    cout << "WARNING: active set has size 0, anything could happen" << endl;
+                }
                 //build all the possible active sets from those of x's children
                 for (auto it = active_sets[xl].begin(); it != active_sets[xl].end(); ++it){
 					for (auto it2 = active_sets[xr].begin(); it2 != active_sets[xr].end(); ++it2){
@@ -551,9 +554,15 @@ public:
                                 nb_roots_vl_vr++;
                         }
 
+
+                        //if (!cost_exists(xl, V_l) || !cost_exists(xr, V_r)) {
+                        //    cout<<"ERROR: cost does not exist during first phase"<<endl;
+                        //}
+
                         //so, v_cross is the set we get if we pair xl and xr guys into a speciation
                         //when they have a common parent, and "raise" all the other ones.
                         //Each such raise causes one loss that must be counted, hence the second line of the cost
+                        
                         YBCost& leftcost = get_cost(xl, V_l);
                         YBCost& rightcost = get_cost(xr, V_r);
                         
@@ -572,11 +581,11 @@ public:
                         //apply bounding here - YBC 
 						//if bound is bad, active set is erased
                         if ( ! (bound_option < 2 || !bound(v_cross, x, true))){
-                          active_sets[x].erase(v_cross);
+                          //active_sets[x].erase(v_cross);
 						}
 
 						++output_counter;
-                        if (output_counter % 10000 == 0) {
+                        if (output_counter % 100000 == 0) {
                             cout << "output_counter="<<output_counter <<"  Sp x=" << x->id << "  Ax size is now " << active_sets[x].size();
                             cout << " Axl=" << active_sets[xl].size() << "  Axr=" << active_sets[xr].size() << endl;
                         }
@@ -591,8 +600,7 @@ public:
 				active_sets_queue.push_back(*it);
 			}
 
-            //set< set<GNode*> > active_sets_to_insert;
-            //set< set<GNode*> > active_sets_to_delete;
+
             int nb_iter = 0;
 
             while (!active_sets_queue.empty()) {
@@ -601,7 +609,9 @@ public:
 				set_gnodes V = active_sets_queue.front();
 				active_sets_queue.pop_front();
 				
-				//V was erased, so point in checking it again
+                
+
+				//V was erased, so no point in checking it again
 				if (!active_sets[x].search(V)){
 					continue;
 				}
@@ -641,7 +651,7 @@ public:
 								active_sets_queue.push_back(Vprime);
 							}
 							else{
-								active_sets[x].erase(Vprime);
+								//active_sets[x].erase(Vprime);
 							}
 						}
 					}
@@ -671,11 +681,45 @@ public:
                 }
             }
 
-		  
+            //cout << "Cleanup species " << x->label << "  A_x size = " << active_sets[x].size() << endl;
 			//Remove active sets that are already worse than something above them
 			//Currently quadratic but no better solution for now
 			//Also bounding - YBC
-            set<set_gnodes> marked_for_deletion;
+            
+            /*set<set_gnodes> marked_for_deletion;
+            if (!x->is_root()) {
+                list<set_gnodes> active_sets_bound_queue;
+                for (auto it = active_sets[x].begin(); it != active_sets[x].end(); ++it) {
+                    active_sets_bound_queue.push_back(*it);
+                }
+
+                for (auto V : active_sets_bound_queue) {
+                    bool remove = false;
+
+                    for (auto Vprime : active_sets_bound_queue) {
+                        //allow a slightly higher cost for Vprime corresponding to extra losses
+                        if (get_cost(x, Vprime).cost < get_cost(x, V).cost + loss_cost * (V.size() - Vprime.size())
+                            && is_below(V, Vprime) && V != Vprime)
+                        {
+                            remove = true;
+                            break;
+                        }
+
+                    }
+
+                    if (!remove && bound_option >= 1 && bound(V, x, false))   //do not allow further events at x
+                        remove = true;
+
+                    if (remove)
+                        marked_for_deletion.insert(V);
+                }
+            }
+            for (auto& V : marked_for_deletion) {
+                    active_sets[x].erase(V);
+            }*/
+
+
+
 			if (!x->is_root()) {
                 auto it = active_sets[x].begin();
                 while (it != active_sets[x].end()) {
@@ -707,31 +751,13 @@ public:
                 //}
            
 
-				/*for (auto V : active_sets_bound_queue) {
-					bool remove = false;
-
-					for (auto Vprime : active_sets_bound_queue) {
-						//allow a slightly higher cost for Vprime corresponding to extra losses
-						if (get_cost(x, Vprime).cost <= get_cost(x, V).cost + loss_cost*(bitmap_size(V)-bitmap_size(Vprime))
-							  && is_below(V, Vprime) && V != Vprime){
-							remove = true;
-							break;
-						}
-
-					}
-
-					if (!remove && bound_option >= 1 && bound(V, x, false))   //do not allow further events at x
-						remove = true;
-
-					if (remove)
-						active_sets[x].erase(V);
-				}*/
 			}
+            
 
 
 
-            cout << "Done with species " << x->id << " " << (x->is_leaf() ? "(leaf " + x->label + ")" : "")
-                << " A_x size = " << active_sets[x].size() << endl;
+            //cout << "Done with species " << x->id << " " << (x->is_leaf() ? "(leaf " + x->label + ")" : "")
+            //    << " A_x size = " << active_sets[x].size() << endl;
 		}
 
         set_gnodes all_groots;
@@ -824,7 +850,9 @@ public:
 	
 	void build_reconciliation_recursively(SNode* x, set_gnodes& gnodes, map<SNode*, set< set_gnodes > >& dups_per_species){
 		
-		
+        if (!cost_exists(x, gnodes)) {
+            cout << "ERROR: cost at x=" << x->label << " does not exist" << endl;
+        }
 		YBCost& cost = get_cost(x, gnodes);
 		
 		//active set created from another in the same species --> all the nodes in active_set but not in originator are dups
@@ -843,6 +871,7 @@ public:
 			}
 		
 			dups_per_species[x].insert(dup_nodes);
+            
 			
 			build_reconciliation_recursively(cost.origin1.first, cost.origin1.second, dups_per_species);
 		}
