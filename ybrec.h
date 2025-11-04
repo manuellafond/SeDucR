@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <list>
 #include <string>
+#include <queue>
 
 #include "treeutils/node.h"
 #include "treeutils/newicklex.h"
@@ -14,6 +15,7 @@
 //NOTE: GNode, SNode and GSMap are defined in genespeciestreeutil
 #include "genespeciestreeutil.h"
 
+//This defines set_gnodes type as a set of GNode* objects
 #include "activesettrie.h"
 
 #include "segmentalreconciliation.h"
@@ -21,29 +23,76 @@
 
 
 
-//library for compressed set representations
+/*
+**********************************************************************************
+* Functionalities related to bitmaps, for compressed set representations
+**********************************************************************************
+*/
 #include "treeutils/ewah/ewah.h"
-
-
 typedef ewah::EWAHBoolArray<uint32_t> bitmap;
 
+//must return true iff a < b (if equal, must return false)
+//a comparator function for bitmaps, so that we can store them in sets and maps
+struct BCmp {
+    bool operator()(const bitmap& a, const bitmap& b) const {
+
+        if (a.numberOfOnes() > 0 && b.numberOfOnes() == 0)
+            return false;
+        if (a.numberOfOnes() == 0 && b.numberOfOnes() == 0)
+            return false;
+        if (a.numberOfOnes() == 0 && b.numberOfOnes() > 0)
+            return true;
+
+        auto ita = a.begin();
+        auto itb = b.begin();
+
+
+        while (true) {  //never do a while (true)
+            if (ita != a.end()) {
+                if (itb != b.end()) {
+                    if (*ita < *itb)
+                        return true;
+                    else if (*itb < *ita)
+                        return false;
+                    else {
+                        ++ita;
+                        ++itb;
+                    }
+                }
+                else  //itb == b.end()
+                    return false;
+            }
+            else {
+                if (itb != b.end()) //a finished before b
+                    return true;
+                else
+                    return false;    //both ended, a == b
+            }
+        }
+    }
+};
 
 
 
 
 
-/**
-YBRec class
+
+
+
+
+
+
+/*
+**********************************************************************************
+* YBRec class
+**********************************************************************************
 Stores all info necessary to apply the YB dynamic programming algorithm, given
 a set of gene trees, a species tree, and d/l costs
 
 todo: for now everything is just public, cleanup later
-**/
+*/
 class YBRec {
 public:
-
-    
-
 
     SNode* speciestree;
     vector<GNode*> genetrees;
@@ -59,7 +108,7 @@ public:
 
     //the A_x sets from the YB algorithm.  
     //key = species
-    //value = the active sets for that species (each set is represented as a bitmap in an attempt to save memory)
+    //value = the active sets for that species (each set is represented as a Trie)
     map< SNode*, Trie > active_sets;
 
     GSMap leafmap;
@@ -73,6 +122,11 @@ public:
 
 	map< int, GNode* > gnode_by_id;
 
+    //stores info on deleted active sets, since they may be needed during backtracking
+    //to save space, they are stored in bitmap format
+    map<SNode*, map<set_gnodes, YBCost> > costs_table;
+    
+
     bool DEBUG;
 
     YBRec() {
@@ -81,6 +135,8 @@ public:
         loss_cost = 1;
         max_remap_dist = 100; //changed by YBC
     }
+
+
 
 
     
@@ -125,7 +181,7 @@ public:
             new_ybcost.nb_losses = nb_losses;
             new_ybcost.cost = newcost;
             
-            active_sets[x][gnodes] = new_ybcost;
+            costs_table[x][gnodes] = new_ybcost;
         }
 		
 		return update_cost;
@@ -133,27 +189,18 @@ public:
     }
 
 
-    //returns c(gnodes, x)
-    /*int get_cost(SNode* x, bitmap& gnodes) {
-
-        if (costs_table.count(x) && costs_table[x].count(gnodes)) {
-            return costs_table[x][gnodes];
-        }
-
-        return INT_MAX;
-    }*/
 
 
 	//returns true iff cost has been set for species/active_set combo
 	bool cost_exists(SNode* x, set_gnodes& gnodes){
-		return active_sets.count(x) && active_sets[x].search(gnodes);
+		return costs_table.count(x) && costs_table[x].count(gnodes);
 	}
 
 
     //returns a reference to the cost object associated with species/active_set combo.
 	//ASSUMES THAT cost_exists(x, gnodes) is true, does not do that verification!
     YBCost& get_cost(SNode* x, const set_gnodes& gnodes) {
-         return active_sets[x][gnodes];
+         return costs_table[x][gnodes];
     }
 
 
@@ -510,8 +557,32 @@ public:
     }
 
 
+
+    // Custom comparator for std::set<int>
+    struct set_gnodes_cmp {
+        bool operator()(const set_gnodes& s1, const set_gnodes& s2) const {
+            if (s1.empty())
+                return !s2.empty();
+            
+            auto it1 = s1.begin();
+            auto it2 = s2.begin();
+            while (it1 != s1.end() && it2 != s2.end()) {
+                if ((*it1)->id < (*it2)->id)
+                    return true;
+                if ((*it2)->id < (*it1)->id)
+                    return false;
+                ++it1;
+                ++it2;
+            }
+
+            return (it1 == s1.end() && it2 != s2.end());
+        }
+    };
+
+
     SegmentalReconciliation reconcile(int bound_option) {
 
+        max_remap_dist = ceil((float)dup_cost / (float)loss_cost);
 
         init_indices();
         compute_rev_leafmap();
@@ -524,6 +595,7 @@ public:
         for (SNode* x : species_nodes) {
 
             if (x->is_leaf()) {
+                active_sets[x].insert(rev_leafmap[x]);
                 set_cost(x, rev_leafmap[x], 0, 0);
             }
             else {
@@ -537,8 +609,6 @@ public:
                 //build all the possible active sets from those of x's children
                 for (auto it = active_sets[xl].begin(); it != active_sets[xl].end(); ++it){
 					for (auto it2 = active_sets[xr].begin(); it2 != active_sets[xr].end(); ++it2){
-				//for (auto& V_l : : active_sets[xl]) {
-                //    for (auto& V_r : active_sets[xr]) {
 						set_gnodes& V_l = *it;
 						set_gnodes& V_r = *it2;
 					
@@ -555,9 +625,6 @@ public:
                         }
 
 
-                        //if (!cost_exists(xl, V_l) || !cost_exists(xr, V_r)) {
-                        //    cout<<"ERROR: cost does not exist during first phase"<<endl;
-                        //}
 
                         //so, v_cross is the set we get if we pair xl and xr guys into a speciation
                         //when they have a common parent, and "raise" all the other ones.
@@ -574,14 +641,16 @@ public:
 												leftcost.nb_losses + rightcost.nb_losses + extra_losses);
                         
 						
-						if (update)
-							set_cost_origins(x, v_cross, xl, V_l, xr, V_r);
+                        if (update) {
+                            active_sets[x].insert(v_cross);
+                            set_cost_origins(x, v_cross, xl, V_l, xr, V_r);
+                        }
                         
             
                         //apply bounding here - YBC 
 						//if bound is bad, active set is erased
                         if ( ! (bound_option < 2 || !bound(v_cross, x, true))){
-                          //active_sets[x].erase(v_cross);
+                          active_sets[x].erase(v_cross);
 						}
 
 						++output_counter;
@@ -594,24 +663,29 @@ public:
             }
 
 
-		    //priority_queue< set_gnodes, vector<set_gnodes>, GNodeCmp > active_sets_queue(active_sets[x].begin(), active_sets[x].end());
-			list<set_gnodes> active_sets_queue;
-			for (auto it = active_sets[x].begin(); it != active_sets[x].end(); ++it){
-				active_sets_queue.push_back(*it);
-			}
+		    
+			//list<set_gnodes> active_sets_queue;
+            //for (auto it = active_sets[x].begin(); it != active_sets[x].end(); ++it) {
+            //    active_sets_queue.push_back(*it);
+            //}
+            priority_queue<set_gnodes, vector<set_gnodes>, set_gnodes_cmp> active_sets_queue;
+            for (auto it = active_sets[x].begin(); it != active_sets[x].end(); ++it) {
+                active_sets_queue.push(*it);
+            }
 
 
             int nb_iter = 0;
 
             while (!active_sets_queue.empty()) {
-                //set_gnodes V = active_sets_queue.top();
-                //active_sets_queue.pop();
-				set_gnodes V = active_sets_queue.front();
-				active_sets_queue.pop_front();
-				
+                
+				//set_gnodes V = active_sets_queue.front();
+				//active_sets_queue.pop_front();
+                set_gnodes V = active_sets_queue.top();
+                active_sets_queue.pop();
                 
 
 				//V was erased, so no point in checking it again
+                //TODO: BACKCHECK IF THIS IS CORRECT
 				if (!active_sets[x].search(V)){
 					continue;
 				}
@@ -642,16 +716,19 @@ public:
 						if (xV_cost.cost + dup_cost < vprime_cost) {
 							bool updated = set_cost(x, Vprime, xV_cost.nb_dups + 1, xV_cost.nb_losses);
 							if (updated){
+                                active_sets[x].insert(Vprime);
 								set_cost_origin(x, Vprime, x, V);
 							}
 							
 							//apply bounding here - YBC
 							//if cost is good, add to the queue, otherwise remove it
 							if (bound_option < 2 || !bound(Vprime, x, true)) {
-								active_sets_queue.push_back(Vprime);
+								//active_sets_queue.push_back(Vprime);
+                                active_sets_queue.push(Vprime);
 							}
 							else{
-								//active_sets[x].erase(Vprime);
+								active_sets[x].erase(Vprime);
+                                cout << "Bounding caught it 2" << endl;
 							}
 						}
 					}
@@ -662,8 +739,13 @@ public:
 					//if someone is trying to go too far, we have to do the dup here
 					//also have to do it if it's the root of the species tree
 					for (GNode* g : U) {
-						if (x->is_root() || (float)get_species_distance(lcamap[g], x) == max_remap_dist)
-							is_U_forced = true;
+                        if (x->is_root() || (float)get_species_distance(lcamap[g], x) == max_remap_dist) {
+                            is_U_forced = true;
+
+                            /*if ((float)get_species_distance(lcamap[g], x) == max_remap_dist) {
+                                cout << "max remap dist is actually useful" << endl;
+                            }*/
+                        }
 					}
 
 					if (U.size() >= dup_cost / loss_cost)   //TODO: I'm assuming this ratio is an integer
@@ -728,7 +810,7 @@ public:
                     
                     
                     bool remove = false;
-                    if (active_sets[x].has_successor_with_lower_cost(V))
+                    if (active_sets[x].has_successor_with_lower_cost(V, costs_table[x]))
                         remove = true;
 
                     

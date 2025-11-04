@@ -41,7 +41,7 @@ private:
     struct TNode {
         bool isEnd = false;
         std::map<GNode*, TNode*, GNodeCmp> children;
-		YBCost cost;
+		
     };
 
     TNode* root;
@@ -98,7 +98,7 @@ public:
     }
 	
 	
-	
+	/*
     YBCost& operator[](const set_gnodes& key) {
         if (!search(key))
 			insert(key);
@@ -113,6 +113,7 @@ public:
         }
         return node->cost;
     }
+    */
 	
 
     // Delete a key from the trie
@@ -237,20 +238,21 @@ public:
 
 
 	
-    bool has_successor_with_lower_cost(set_gnodes& V) {
+    bool has_successor_with_lower_cost(set_gnodes& V, map<set_gnodes, YBCost>& costs) {
         auto it = V.begin();
         set_gnodes C;
-        return has_successor_with_lower_cost(V, it, C, root);
+        return has_successor_with_lower_cost(V, it, C, root, costs);
     }
 	
 	
-    bool has_successor_with_lower_cost(set_gnodes& V, set_gnodes::iterator v_it, set_gnodes& C, TNode* tcur) {
+    bool has_successor_with_lower_cost(set_gnodes& V, set_gnodes::iterator v_it, set_gnodes& C, TNode* tcur, 
+                                        map<set_gnodes, YBCost>& costs) {
         //TODO: needs refactoring
 
         //C is a successor active set if it ends at an end
         if (v_it == V.end()) {
             if (tcur && tcur->isEnd && V != C){
-				if ((*this)[C].cost <= (*this)[V].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
+				if (costs[C].cost <= costs[V].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
 					return true;
 				}
 			}
@@ -263,7 +265,7 @@ public:
             for (auto keyval : root->children) {
                 if (v_cur->has_ancestor(keyval.first)) {
                     C.insert(keyval.first);
-                    bool res = has_successor_with_lower_cost(V, std::next(v_it), C, keyval.second);
+                    bool res = has_successor_with_lower_cost(V, std::next(v_it), C, keyval.second, costs);
                     C.erase(keyval.first);
 					if (res)
 						return true;
@@ -280,7 +282,7 @@ public:
             if (v_it == V.end()) {
                 //C is a container active set if it ends at an end
                 if (tcur && tcur->isEnd && V != C){
-					if ((*this)[C].cost <= (*this)[V].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
+                    if (costs[C].cost <= costs[V].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
 						return true;
 					}
 				}
@@ -302,7 +304,7 @@ public:
                     else {
                         if (v_cur->has_ancestor(child)) {
                             C.insert(child);
-                            bool res = has_successor_with_lower_cost(V, std::next(v_it), C, it_children->second);
+                            bool res = has_successor_with_lower_cost(V, std::next(v_it), C, it_children->second, costs);
                             C.erase(child);
                             if (res)
                                 return true;
@@ -310,16 +312,7 @@ public:
                     }
                     ++it_children;
                 }
-                //previous loop that went through every child
-                /*for (auto keyval : tcur->children) {
-                    if (v_cur->has_ancestor(keyval.first)) {
-                        C.insert(keyval.first);
-                        bool res = has_successor_with_lower_cost(V, std::next(v_it), C, keyval.second);
-                        C.erase(keyval.first);
-						if (res)
-							return true;
-                    }
-                }*/
+               
 				return false;
             }
         }

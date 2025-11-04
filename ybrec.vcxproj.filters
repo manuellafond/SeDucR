@@ -62,5 +62,8 @@
     <ClInclude Include="ybrec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="activesettrie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
