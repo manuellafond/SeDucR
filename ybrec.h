@@ -594,6 +594,9 @@ public:
         //   cout << "allow x" << endl;
         cost_upper_bound = upper_bound;
       }
+	 
+	 //output bounds
+	 //cout << "lower bound " << lower_bound.cost << ", upper bound " << cost_upper_bound.cost << endl;
 
       //Remove (return true) if x, V cannot result in optimal reconciliation
       if (lower_bound.cost > cost_upper_bound.cost)
