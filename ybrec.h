@@ -838,8 +838,16 @@ public:
 
 
 
-            //cout << "Done with species " << x->id << " " << (x->is_leaf() ? "(leaf " + x->label + ")" : "")
-            //    << " A_x size = " << active_sets[x].size() << endl;
+            cout << "Done with species " << x->id << " " << (x->is_leaf() ? "(leaf " + x->label + ")" : "")
+                << " A_x size = " << active_sets[x].size() << endl;
+
+		 //test output for active sets
+		   /*for (auto V : active_sets[x]) {
+			  for (auto n : V)
+					cout << n->label << ",";
+			  cout << endl;
+			  cout << "cost " << get_cost(x,V).cost << endl;
+		   }*/
 		}
 
         set_gnodes all_groots;
