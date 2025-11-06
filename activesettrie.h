@@ -237,6 +237,12 @@ public:
     }
 
 
+
+
+
+
+
+
 	
     bool has_successor_with_lower_cost(set_gnodes& V, map<set_gnodes, YBCost>& costs) {
         auto it = V.begin();
@@ -320,6 +326,22 @@ public:
     }
 	
 	
+    
+    int get_nb_nodes(bool unary_only = false) {
+        return get_nb_nodes_rec(this->root, unary_only);
+    }
+
+    int get_nb_nodes_rec(TNode* t, bool unary_only) {
+        int nb = 0;
+        if (!unary_only || t->children.size() == 0)
+            nb++;
+
+        for (auto tc : t->children) {
+            nb += get_nb_nodes_rec(tc.second, unary_only);
+        }
+
+        return nb;
+    }
 	
 	
 	

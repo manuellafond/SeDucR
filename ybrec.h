@@ -801,7 +801,7 @@ public:
             }*/
 
 
-
+            
 			if (!x->is_root()) {
                 auto it = active_sets[x].begin();
                 while (it != active_sets[x].end()) {
@@ -832,8 +832,8 @@ public:
                 //    active_sets[x].erase(V);
                 //}
            
-
 			}
+            
             
 
 
