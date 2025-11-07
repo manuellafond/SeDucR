@@ -80,10 +80,11 @@ public:
             node = node->children[val];
         }
 		
-		
-		nbelem++;
-		
-        node->isEnd = true;
+        if (!node->isEnd) {
+            nbelem++;
+            node->isEnd = true;
+        }
+        
     }
 
     // Search for a full set
@@ -161,8 +162,10 @@ public:
         std::vector<GNode*> currentPath;
         set_gnodes currentKey;
         TNode* root;
+        bool must_yield_root;
 
         void goToNext() {
+            must_yield_root = false;
             while (!stack.empty()) {
                 auto& [node, it] = stack.back();
 
@@ -192,6 +195,9 @@ public:
 
     public:
         Iterator(TNode* root_, bool begin) : root(root_) {
+            //special case when the empty tuple is present: if we are at begin, we remember that we must yield the root
+            //before anything else.  This is needed to distinguish begin() with root->isEnd and end()
+            must_yield_root = begin && root->isEnd;
             if (begin && root_) {
                 stack.emplace_back(root_, root_->children.begin());
                 if (root_->isEnd) {
@@ -211,12 +217,14 @@ public:
         }
 
         bool operator==(const Iterator& other) const {
-            return root == other.root && currentKey == other.currentKey;
+            return root == other.root && currentKey == other.currentKey && must_yield_root == other.must_yield_root;
         }
 
         bool operator!=(const Iterator& other) const { return !(*this == other); }
 
-        bool isEnd() const { return currentKey.empty(); }
+        bool isEnd() const { 
+            return !must_yield_root && currentKey.empty();
+        }
     };
 
     Iterator begin() { return Iterator(root, true); }

@@ -364,7 +364,7 @@ public:
 
     //preprocessing to assign a unique id to each gnode and snode.  This fills id_genes map.
     void init_indices() {
-        auto snodes = speciestree->get_preordered_nodes();
+        auto snodes = speciestree->get_postordered_nodes();
         for (int i = 0; i < snodes.size(); ++i) {
             snodes[i]->id = i;
         }
@@ -582,7 +582,7 @@ public:
 
     SegmentalReconciliation reconcile(int bound_option) {
 
-        max_remap_dist = ceil((float)dup_cost / (float)loss_cost);
+        //max_remap_dist = ceil((float)dup_cost / (float)loss_cost);
 
         init_indices();
         compute_rev_leafmap();
@@ -801,7 +801,7 @@ public:
             }*/
 
 
-            
+
 			if (!x->is_root()) {
                 auto it = active_sets[x].begin();
                 while (it != active_sets[x].end()) {
