@@ -1,0 +1,84 @@
+Average times (seconds)
+
+Dataset WGD=1, duprate=7, d=5
+insider              : 0.28416
+fastmultrec_greedy   : 0.62216
+lcamap               : 0.17260
+
+Dataset WGD=1, duprate=7, d=10
+insider              : 0.42124
+fastmultrec_greedy   : 0.73508
+lcamap               : 0.17312
+
+Dataset WGD=1, duprate=10, d=5
+insider              : 0.23052
+fastmultrec_greedy   : 0.50136
+lcamap               : 0.17836
+
+Dataset WGD=1, duprate=10, d=10
+insider              : 0.22824
+fastmultrec_greedy   : 0.50260
+lcamap               : 0.18056
+
+Dataset WGD=2, duprate=7, d=5
+insider              : 0.59444
+fastmultrec_greedy   : 8.42872
+lcamap               : 0.29656
+
+Dataset WGD=2, duprate=7, d=10
+insider              : 0.88844
+fastmultrec_greedy   : 12.52916
+lcamap               : 0.29660
+
+Dataset WGD=2, duprate=10, d=5
+insider              : 0.31284
+fastmultrec_greedy   : 0.70912
+lcamap               : 0.23548
+
+Dataset WGD=2, duprate=10, d=10
+insider              : 0.31164
+fastmultrec_greedy   : 0.70728
+lcamap               : 0.23308
+
+-----------------------------------------
+Average solution costs
+
+Dataset WGD=1, duprate=7, d=5
+insider              : 401.68
+fastmultrec_greedy   : 401.68
+lcamap               : 403.12
+
+Dataset WGD=1, duprate=7, d=10
+insider              : 669.56
+fastmultrec_greedy   : 676.32
+lcamap               : 681.32
+
+Dataset WGD=1, duprate=10, d=5
+insider              : 9.56
+fastmultrec_greedy   : 9.56
+lcamap               : 9.56
+
+Dataset WGD=1, duprate=10, d=10
+insider              : 18.56
+fastmultrec_greedy   : 18.56
+lcamap               : 18.56
+
+Dataset WGD=2, duprate=7, d=5
+insider              : 2563.28
+fastmultrec_greedy   : 2564.92
+lcamap               : 2599.48
+
+Dataset WGD=2, duprate=7, d=10
+insider              : 3287.48
+fastmultrec_greedy   : 3310.92
+lcamap               : 3439.28
+
+Dataset WGD=2, duprate=10, d=5
+insider              : 19.64
+fastmultrec_greedy   : 19.64
+lcamap               : 19.64
+
+Dataset WGD=2, duprate=10, d=10
+insider              : 37.64
+fastmultrec_greedy   : 37.64
+lcamap               : 37.64
