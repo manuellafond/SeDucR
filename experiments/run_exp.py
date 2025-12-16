@@ -11,11 +11,11 @@ from ete3 import Tree
 #and it outputs stats.csv with everything
 
 datadir = "/home/manuel/git/wgddata"
-
+output_filename = "stats_ybvsrelax.csv"
 
 wgd_nb = [1,2]
 dup_rates = [10, 7]
-dup_costs = [5, 10]     #values of argument -d to test
+dup_costs = [5, 10, 15, 20, 22, 23]     #values of argument -d to test
 runs = range(1, 10+1)
 
 #wgd_nb = [1]
@@ -25,10 +25,14 @@ runs = range(1, 10+1)
 
 
 #set to directories containing binaries of the programs to test
-fastmultrecdir = "/home/manuel/git/FastMultRec/FastMultRec/build"
-ybrecdir = "/home/manuel/git/ybrec/build"
-segdupdir = ""
+fastmultrec_dir = "/home/manuel/git/FastMultRec/FastMultRec/build"
+insider_dir = "/home/manuel/git/ybrec/build"
+insider_relax_dir = "/home/manuel/git/ybrec2/build"
+segdup_dir = ""
 
+#available methods here
+#methods = ["insider", "insider_relax", "lca", "fastmultrec", "segdup"] 
+methods = ["insider", "insider_relax"]
 
 #fetches reconciliation costs from a file in insider format (also works for fastmultrec)
 #returns (total cost, nbdups, nblosses)
@@ -109,6 +113,7 @@ def get_cleaned_gtree_str(newick, gtree_index):
     return tree.write(format=9)
 
 
+
 #returns leaf association string to be used with segsup
 def get_segdup_gtree_str(newick, gtree_index):
     tree = Tree(newick, quoted_node_names=True, format=1)
@@ -116,7 +121,7 @@ def get_segdup_gtree_str(newick, gtree_index):
     #so, annoyingly, Reza allowed two genes to have the same id, eg 2_0_0 twice
     #I think it doesn't matter for fastmultrec since it uses internal ids, but it matters for segdup
     #so leaves are renamed according to their copy number
-    ncopies_per_gene = dict()
+    ncopies_per_gene =dict()
     
     mapout = ""    #leaf assoc map string   
     first = True
@@ -171,110 +176,133 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
     #segdup
     #-------------------------------------------------------------------------------------
     #note: simphy species trees add quotes around their leaf names, they must be removed for segdup
-    stree_str = '-S "'
-    stree_str += get_segdup_stree_str(speciestree_file)
-    stree_str += '"'
+    if "segdup" in methods:
+        stree_str = '-S "'
+        stree_str += get_segdup_stree_str(speciestree_file)
+        stree_str += '"'
 
-    genetree_outfile = open("gfile.txt", "w")
-    gtree_str = ""
-    with open(genetree_file, "r") as file:
-        cnt = 0
-        lines = file.readlines()
-        for line in lines:
-            newick = line.strip()
-            if newick != "":
-                if cnt < 9999:   #dummy condition, was used to test limits
-                    (gstr,mapstr) = get_segdup_gtree_str(newick, cnt)
-                    genetree_outfile.write(gstr + "\n")
-                    genetree_outfile.write(mapstr + "\n")
-                    gtree_str += f' -G {gstr}'
-                cnt += 1
-    
-    genetree_outfile.close()
-    
-    #segdup_input_filename = "segdup_input.txt"
-    #with open(segdup_input_filename, "w") as f:
-    #     f.write(f"{stree_str} {gtree_str} -n 100")    
-    #command = f"cat {segdup_input_filename} | xargs {segdupdir}segdup"
-    #command = f"{segdupdir}segdup {stree_str} {gtree_str} -n 100"
-    #print(command)
-    
-    command = f"{segdupdir}segdup {stree_str} -Gfile gfile.txt -d {dup_cost} -n 50000 -Tinit 2 -Tfinal 0 > segdupout.txt"
-    print(command)
-    
-    start = time.perf_counter()
+        genetree_outfile = open("gfile.txt", "w")
+        gtree_str = ""
+        with open(genetree_file, "r") as file:
+            cnt = 0
+            lines = file.readlines()
+            for line in lines:
+                newick = line.strip()
+                if newick != "":
+                    if cnt < 9999:   #dummy condition, was used to test limits
+                        (gstr,mapstr) = get_segdup_gtree_str(newick, cnt)
+                        genetree_outfile.write(gstr + "\n")
+                        genetree_outfile.write(mapstr + "\n")
+                        gtree_str += f' -G {gstr}'
+                    cnt += 1
+        
+        genetree_outfile.close()
+        
+        #segdup_input_filename = "segdup_input.txt"
+        #with open(segdup_input_filename, "w") as f:
+        #     f.write(f"{stree_str} {gtree_str} -n 100")    
+        #command = f"cat {segdup_input_filename} | xargs {segdup_dir}segdup"
+        #command = f"{segdup_dir}segdup {stree_str} {gtree_str} -n 100"
+        #print(command)
+        
+        command = f"{segdup_dir}segdup {stree_str} -Gfile gfile.txt -d {dup_cost} -n 50000 -Tinit 2 -Tfinal 0 > segdupout.txt"
+        print(command)
+        
+        start = time.perf_counter()
 
-    os.system(command)
-    end = time.perf_counter()
+        os.system(command)
+        end = time.perf_counter()
 
-    elapsed = time.perf_counter() - start 
+        elapsed = time.perf_counter() - start 
 
 
-    
-    #get segdup's cost line, which has the form nCospec,nSegDup,nLoss,cost
-    (nbdups, nblosses, cost) = get_segdup_costs("segdupout.txt")
-    
-    
-    out.write(f"segdup,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
-    
+        
+        #get segdup's cost line, which has the form nCospec,nSegDup,nLoss,cost
+        (nbdups, nblosses, cost) = get_segdup_costs("segdupout.txt")
+        
+        
+        out.write(f"segdup,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
+        
 
     
     
     #-------------------------------------------------------------------------------------
     #get insider data (aka ybrec)
     #-------------------------------------------------------------------------------------
-    genetree_insider_filename = "gfile_insider.txt"
-    genetree_insider_file = open(genetree_insider_filename, "w")
-    
-    snewick = get_segdup_stree_str(speciestree_file)
-    sptree_insider_filename = "sfile_insider.txt"
-    with open(sptree_insider_filename, "w") as f:
-        f.write(snewick)
-    
-    
-    gtree_str = ""
-    with open(genetree_file, "r") as file:
-        cnt = 0
-        lines = file.readlines()
-        for line in lines:
-            newick = line.strip()
-            if newick != "":
+    if "insider" or "insider_relax" in methods:
+        genetree_insider_filename = "gfile_insider.txt"
+        genetree_insider_file = open(genetree_insider_filename, "w")
+        
+        snewick = get_segdup_stree_str(speciestree_file)
+        sptree_insider_filename = "sfile_insider.txt"
+        with open(sptree_insider_filename, "w") as f:
+            f.write(snewick)
+        
+        
+        gtree_str = ""
+        with open(genetree_file, "r") as file:
+            cnt = 0
+            lines = file.readlines()
+            for line in lines:
+                newick = line.strip()
+                if newick != "":
                     gstr = get_cleaned_gtree_str(newick, cnt)
                     genetree_insider_file.write(gstr + "\n")
                     cnt += 1
-    
-    genetree_insider_file.close()
-    
-    
-    #cmd = f"{ybrecdir}/ybrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_file}' -sf '{speciestree_file}'"
-    cmd = f"{ybrecdir}/ybrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}'"
-    print(cmd)
-    
-    start = time.perf_counter()
-    os.system(cmd)
-    end = time.perf_counter()
-    
-    (cost, nbdups, nblosses) = get_insider_costs("out.txt")
-    ybcost = cost
-    elapsed = time.perf_counter() - start 
-    out.write(f"insider,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
-    
+        
+        genetree_insider_file.close()
+        
+        if "insider" in methods:
+            #cmd = f"{insider_dir}/ybrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_file}' -sf '{speciestree_file}'"
+            cmd = f"{insider_dir}/ybrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}'"
+            print(cmd)
+        
+            start = time.perf_counter()
+            os.system(cmd)
+            end = time.perf_counter()
+        
+            (cost, nbdups, nblosses) = get_insider_costs("out.txt")
+            ybcost = cost
+            elapsed = time.perf_counter() - start 
+            out.write(f"insider,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
+        
+        if "insider_relax" in methods:
+            #cmd = f"{insider_dir}/ybrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_file}' -sf '{speciestree_file}'"
+            cmd = f"{insider_relax_dir}/ybrec -d {dup_cost} -l 1 -o out_relax.txt -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}'"
+            print(cmd)
+        
+            start = time.perf_counter()
+            os.system(cmd)
+            end = time.perf_counter()
+        
+            (cost_relax, nbdups_relax, nblosses_relax) = get_insider_costs("out_relax.txt")
+            ybcost_relax = cost_relax
+            elapsed = time.perf_counter() - start 
+            out.write(f"insider_relax,{wgd},{duprate},{simid},{dup_cost},{cost_relax},{nbdups_relax},{nblosses_relax},{elapsed:.3f}\n")
+            
+            if "insider" in methods and ybcost != ybcost_relax:
+                print(f"Difference insider trie vs relax")
+                print(genetree_insider_filename)
+                print(f"trie: cost {ybcost}   relax: cost {ybcost_relax}")
+                sys.exit()
+        
     
     #-------------------------------------------------------------------------------------
     #fastmultrec
     #-------------------------------------------------------------------------------------
-    #cmd = f"{fastmultrecdir}/segrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_file}' -sf '{speciestree_file}'"
-    cmd = f"{fastmultrecdir}/segrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}'"
-    print(cmd)
-    
-    start = time.perf_counter()
-    os.system(cmd)
-    end = time.perf_counter()
-    
-    (cost, nbdups, nblosses) = get_insider_costs("out.txt")
-    mrec = cost
-    elapsed = time.perf_counter() - start 
-    out.write(f"fastmultrec_greedy,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
+    if "fastmultrec" in methods:
+        #cmd = f"{fastmultrec_dir}/segrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_file}' -sf '{speciestree_file}'"
+        cmd = f"{fastmultrec_dir}/segrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}'"
+        print(cmd)
+        
+        start = time.perf_counter()
+        os.system(cmd)
+        end = time.perf_counter()
+        
+        (cost, nbdups, nblosses) = get_insider_costs("out.txt")
+        mrec = cost
+        elapsed = time.perf_counter() - start 
+        out.write(f"fastmultrec_greedy,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
     
     
     
@@ -282,22 +310,23 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
     #-------------------------------------------------------------------------------------
     #lca mapping
     #-------------------------------------------------------------------------------------
-    cmd = f"{fastmultrecdir}/segrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}' -al lca"
-    print(cmd)
-    
-    start = time.perf_counter()
-    os.system(cmd)
-    end = time.perf_counter()
-    
-    (cost, nbdups, nblosses) = get_insider_costs("out.txt")
-    
-    #if mrec < cost:
-    #    print(simid)
-    #    sys.exit()
-    
-    
-    elapsed = time.perf_counter() - start 
-    out.write(f"lcamap,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
+    if "lca" in methods:
+        cmd = f"{fastmultrec_dir}/segrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}' -al lca"
+        print(cmd)
+        
+        start = time.perf_counter()
+        os.system(cmd)
+        end = time.perf_counter()
+        
+        (cost, nbdups, nblosses) = get_insider_costs("out.txt")
+        
+        #if mrec < cost:
+        #    print(simid)
+        #    sys.exit()
+        
+        
+        elapsed = time.perf_counter() - start 
+        out.write(f"lcamap,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
 
 
 
