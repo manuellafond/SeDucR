@@ -266,7 +266,7 @@ public:
         //C is a successor active set if it ends at an end
         if (v_it == V.end()) {
             if (tcur && tcur->isEnd && V != C){
-				if (costs[C].cost <= costs[V].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
+				if (costs[C].cost < costs[V].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
 					return true;
 				}
 			}
@@ -296,7 +296,7 @@ public:
             if (v_it == V.end()) {
                 //C is a container active set if it ends at an end
                 if (tcur && tcur->isEnd && V != C){
-                    if (costs[C].cost <= costs[V].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
+                    if (costs[C].cost < costs[V].cost + (V.size() - C.size())) {	//TOD: assumes loss_cost = 1
 						return true;
 					}
 				}

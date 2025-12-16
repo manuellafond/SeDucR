@@ -748,7 +748,7 @@ public:
                         }
 					}
 
-					if (U.size() >= dup_cost / loss_cost)   //TODO: I'm assuming this ratio is an integer
+					if (U.size() > dup_cost / loss_cost)   //TODO: I'm assuming this ratio is an integer
 						is_U_forced = true;
 
 
