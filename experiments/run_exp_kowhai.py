@@ -15,13 +15,13 @@ insider_relax_dir = "/home/manuel/git/ybrec2/build/"
 
 #kowhai options
 nH_vals = [20, 40]
-nP_vals = [20, 100]
+nP_vals = [20, 50]
 rB_vals = [1.0]
-pC_vals = [0.5]
+pC_vals = [0.5,]
 pJ_vals = [0.5]
 
 #segdup/multrec options
-d_vals = [10]
+d_vals = [5,10,15,20,25]
 l = 1
 iterations = 20000
 
@@ -95,7 +95,7 @@ for (nH, nP, rB, pC, pJ, d, r) in itertools.product(nH_vals, nP_vals, rB_vals, p
     #segdup
     #-------------------------------------------------------------------------------------
     start = time.perf_counter()
-    command = "cat ./for-segdup-from-kowhai.txt | xargs " + segdupDir + "segdup -n " + str(iterations) + " -Tinit 10 -Tfinal 0.0 -d " + str(d) + " -l " + str(l) + " > segdup-output.txt"
+    command = "cat ./for-segdup-from-kowhai.txt | xargs " + segdupDir + "segdup -n " + str(iterations) + " -Tinit 3 -Tfinal 0.0 -d " + str(d) + " -l " + str(l) + " > segdup-output.txt"
     print(command)
     system(command)
     (nbdups, nblosses, cost) = get_segdup_costs("segdup-output.txt")
