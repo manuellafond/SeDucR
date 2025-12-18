@@ -156,10 +156,6 @@ def get_segdup_gtree_str(newick, gtree_index):
 
 
 
-
-
-output_data = []
-
 out = open("stats.csv", 'w')
 
 out.write("method,planted_wgds,duprate,simid,dup_cost,solution_cost,solution_nbdups,solution_nblosses,time\n")
@@ -211,7 +207,6 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
         start = time.perf_counter()
 
         os.system(command)
-        end = time.perf_counter()
 
         elapsed = time.perf_counter() - start 
 
@@ -260,10 +255,11 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
             start = time.perf_counter()
             os.system(cmd)
             end = time.perf_counter()
+            elapsed = time.perf_counter() - start 
         
             (cost, nbdups, nblosses) = get_insider_costs("out.txt")
             ybcost = cost
-            elapsed = time.perf_counter() - start 
+
             out.write(f"insider,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
         
         if "insider_relax" in methods:
@@ -274,10 +270,11 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
             start = time.perf_counter()
             os.system(cmd)
             end = time.perf_counter()
+            elapsed = time.perf_counter() - start 
         
             (cost_relax, nbdups_relax, nblosses_relax) = get_insider_costs("out_relax.txt")
             ybcost_relax = cost_relax
-            elapsed = time.perf_counter() - start 
+
             out.write(f"insider_relax,{wgd},{duprate},{simid},{dup_cost},{cost_relax},{nbdups_relax},{nblosses_relax},{elapsed:.3f}\n")
             
             if "insider" in methods and ybcost != ybcost_relax:
