@@ -18,12 +18,28 @@ workdir = "./work_kowhai/"
 os.makedirs(workdir, exist_ok=True)
 
 
-#kowhai possible options
-nH_vals = [50, 20]	#leaves  [100,20,50]
-nP_vals = [20, 50]	#nb gtrees [100,20,50]
-rB_vals = [3.0, 1.0, 3.0]
-pC_vals = [1]
-pJ_vals = [1, 0.5, 0.8,0.2]
+
+skip_existing_kowhai = True
+skip_existing_csv = True
+
+
+#kowhai possible options, DEFAULT MUST BE FIRST
+nH_vals = [50, 20, 100]	#leaves  [100,20,50]
+nP_vals = [20, 50, 100]	#nb gtrees [100,20,50]
+rB_vals = [2.0, 1.0, 3.0, 4.0, 5.0]
+pC_vals = [0.5]
+pJ_vals = [0.5, 0.2, 0.8, 1.0]
+
+
+'''
+#for testing
+nH_vals = [20]	
+nP_vals = [20]	
+rB_vals = [2.0]
+pC_vals = [0.5]
+pJ_vals = [0.5]
+'''
+
 
 
 #segdup/multrec options
@@ -37,6 +53,32 @@ replicates = 10
 
 methods = ["segdup", "insider_relax", "fastmultrec", "lca"]
 
+
+
+
+
+
+
+'''
+This function receives five arrays and returns the list of 5-tuples, one element per array,
+containing the combinations of values where all values are the first element of the arrays, 
+except for possibly one array.  This is useful when the first value of the array is the default,
+so we keep all fixed to default except one parameter that varies.
+'''
+def get_param_combinations(a, b, c, d, e):
+    #global nH_vals, nP_vals, rB_vals, pC_vals, pJ_vals
+    
+    base = (a[0], b[0], c[0], d[0], e[0])
+    results = [base]
+
+    arrays = (a, b, c, d, e)
+    for i, arr in enumerate(arrays):
+        for val in arr[1:]:
+            combo = list(base)
+            combo[i] = val
+            results.append(tuple(combo))
+
+    return results
 
 
 
@@ -141,25 +183,47 @@ def create_fastmultrec_files_from_kowhai(kowhai_infile, species_outfile, gt_outf
 
 out = open("stats_kowhai.csv", 'w')
 
-out.write("method,nh,np,rb,pc,pj,dup_cost,solution_cost,solution_nbdups,solution_nblosses,time\n")
 
-for (nH, nP, rB, pC, pJ, d, r) in itertools.product(nH_vals, nP_vals, rB_vals, pC_vals, pJ_vals, d_vals, range(replicates)):
+header_line = "method,nh,np,rb,pc,pj,repl,dup_cost,solution_cost,solution_nbdups,solution_nblosses,time\n"
+out.write(header_line)
 
+
+param_combos = get_param_combinations(nH_vals, nP_vals, rB_vals, pC_vals, pJ_vals)
+
+#commented line below was testing EVERY param combo
+#for (nH, nP, rB, pC, pJ, d, r) in itertools.product(nH_vals, nP_vals, rB_vals, pC_vals, pJ_vals, d_vals, range(replicates)):
+for ((nH, nP, rB, pC, pJ), d, r) in itertools.product(param_combos, d_vals, range(replicates)):
+
+    #filenames will have all the parameter info
+    suffix = f"nH{str(nH)}_nP{str(nP)}_nR{1}_rB{str(rB)}_pC{str(pC)}_pJ{str(pJ)}_rep{r}_d{d}"
+
+    #each run produces a csv - if it already exists we can skip it
+    run_csv_filename = workdir + f"stats_{suffix}.csv"
+    if skip_existing_csv and os.path.exists(run_csv_filename):
+        print(run_csv_filename + " skipped")
+        continue
+
+    run_csv_file = open(run_csv_filename, 'w')
+    run_csv_file.write(header_line)
 
     #do a simulation
-    command = kowhaiDir + "kowhai --sim -nH " + str(nH) + " -nP " + str(nP) + " -nR 1 -rB " + str(rB) + " -pC " + str(pC) + " -pJ " + str(pJ) + " --for-segdup --for-multrec"
-    command += " > /dev/null"
-    print(command)
-    system(command)
-
-    print("Simulation done")
-    #filenames will have all the parameter info
-    suffix = f"nH{str(nH)}_nP{str(nP)}_nR{1}_rB{str(rB)}_pC{str(pC)}_pJ{str(pJ)}_rep{r}"
-    
     kowhai_file_segdup = workdir + "kowhai_for_segdup_" + suffix + ".txt"
     kowhai_file_multrec = workdir + "kowhai_for_multrec_" + suffix + ".txt"
-    shutil.move("for-segdup-from-kowhai.txt", kowhai_file_segdup)
-    shutil.move("for-multrec-from-kowhai.txt", kowhai_file_multrec)
+    
+    #unless it should be skipped
+    if not (skip_existing_kowhai and os.path.exists(kowhai_file_segdup)):
+        command = kowhaiDir + "kowhai --sim -nH " + str(nH) + " -nP " + str(nP) + " -nR 1 -rB " + str(rB) + " -pC " + str(pC) + " -pJ " + str(pJ) + " --for-segdup --for-multrec"
+        command += " > /dev/null"
+        print(f"Rep {r} d={d}: {command}")
+    
+        system(command)
+
+        print("Simulation done")
+    
+    
+
+        shutil.move("for-segdup-from-kowhai.txt", kowhai_file_segdup)
+        shutil.move("for-multrec-from-kowhai.txt", kowhai_file_multrec)
     
         
     #-------------------------------------------------------------------------------------
@@ -178,7 +242,8 @@ for (nH, nP, rB, pC, pJ, d, r) in itertools.product(nH_vals, nP_vals, rB_vals, p
         (nbdups, nblosses, cost) = get_segdup_costs(f"{workdir}segdupout_{suffix}.txt")
         elapsed = time.perf_counter() - start 
 
-        out.write(f"segdup,{nH},{nP},{rB},{pC},{pJ},{d},{cost},{nbdups},{nblosses},{elapsed:.3f}\n")
+        out.write(f"segdup,{nH},{nP},{rB},{pC},{pJ},{r},{d},{cost},{nbdups},{nblosses},{elapsed:.6f}\n")
+        run_csv_file.write(f"segdup,{nH},{nP},{rB},{pC},{pJ},{r},{d},{cost},{nbdups},{nblosses},{elapsed:.6f}\n")
 
 
     #-------------------------------------------------------------------------------------
@@ -197,7 +262,8 @@ for (nH, nP, rB, pC, pJ, d, r) in itertools.product(nH_vals, nP_vals, rB_vals, p
         elapsed = time.perf_counter() - start 
 
         (mrCost, mrDups, mrLosses) = get_insider_costs(f"{workdir}multrec-output_{suffix}.txt")
-        out.write(f"fastmultrec,{nH},{nP},{rB},{pC},{pJ},{d},{mrCost},{mrDups},{mrLosses},{elapsed:.3f}\n")
+        out.write(f"fastmultrec,{nH},{nP},{rB},{pC},{pJ},{r},{d},{mrCost},{mrDups},{mrLosses},{elapsed:.6f}\n")
+        run_csv_file.write(f"fastmultrec,{nH},{nP},{rB},{pC},{pJ},{r},{d},{mrCost},{mrDups},{mrLosses},{elapsed:.6f}\n")
 
     #-------------------------------------------------------------------------------------
     #insider relax branch
@@ -211,7 +277,8 @@ for (nH, nP, rB, pC, pJ, d, r) in itertools.product(nH_vals, nP_vals, rB_vals, p
         elapsed = time.perf_counter() - start 
     
         (insCost, insDups, insLosses) = get_insider_costs(f"{workdir}insider-output_{suffix}.txt")
-        out.write(f"insider_relax,{nH},{nP},{rB},{pC},{pJ},{d},{insCost},{insDups},{insLosses},{elapsed:.3f}\n")
+        out.write(f"insider_relax,{nH},{nP},{rB},{pC},{pJ},{r},{d},{insCost},{insDups},{insLosses},{elapsed:.6f}\n")
+        run_csv_file.write(f"insider_relax,{nH},{nP},{rB},{pC},{pJ},{r},{d},{insCost},{insDups},{insLosses},{elapsed:.6f}\n")
 
 
 
@@ -219,18 +286,22 @@ for (nH, nP, rB, pC, pJ, d, r) in itertools.product(nH_vals, nP_vals, rB_vals, p
     #lca map
     #-------------------------------------------------------------------------------------
     if "lca" in methods:
-        start = time.perf_counter()
+
         #command = fastmultrecDir + "segrec -d " + str(d) + " -l " + str(l) + " " + multrecInput[:-3] + "\" -o lca-output.txt  -al lca"
         command = f"{fastmultrecDir}segrec -d {str(d)} -l {str(l)} -sf {sptree_filename} -gf {gt_multrec_tree_filename} -al lca -o {workdir}lca-output_{suffix}.txt"
         print(command)
+        start = time.perf_counter()
         system(command)
         elapsed = time.perf_counter() - start 
 
         (lcaCost, lcaDups, lcaLosses) = get_insider_costs(f"{workdir}lca-output_{suffix}.txt")
-        out.write(f"lca,{nH},{nP},{rB},{pC},{pJ},{d},{lcaCost},{lcaDups},{lcaLosses},{elapsed:.3f}\n")
+        out.write(f"lca,{nH},{nP},{rB},{pC},{pJ},{r},{d},{lcaCost},{lcaDups},{lcaLosses},{elapsed:.6f}\n")
+        run_csv_file.write(f"lca,{nH},{nP},{rB},{pC},{pJ},{r},{d},{lcaCost},{lcaDups},{lcaLosses},{elapsed:.6f}\n")
+
+    run_csv_file.close()
 
 
 
-
+out.close()
 
 

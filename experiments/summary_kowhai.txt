@@ -1,1924 +1,664 @@
 Average times (seconds)
 
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=25;
-segdup               : 28.50580
-fastmultrec          : 0.16510
-insider_relax        : 0.05280
-lca                  : 0.03320
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=5;
-segdup               : 115.43360
-fastmultrec          : 0.32590
-insider_relax        : 0.08245
-lca                  : 0.05790
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=10;
-segdup               : 746.65565
-fastmultrec          : 8.86360
-insider_relax        : 0.25150
-lca                  : 0.42750
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=15;
-segdup               : 128.53360
-fastmultrec          : 0.39845
-insider_relax        : 0.12385
-lca                  : 0.07525
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=20;
-segdup               : 353.01940
-fastmultrec          : 9.08630
-insider_relax        : 0.25950
-lca                  : 0.47955
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=25;
-segdup               : 16.42050
-fastmultrec          : 0.06255
-insider_relax        : 0.02385
-lca                  : 0.01565
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=5;
-segdup               : 29.36160
-fastmultrec          : 0.07890
-insider_relax        : 0.02820
-lca                  : 0.01800
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=10;
-segdup               : 28.17125
-fastmultrec          : 0.09095
-insider_relax        : 0.03275
-lca                  : 0.02105
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=15;
-segdup               : 22.47535
-fastmultrec          : 0.06985
-insider_relax        : 0.02600
-lca                  : 0.01660
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=20;
-segdup               : 24.41130
-fastmultrec          : 0.08385
-insider_relax        : 0.02920
-lca                  : 0.01835
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=25;
-segdup               : 70.26835
-fastmultrec          : 0.22400
-insider_relax        : 0.07335
-lca                  : 0.04395
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=5;
-segdup               : 69.33290
-fastmultrec          : 0.17215
-insider_relax        : 0.05955
-lca                  : 0.03615
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=10;
-segdup               : 63.10465
-fastmultrec          : 0.18930
-insider_relax        : 0.05895
-lca                  : 0.03840
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=15;
-segdup               : 323.74005
-fastmultrec          : 3.40665
-insider_relax        : 0.16830
-lca                  : 0.12320
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=20;
-segdup               : 80.18635
-fastmultrec          : 0.17580
-insider_relax        : 0.06445
-lca                  : 0.03865
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=25;
-segdup               : 6.91150
-fastmultrec          : 0.04165
-insider_relax        : 0.01660
-lca                  : 0.01070
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=5;
-segdup               : 6.26475
-fastmultrec          : 0.03565
-insider_relax        : 0.01355
-lca                  : 0.00945
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=10;
-segdup               : 6.72475
-fastmultrec          : 0.03545
-insider_relax        : 0.01425
-lca                  : 0.00890
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=15;
-segdup               : 7.05450
-fastmultrec          : 0.03620
-insider_relax        : 0.01405
-lca                  : 0.00950
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=20;
-segdup               : 6.22770
-fastmultrec          : 0.03795
-insider_relax        : 0.01515
-lca                  : 0.00965
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=25;
-segdup               : 3.65620
-fastmultrec          : 0.03350
-insider_relax        : 0.01260
-lca                  : 0.00870
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=5;
-segdup               : 16.43400
-fastmultrec          : 0.04710
-insider_relax        : 0.01670
-lca                  : 0.01140
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=10;
-segdup               : 10.00930
-fastmultrec          : 0.04200
-insider_relax        : 0.01450
-lca                  : 0.01020
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=15;
-segdup               : 4.35240
-fastmultrec          : 0.02920
-insider_relax        : 0.01120
-lca                  : 0.00890
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=20;
-segdup               : 4.00390
-fastmultrec          : 0.03440
-insider_relax        : 0.01230
-lca                  : 0.00880
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=25;
-segdup               : 4.57890
-fastmultrec          : 0.03100
-insider_relax        : 0.01230
-lca                  : 0.00890
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=5;
-segdup               : 5.73600
-fastmultrec          : 0.03000
-insider_relax        : 0.01150
-lca                  : 0.00830
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=10;
-segdup               : 7.09480
-fastmultrec          : 0.03390
-insider_relax        : 0.01230
-lca                  : 0.00910
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=15;
-segdup               : 2.49780
-fastmultrec          : 0.02770
-insider_relax        : 0.01060
-lca                  : 0.00810
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=20;
-segdup               : 4.19830
-fastmultrec          : 0.04210
-insider_relax        : 0.01550
-lca                  : 0.01030
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=25;
-segdup               : 6.92040
-fastmultrec          : 0.03610
-insider_relax        : 0.01430
-lca                  : 0.00970
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=5;
-segdup               : 9.38330
-fastmultrec          : 0.04010
-insider_relax        : 0.01440
-lca                  : 0.01010
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=10;
-segdup               : 7.04920
-fastmultrec          : 0.04800
-insider_relax        : 0.01700
-lca                  : 0.01130
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=15;
-segdup               : 13.28330
-fastmultrec          : 0.05390
-insider_relax        : 0.01980
-lca                  : 0.01340
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=20;
-segdup               : 6.50340
-fastmultrec          : 0.04040
-insider_relax        : 0.01490
-lca                  : 0.00960
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=25;
-segdup               : 4.41300
-fastmultrec          : 0.02770
-insider_relax        : 0.01040
-lca                  : 0.00710
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=5;
-segdup               : 4.50000
-fastmultrec          : 0.02730
-insider_relax        : 0.01050
-lca                  : 0.00730
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=10;
-segdup               : 4.66310
-fastmultrec          : 0.02540
-insider_relax        : 0.01060
-lca                  : 0.00690
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=15;
-segdup               : 2.42780
-fastmultrec          : 0.02630
-insider_relax        : 0.01060
-lca                  : 0.00730
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=20;
-segdup               : 3.32590
-fastmultrec          : 0.02740
-insider_relax        : 0.01140
-lca                  : 0.00790
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=25;
-segdup               : 235.14295
-fastmultrec          : 1.25470
-insider_relax        : 0.31385
-lca                  : 0.17550
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=5;
-segdup               : 272.14865
-fastmultrec          : 0.45805
-insider_relax        : 0.15220
-lca                  : 0.09000
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=10;
-segdup               : 507.53055
-fastmultrec          : 2.63335
-insider_relax        : 0.43065
-lca                  : 0.25485
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=15;
-segdup               : 134.00710
-fastmultrec          : 0.45115
-insider_relax        : 0.14150
-lca                  : 0.08215
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=20;
-segdup               : 278.12615
-fastmultrec          : 0.95960
-insider_relax        : 0.28330
-lca                  : 0.15865
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=25;
-segdup               : 40.79050
-fastmultrec          : 0.18140
-insider_relax        : 0.06140
-lca                  : 0.03895
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=5;
-segdup               : 55.02640
-fastmultrec          : 0.14330
-insider_relax        : 0.05145
-lca                  : 0.03115
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=10;
-segdup               : 70.73085
-fastmultrec          : 0.17335
-insider_relax        : 0.05995
-lca                  : 0.03755
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=15;
-segdup               : 185.52710
-fastmultrec          : 0.31000
-insider_relax        : 0.10355
-lca                  : 0.05885
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=20;
-segdup               : 129.71700
-fastmultrec          : 0.32140
-insider_relax        : 0.11210
-lca                  : 0.06670
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=25;
-segdup               : 70.87155
-fastmultrec          : 0.24950
-insider_relax        : 0.08540
-lca                  : 0.05140
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=5;
-segdup               : 79.00695
-fastmultrec          : 0.19035
-insider_relax        : 0.06410
-lca                  : 0.04000
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=10;
-segdup               : 225.93890
-fastmultrec          : 0.50160
-insider_relax        : 0.15415
-lca                  : 0.09020
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=15;
-segdup               : 1048.32255
-fastmultrec          : 1.57445
-insider_relax        : 0.57800
-lca                  : 0.28415
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=20;
-segdup               : 144.61130
-fastmultrec          : 0.38505
-insider_relax        : 0.12760
-lca                  : 0.07565
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=25;
-segdup               : 22.40520
-fastmultrec          : 0.09540
-insider_relax        : 0.03480
-lca                  : 0.02105
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=5;
-segdup               : 29.35220
-fastmultrec          : 0.09205
-insider_relax        : 0.03140
-lca                  : 0.02030
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=10;
-segdup               : 27.03125
-fastmultrec          : 0.09690
-insider_relax        : 0.03365
-lca                  : 0.02275
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=15;
-segdup               : 29.66085
-fastmultrec          : 0.10510
-insider_relax        : 0.03675
-lca                  : 0.02240
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=20;
-segdup               : 22.25745
-fastmultrec          : 0.09370
-insider_relax        : 0.03305
-lca                  : 0.02065
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=25;
-segdup               : 18.86620
-fastmultrec          : 0.11460
-insider_relax        : 0.03870
-lca                  : 0.02550
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=5;
-segdup               : 29.46720
-fastmultrec          : 0.09610
-insider_relax        : 0.03360
-lca                  : 0.02140
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=10;
-segdup               : 41.50060
-fastmultrec          : 0.11670
-insider_relax        : 0.03960
-lca                  : 0.02920
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=15;
-segdup               : 160.00710
-fastmultrec          : 0.36950
-insider_relax        : 0.13820
-lca                  : 0.07600
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=20;
-segdup               : 26.47090
-fastmultrec          : 0.12570
-insider_relax        : 0.04390
-lca                  : 0.02630
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=25;
-segdup               : 36.04600
-fastmultrec          : 0.10480
-insider_relax        : 0.03650
-lca                  : 0.02290
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=5;
-segdup               : 24.22360
-fastmultrec          : 0.09560
-insider_relax        : 0.03170
-lca                  : 0.02170
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=10;
-segdup               : 22.99190
-fastmultrec          : 0.08110
-insider_relax        : 0.02690
-lca                  : 0.01820
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=15;
-segdup               : 16.49300
-fastmultrec          : 0.09620
-insider_relax        : 0.03250
-lca                  : 0.02030
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=20;
-segdup               : 13.03090
-fastmultrec          : 0.06750
-insider_relax        : 0.02210
-lca                  : 0.01580
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=25;
-segdup               : 13.25440
-fastmultrec          : 0.08360
-insider_relax        : 0.03070
-lca                  : 0.01860
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=5;
-segdup               : 66.76830
-fastmultrec          : 0.18550
-insider_relax        : 0.05260
-lca                  : 0.03310
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=10;
-segdup               : 41.98560
-fastmultrec          : 0.12650
-insider_relax        : 0.04210
-lca                  : 0.02770
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=15;
-segdup               : 23.97030
-fastmultrec          : 0.12360
-insider_relax        : 0.04350
-lca                  : 0.02660
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=20;
-segdup               : 29.86120
-fastmultrec          : 0.16100
-insider_relax        : 0.05400
-lca                  : 0.03270
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=25;
-segdup               : 11.76850
-fastmultrec          : 0.06800
-insider_relax        : 0.02380
-lca                  : 0.01630
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=5;
-segdup               : 16.00410
-fastmultrec          : 0.07040
-insider_relax        : 0.02350
-lca                  : 0.01600
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=10;
-segdup               : 12.96940
-fastmultrec          : 0.06360
-insider_relax        : 0.02140
-lca                  : 0.01470
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=15;
-segdup               : 11.94680
-fastmultrec          : 0.06950
-insider_relax        : 0.02500
-lca                  : 0.01560
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=20;
-segdup               : 11.01820
-fastmultrec          : 0.06260
-insider_relax        : 0.02020
-lca                  : 0.01380
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=25;
-segdup               : 61.10840
-fastmultrec          : 0.95470
-insider_relax        : 0.10995
-lca                  : 0.12555
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=5;
-segdup               : 97.96720
-fastmultrec          : 0.17600
-insider_relax        : 0.06475
-lca                  : 0.03670
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=10;
-segdup               : 75.44515
-fastmultrec          : 0.09985
-insider_relax        : 0.04265
-lca                  : 0.02350
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=15;
-segdup               : 31.89885
-fastmultrec          : 0.15620
-insider_relax        : 0.04960
-lca                  : 0.02840
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=20;
-segdup               : 45.08395
-fastmultrec          : 0.13430
-insider_relax        : 0.05775
-lca                  : 0.03250
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=25;
-segdup               : 7.49265
-fastmultrec          : 0.02775
-insider_relax        : 0.01420
-lca                  : 0.00810
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=5;
-segdup               : 28.91285
-fastmultrec          : 0.05025
-insider_relax        : 0.02325
-lca                  : 0.01285
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=10;
-segdup               : 9.19925
-fastmultrec          : 0.02515
-insider_relax        : 0.01250
-lca                  : 0.00765
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=15;
-segdup               : 9.45685
-fastmultrec          : 0.02990
-insider_relax        : 0.01440
-lca                  : 0.00850
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=20;
-segdup               : 18.43445
-fastmultrec          : 0.04135
-insider_relax        : 0.01925
-lca                  : 0.01145
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=25;
-segdup               : 78.16630
-fastmultrec          : 0.13960
-insider_relax        : 0.06110
-lca                  : 0.03245
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=5;
-segdup               : 171.68155
-fastmultrec          : 0.26530
-insider_relax        : 0.08810
-lca                  : 0.04800
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=10;
-segdup               : 44.93025
-fastmultrec          : 0.07285
-insider_relax        : 0.03180
-lca                  : 0.01825
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=15;
-segdup               : 175.83395
-fastmultrec          : 0.22975
-insider_relax        : 0.08865
-lca                  : 0.04415
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=20;
-segdup               : 41.95915
-fastmultrec          : 0.17755
-insider_relax        : 0.05250
-lca                  : 0.03005
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=25;
-segdup               : 3.13335
-fastmultrec          : 0.01315
-insider_relax        : 0.00810
-lca                  : 0.00445
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=5;
-segdup               : 2.84805
-fastmultrec          : 0.01150
-insider_relax        : 0.00665
-lca                  : 0.00420
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=10;
-segdup               : 2.40365
-fastmultrec          : 0.01355
-insider_relax        : 0.00740
-lca                  : 0.00465
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=15;
-segdup               : 3.02230
-fastmultrec          : 0.01335
-insider_relax        : 0.00740
-lca                  : 0.00475
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=20;
-segdup               : 2.39520
-fastmultrec          : 0.01215
-insider_relax        : 0.00750
-lca                  : 0.00450
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=25;
-segdup               : 4.88980
-fastmultrec          : 0.02430
-insider_relax        : 0.01150
-lca                  : 0.00710
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=5;
-segdup               : 3.57830
-fastmultrec          : 0.01500
-insider_relax        : 0.00710
-lca                  : 0.00470
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=10;
-segdup               : 1.32610
-fastmultrec          : 0.00960
-insider_relax        : 0.00520
-lca                  : 0.00380
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=15;
-segdup               : 5.36620
-fastmultrec          : 0.02930
-insider_relax        : 0.01390
-lca                  : 0.00820
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=20;
-segdup               : 2.46750
-fastmultrec          : 0.01840
-insider_relax        : 0.00840
-lca                  : 0.00530
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=25;
-segdup               : 0.97390
-fastmultrec          : 0.00880
-insider_relax        : 0.00530
-lca                  : 0.00330
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=5;
-segdup               : 2.35890
-fastmultrec          : 0.01290
-insider_relax        : 0.00660
-lca                  : 0.00450
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=10;
-segdup               : 2.42260
-fastmultrec          : 0.01010
-insider_relax        : 0.00580
-lca                  : 0.00400
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=15;
-segdup               : 2.10190
-fastmultrec          : 0.01050
-insider_relax        : 0.00610
-lca                  : 0.00400
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=20;
-segdup               : 1.81800
-fastmultrec          : 0.01210
-insider_relax        : 0.00640
-lca                  : 0.00440
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=25;
-segdup               : 2.41780
-fastmultrec          : 0.01710
-insider_relax        : 0.00870
-lca                  : 0.00560
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=5;
-segdup               : 4.26650
-fastmultrec          : 0.01360
-insider_relax        : 0.00670
-lca                  : 0.00440
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=10;
-segdup               : 2.51850
-fastmultrec          : 0.01130
-insider_relax        : 0.00630
-lca                  : 0.00380
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=15;
-segdup               : 1.60950
-fastmultrec          : 0.01130
-insider_relax        : 0.00580
-lca                  : 0.00400
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=20;
-segdup               : 3.45480
-fastmultrec          : 0.02010
-insider_relax        : 0.00930
-lca                  : 0.00620
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=25;
-segdup               : 1.27480
-fastmultrec          : 0.01000
-insider_relax        : 0.00570
-lca                  : 0.00380
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=5;
-segdup               : 1.24530
-fastmultrec          : 0.00960
-insider_relax        : 0.00540
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=25;
+segdup               : 2.07931
+fastmultrec          : 0.01471
+insider_relax        : 0.00587
+lca                  : 0.00361
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=5;
+segdup               : 3.11210
+fastmultrec          : 0.02339
+insider_relax        : 0.00623
+lca                  : 0.00373
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=10;
+segdup               : 1.85707
+fastmultrec          : 0.01285
+insider_relax        : 0.00522
 lca                  : 0.00360
 
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=10;
-segdup               : 1.32490
-fastmultrec          : 0.00900
-insider_relax        : 0.00500
-lca                  : 0.00340
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=15;
-segdup               : 1.02310
-fastmultrec          : 0.00940
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=15;
+segdup               : 1.70561
+fastmultrec          : 0.01038
 insider_relax        : 0.00540
-lca                  : 0.00350
+lca                  : 0.00339
 
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=20;
-segdup               : 1.12350
-fastmultrec          : 0.00840
-insider_relax        : 0.00490
-lca                  : 0.00310
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=20;
+segdup               : 4.85643
+fastmultrec          : 0.02550
+insider_relax        : 0.00813
+lca                  : 0.00505
 
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=25;
-segdup               : 405.38020
-fastmultrec          : 9.14005
-insider_relax        : 0.34265
-lca                  : 0.52500
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=25;
+segdup               : 5.07800
+fastmultrec          : 0.03368
+insider_relax        : 0.00904
+lca                  : 0.00588
 
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=5;
-segdup               : 698.89940
-fastmultrec          : 2.32755
-insider_relax        : 0.28925
-lca                  : 0.18910
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=5;
+segdup               : 4.28700
+fastmultrec          : 0.03717
+insider_relax        : 0.00908
+lca                  : 0.00571
 
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=10;
-segdup               : 146.79945
-fastmultrec          : 0.26255
-insider_relax        : 0.08780
-lca                  : 0.04715
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=10;
+segdup               : 5.56725
+fastmultrec          : 0.04104
+insider_relax        : 0.00933
+lca                  : 0.00587
 
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=15;
-segdup               : 3764.03785
-fastmultrec          : 620.89230
-insider_relax        : 0.55020
-lca                  : 9.75200
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=15;
+segdup               : 3.68050
+fastmultrec          : 0.03259
+insider_relax        : 0.00813
+lca                  : 0.00501
 
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=20;
-segdup               : 226.45215
-fastmultrec          : 6.38985
-insider_relax        : 0.25160
-lca                  : 0.16740
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=20;
+segdup               : 3.41655
+fastmultrec          : 0.02556
+insider_relax        : 0.00769
+lca                  : 0.00489
 
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=25;
-segdup               : 28.40470
-fastmultrec          : 0.07170
-insider_relax        : 0.03390
-lca                  : 0.01790
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=25;
+segdup               : 14.43298
+fastmultrec          : 0.07746
+insider_relax        : 0.01513
+lca                  : 0.00773
 
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=5;
-segdup               : 57.00895
-fastmultrec          : 0.09065
-insider_relax        : 0.04085
-lca                  : 0.02210
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=10;
-segdup               : 39.44900
-fastmultrec          : 0.07310
-insider_relax        : 0.03315
-lca                  : 0.01880
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=15;
-segdup               : 64.05010
-fastmultrec          : 0.11930
-insider_relax        : 0.04385
-lca                  : 0.02530
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=20;
-segdup               : 39.46370
-fastmultrec          : 0.08745
-insider_relax        : 0.04015
-lca                  : 0.02090
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=25;
-segdup               : 110.18725
-fastmultrec          : 0.27655
-insider_relax        : 0.09490
-lca                  : 0.05020
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=5;
-segdup               : 190.99590
-fastmultrec          : 0.24925
-insider_relax        : 0.09560
-lca                  : 0.05725
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=10;
-segdup               : 208.04165
-fastmultrec          : 0.28210
-insider_relax        : 0.10925
-lca                  : 0.05715
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=15;
-segdup               : 119.70330
-fastmultrec          : 0.27165
-insider_relax        : 0.08240
-lca                  : 0.04435
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=20;
-segdup               : 172.85945
-fastmultrec          : 0.35645
-insider_relax        : 0.12415
-lca                  : 0.06140
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=25;
-segdup               : 10.14550
-fastmultrec          : 0.03165
-insider_relax        : 0.01745
-lca                  : 0.00890
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=5;
-segdup               : 9.19905
-fastmultrec          : 0.02560
-insider_relax        : 0.01275
-lca                  : 0.00760
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=10;
-segdup               : 11.82010
-fastmultrec          : 0.03230
-insider_relax        : 0.01465
-lca                  : 0.00855
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=15;
-segdup               : 10.14850
-fastmultrec          : 0.03270
-insider_relax        : 0.01565
-lca                  : 0.00890
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=20;
-segdup               : 11.45350
-fastmultrec          : 0.03190
-insider_relax        : 0.01690
-lca                  : 0.00890
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=25;
-segdup               : 12.26720
-fastmultrec          : 0.05140
-insider_relax        : 0.02310
-lca                  : 0.01360
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=5;
-segdup               : 17.69720
-fastmultrec          : 0.03490
-insider_relax        : 0.01660
-lca                  : 0.00990
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=10;
-segdup               : 10.64700
-fastmultrec          : 0.02350
-insider_relax        : 0.01080
-lca                  : 0.00700
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=15;
-segdup               : 5.86960
-fastmultrec          : 0.02880
-insider_relax        : 0.01360
-lca                  : 0.00850
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=20;
-segdup               : 8.61150
-fastmultrec          : 0.04460
-insider_relax        : 0.01980
-lca                  : 0.01180
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=25;
-segdup               : 2.88170
-fastmultrec          : 0.02390
-insider_relax        : 0.01130
-lca                  : 0.00680
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=5;
-segdup               : 5.29510
-fastmultrec          : 0.01870
-insider_relax        : 0.00950
-lca                  : 0.00610
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=10;
-segdup               : 11.23120
-fastmultrec          : 0.02940
-insider_relax        : 0.01360
-lca                  : 0.00810
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=15;
-segdup               : 7.67930
-fastmultrec          : 0.03040
-insider_relax        : 0.01400
-lca                  : 0.00800
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=20;
-segdup               : 7.09570
-fastmultrec          : 0.02800
-insider_relax        : 0.01350
-lca                  : 0.00850
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=25;
-segdup               : 7.31570
-fastmultrec          : 0.03280
-insider_relax        : 0.01590
-lca                  : 0.00950
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=5;
-segdup               : 12.49630
-fastmultrec          : 0.03290
-insider_relax        : 0.01500
-lca                  : 0.00970
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=10;
-segdup               : 7.53870
-fastmultrec          : 0.03160
-insider_relax        : 0.01580
-lca                  : 0.00960
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=15;
-segdup               : 9.62190
-fastmultrec          : 0.03490
-insider_relax        : 0.01580
-lca                  : 0.00950
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=20;
-segdup               : 14.61190
-fastmultrec          : 0.04800
-insider_relax        : 0.02120
-lca                  : 0.01210
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=25;
-segdup               : 2.51620
-fastmultrec          : 0.02050
-insider_relax        : 0.01090
-lca                  : 0.00650
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=5;
-segdup               : 6.65830
-fastmultrec          : 0.01810
-insider_relax        : 0.00840
-lca                  : 0.00580
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=10;
-segdup               : 3.39310
-fastmultrec          : 0.01780
-insider_relax        : 0.00880
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=5;
+segdup               : 7.66822
+fastmultrec          : 0.03540
+insider_relax        : 0.00978
 lca                  : 0.00620
 
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=15;
-segdup               : 5.10170
-fastmultrec          : 0.01970
-insider_relax        : 0.00980
-lca                  : 0.00620
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=10;
+segdup               : 9.78099
+fastmultrec          : 0.06434
+insider_relax        : 0.01197
+lca                  : 0.00624
 
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=20;
-segdup               : 1.64300
-fastmultrec          : 0.01720
-insider_relax        : 0.00890
-lca                  : 0.00570
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=15;
+segdup               : 10.34083
+fastmultrec          : 0.08777
+insider_relax        : 0.01215
+lca                  : 0.00661
+
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=20;
+segdup               : 8.46393
+fastmultrec          : 0.05214
+insider_relax        : 0.01077
+lca                  : 0.00605
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=25;
+segdup               : 19.86569
+fastmultrec          : 0.11059
+insider_relax        : 0.02117
+lca                  : 0.01028
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=5;
+segdup               : 20.55396
+fastmultrec          : 0.11003
+insider_relax        : 0.01985
+lca                  : 0.01010
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=10;
+segdup               : 30.58147
+fastmultrec          : 0.19886
+insider_relax        : 0.02607
+lca                  : 0.01249
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=15;
+segdup               : 29.68822
+fastmultrec          : 0.18321
+insider_relax        : 0.02436
+lca                  : 0.01239
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=20;
+segdup               : 27.33861
+fastmultrec          : 0.16506
+insider_relax        : 0.02566
+lca                  : 0.01133
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=25;
+segdup               : 1.63333
+fastmultrec          : 0.01063
+insider_relax        : 0.00503
+lca                  : 0.00320
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=5;
+segdup               : 2.52881
+fastmultrec          : 0.01590
+insider_relax        : 0.00522
+lca                  : 0.00360
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=10;
+segdup               : 1.10837
+fastmultrec          : 0.00821
+insider_relax        : 0.00448
+lca                  : 0.00300
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=15;
+segdup               : 1.73740
+fastmultrec          : 0.01121
+insider_relax        : 0.00525
+lca                  : 0.00320
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=20;
+segdup               : 1.21896
+fastmultrec          : 0.00881
+insider_relax        : 0.00434
+lca                  : 0.00290
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=25;
+segdup               : 5.88074
+fastmultrec          : 0.05008
+insider_relax        : 0.00994
+lca                  : 0.00494
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=5;
+segdup               : 5.20144
+fastmultrec          : 0.02868
+insider_relax        : 0.00818
+lca                  : 0.00496
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=10;
+segdup               : 6.90112
+fastmultrec          : 0.04907
+insider_relax        : 0.01024
+lca                  : 0.00543
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=15;
+segdup               : 7.69345
+fastmultrec          : 0.05518
+insider_relax        : 0.01069
+lca                  : 0.00598
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=20;
+segdup               : 10.79262
+fastmultrec          : 0.11123
+insider_relax        : 0.01474
+lca                  : 0.00711
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=25;
+segdup               : 11.33977
+fastmultrec          : 0.14024
+insider_relax        : 0.01492
+lca                  : 0.00675
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=5;
+segdup               : 10.04679
+fastmultrec          : 0.06546
+insider_relax        : 0.01291
+lca                  : 0.00724
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=10;
+segdup               : 49.78549
+fastmultrec          : 0.35516
+insider_relax        : 0.03316
+lca                  : 0.01472
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=15;
+segdup               : 4.43420
+fastmultrec          : 0.03229
+insider_relax        : 0.00813
+lca                  : 0.00459
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=20;
+segdup               : 5.25918
+fastmultrec          : 0.04349
+insider_relax        : 0.00895
+lca                  : 0.00485
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=25;
+segdup               : 34.34199
+fastmultrec          : 0.52269
+insider_relax        : 0.03327
+lca                  : 0.01310
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=5;
+segdup               : 16.00532
+fastmultrec          : 0.13245
+insider_relax        : 0.01862
+lca                  : 0.00956
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=10;
+segdup               : 29.00343
+fastmultrec          : 0.32859
+insider_relax        : 0.02786
+lca                  : 0.01304
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=15;
+segdup               : 16.56640
+fastmultrec          : 0.18715
+insider_relax        : 0.01816
+lca                  : 0.00882
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=20;
+segdup               : 64.11793
+fastmultrec          : 0.81945
+insider_relax        : 0.04856
+lca                  : 0.01988
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=25;
+segdup               : 0.89516
+fastmultrec          : 0.00677
+insider_relax        : 0.00521
+lca                  : 0.00291
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=5;
+segdup               : 1.22201
+fastmultrec          : 0.00916
+insider_relax        : 0.00463
+lca                  : 0.00305
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=10;
+segdup               : 1.37448
+fastmultrec          : 0.00942
+insider_relax        : 0.00518
+lca                  : 0.00306
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=15;
+segdup               : 1.07750
+fastmultrec          : 0.00824
+insider_relax        : 0.00535
+lca                  : 0.00302
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=20;
+segdup               : 1.43989
+fastmultrec          : 0.00961
+insider_relax        : 0.00702
+lca                  : 0.00344
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=25;
+segdup               : 3.73646
+fastmultrec          : 0.03036
+insider_relax        : 0.00754
+lca                  : 0.00416
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=5;
+segdup               : 4.38109
+fastmultrec          : 0.02662
+insider_relax        : 0.00766
+lca                  : 0.00458
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=10;
+segdup               : 8.68393
+fastmultrec          : 0.07934
+insider_relax        : 0.01070
+lca                  : 0.00600
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=15;
+segdup               : 7.01776
+fastmultrec          : 0.05424
+insider_relax        : 0.00957
+lca                  : 0.00524
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=20;
+segdup               : 6.02452
+fastmultrec          : 0.03889
+insider_relax        : 0.00892
+lca                  : 0.00503
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=25;
+segdup               : 20.03637
+fastmultrec          : 0.17108
+insider_relax        : 0.01998
+lca                  : 0.00963
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=5;
+segdup               : 8.88265
+fastmultrec          : 0.05027
+insider_relax        : 0.01050
+lca                  : 0.00600
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=10;
+segdup               : 26.15723
+fastmultrec          : 0.29328
+insider_relax        : 0.02410
+lca                  : 0.01096
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=15;
+segdup               : 31.07587
+fastmultrec          : 0.25539
+insider_relax        : 0.02535
+lca                  : 0.01244
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=20;
+segdup               : 15.58638
+fastmultrec          : 0.07545
+insider_relax        : 0.01615
+lca                  : 0.01264
 
 -----------------------------------------
 Average solution costs
 
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=25;
-segdup               : 160.0
-fastmultrec          : 160.0
-insider_relax        : 160.0
-lca                  : 160.0
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=5;
-segdup               : 37.25
-fastmultrec          : 37.25
-insider_relax        : 37.25
-lca                  : 37.25
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=10;
-segdup               : 79.5
-fastmultrec          : 79.5
-insider_relax        : 74.25
-lca                  : 79.5
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=15;
-segdup               : 125.25
-fastmultrec          : 125.25
-insider_relax        : 125.25
-lca                  : 125.25
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=1;d=20;
-segdup               : 144.0
-fastmultrec          : 144.0
-insider_relax        : 138.0
-lca                  : 144.0
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=25;
-segdup               : 171.25
-fastmultrec          : 171.25
-insider_relax        : 171.25
-lca                  : 171.25
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=5;
-segdup               : 36.25
-fastmultrec          : 36.25
-insider_relax        : 36.25
-lca                  : 36.25
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=10;
-segdup               : 68.0
-fastmultrec          : 68.0
-insider_relax        : 68.0
-lca                  : 68.0
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=15;
-segdup               : 111.0
-fastmultrec          : 111.0
-insider_relax        : 111.0
-lca                  : 111.0
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.5;d=20;
-segdup               : 127.0
-fastmultrec          : 127.0
-insider_relax        : 127.0
-lca                  : 127.0
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=25;
-segdup               : 202.5
-fastmultrec          : 202.5
-insider_relax        : 202.5
-lca                  : 202.5
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=5;
-segdup               : 31.5
-fastmultrec          : 31.5
-insider_relax        : 31.5
-lca                  : 31.5
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=10;
-segdup               : 63.0
-fastmultrec          : 63.0
-insider_relax        : 63.0
-lca                  : 63.0
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=15;
-segdup               : 99.75
-fastmultrec          : 99.75
-insider_relax        : 99.75
-lca                  : 99.75
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.8;d=20;
-segdup               : 132.0
-fastmultrec          : 132.0
-insider_relax        : 132.0
-lca                  : 132.0
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=25;
-segdup               : 172.5
-fastmultrec          : 172.5
-insider_relax        : 172.5
-lca                  : 172.5
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=5;
-segdup               : 34.65
-fastmultrec          : 34.65
-insider_relax        : 34.65
-lca                  : 34.75
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=10;
-segdup               : 66.0
-fastmultrec          : 66.0
-insider_relax        : 66.0
-lca                  : 66.0
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=15;
-segdup               : 104.25
-fastmultrec          : 104.25
-insider_relax        : 103.8
-lca                  : 104.25
-
-Dataset nh=50;np=20;rb=3.0;pc=1;pj=0.2;d=20;
-segdup               : 137.0
-fastmultrec          : 137.0
-insider_relax        : 137.0
-lca                  : 137.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=25;
-segdup               : 60.0
-fastmultrec          : 60.0
-insider_relax        : 60.0
-lca                  : 60.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=5;
-segdup               : 10.5
-fastmultrec          : 10.5
-insider_relax        : 10.5
-lca                  : 10.5
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=10;
-segdup               : 27.0
-fastmultrec          : 27.0
-insider_relax        : 27.0
-lca                  : 27.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=15;
-segdup               : 27.0
-fastmultrec          : 27.0
-insider_relax        : 27.0
-lca                  : 27.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=1;d=20;
-segdup               : 40.0
-fastmultrec          : 40.0
-insider_relax        : 40.0
-lca                  : 40.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=25;
-segdup               : 60.0
-fastmultrec          : 60.0
-insider_relax        : 60.0
-lca                  : 60.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=5;
-segdup               : 9.5
-fastmultrec          : 9.5
-insider_relax        : 9.5
-lca                  : 9.5
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=10;
-segdup               : 23.0
-fastmultrec          : 23.0
-insider_relax        : 23.0
-lca                  : 23.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=15;
-segdup               : 16.5
-fastmultrec          : 16.5
-insider_relax        : 16.5
-lca                  : 16.5
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.5;d=20;
-segdup               : 46.0
-fastmultrec          : 46.0
-insider_relax        : 46.0
-lca                  : 46.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=25;
-segdup               : 67.5
-fastmultrec          : 67.5
-insider_relax        : 67.5
-lca                  : 67.5
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=5;
-segdup               : 12.5
-fastmultrec          : 12.5
-insider_relax        : 12.5
-lca                  : 12.5
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=10;
-segdup               : 26.0
-fastmultrec          : 26.0
-insider_relax        : 26.0
-lca                  : 26.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=15;
-segdup               : 25.5
-fastmultrec          : 25.5
-insider_relax        : 25.5
-lca                  : 25.5
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.8;d=20;
-segdup               : 40.0
-fastmultrec          : 40.0
-insider_relax        : 40.0
-lca                  : 40.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=25;
-segdup               : 55.0
-fastmultrec          : 55.0
-insider_relax        : 55.0
-lca                  : 55.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=5;
-segdup               : 10.0
-fastmultrec          : 10.0
-insider_relax        : 10.0
-lca                  : 10.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=10;
-segdup               : 22.0
-fastmultrec          : 22.0
-insider_relax        : 22.0
-lca                  : 22.0
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=15;
-segdup               : 31.5
-fastmultrec          : 31.5
-insider_relax        : 31.5
-lca                  : 31.5
-
-Dataset nh=50;np=20;rb=1.0;pc=1;pj=0.2;d=20;
-segdup               : 44.0
-fastmultrec          : 44.0
-insider_relax        : 44.0
-lca                  : 44.0
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=25;
-segdup               : 198.75
-fastmultrec          : 198.75
-insider_relax        : 198.75
-lca                  : 198.75
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=5;
-segdup               : 33.75
-fastmultrec          : 33.75
-insider_relax        : 33.75
-lca                  : 33.75
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=10;
-segdup               : 67.5
-fastmultrec          : 67.5
-insider_relax        : 67.5
-lca                  : 67.5
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=15;
-segdup               : 90.75
-fastmultrec          : 90.75
-insider_relax        : 90.75
-lca                  : 90.75
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=1;d=20;
-segdup               : 148.0
-fastmultrec          : 148.0
-insider_relax        : 148.0
-lca                  : 148.0
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=25;
-segdup               : 162.5
-fastmultrec          : 162.5
-insider_relax        : 162.5
-lca                  : 162.5
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=5;
-segdup               : 29.25
-fastmultrec          : 29.25
-insider_relax        : 29.25
-lca                  : 29.25
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=10;
-segdup               : 63.05
-fastmultrec          : 63.05
-insider_relax        : 63.05
-lca                  : 63.05
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=15;
-segdup               : 93.0
-fastmultrec          : 93.0
-insider_relax        : 93.0
-lca                  : 93.0
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.5;d=20;
-segdup               : 144.0
-fastmultrec          : 144.0
-insider_relax        : 144.0
-lca                  : 144.0
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=25;
-segdup               : 166.25
-fastmultrec          : 166.25
-insider_relax        : 166.25
-lca                  : 166.25
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=5;
-segdup               : 28.5
-fastmultrec          : 28.5
-insider_relax        : 28.5
-lca                  : 28.5
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=10;
-segdup               : 70.5
-fastmultrec          : 70.5
-insider_relax        : 70.5
-lca                  : 70.5
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=15;
-segdup               : 116.25
-fastmultrec          : 116.25
-insider_relax        : 116.25
-lca                  : 116.25
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.8;d=20;
-segdup               : 124.0
-fastmultrec          : 124.0
-insider_relax        : 124.0
-lca                  : 124.0
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=25;
-segdup               : 175.0
-fastmultrec          : 175.0
-insider_relax        : 175.0
-lca                  : 175.0
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=5;
-segdup               : 34.25
-fastmultrec          : 34.25
-insider_relax        : 34.25
-lca                  : 34.25
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=10;
-segdup               : 66.0
-fastmultrec          : 66.0
-insider_relax        : 66.0
-lca                  : 66.0
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=15;
-segdup               : 115.5
-fastmultrec          : 115.5
-insider_relax        : 115.5
-lca                  : 115.5
-
-Dataset nh=50;np=50;rb=3.0;pc=1;pj=0.2;d=20;
-segdup               : 154.0
-fastmultrec          : 154.0
-insider_relax        : 154.0
-lca                  : 154.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=25;
-segdup               : 50.0
-fastmultrec          : 50.0
-insider_relax        : 50.0
-lca                  : 50.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=5;
-segdup               : 10.0
-fastmultrec          : 10.0
-insider_relax        : 10.0
-lca                  : 10.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=10;
-segdup               : 26.0
-fastmultrec          : 26.0
-insider_relax        : 26.0
-lca                  : 26.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=15;
-segdup               : 43.5
-fastmultrec          : 43.5
-insider_relax        : 43.5
-lca                  : 43.5
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=1;d=20;
-segdup               : 64.0
-fastmultrec          : 64.0
-insider_relax        : 64.0
-lca                  : 64.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=25;
-segdup               : 75.0
-fastmultrec          : 75.0
-insider_relax        : 75.0
-lca                  : 75.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=5;
-segdup               : 12.0
-fastmultrec          : 12.0
-insider_relax        : 12.0
-lca                  : 12.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=10;
-segdup               : 18.0
-fastmultrec          : 18.0
-insider_relax        : 18.0
-lca                  : 18.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=15;
-segdup               : 37.5
-fastmultrec          : 37.5
-insider_relax        : 37.5
-lca                  : 37.5
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.5;d=20;
-segdup               : 34.0
-fastmultrec          : 34.0
-insider_relax        : 34.0
-lca                  : 34.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=25;
-segdup               : 35.0
-fastmultrec          : 35.0
-insider_relax        : 35.0
-lca                  : 35.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=5;
-segdup               : 13.0
-fastmultrec          : 13.0
-insider_relax        : 13.0
-lca                  : 13.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=10;
-segdup               : 30.0
-fastmultrec          : 30.0
-insider_relax        : 30.0
-lca                  : 30.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=15;
-segdup               : 37.5
-fastmultrec          : 37.5
-insider_relax        : 37.5
-lca                  : 37.5
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.8;d=20;
-segdup               : 54.0
-fastmultrec          : 54.0
-insider_relax        : 54.0
-lca                  : 54.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=25;
-segdup               : 62.5
-fastmultrec          : 62.5
-insider_relax        : 62.5
-lca                  : 62.5
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=5;
-segdup               : 12.0
-fastmultrec          : 12.0
-insider_relax        : 12.0
-lca                  : 12.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=10;
-segdup               : 26.0
-fastmultrec          : 26.0
-insider_relax        : 26.0
-lca                  : 26.0
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=15;
-segdup               : 37.5
-fastmultrec          : 37.5
-insider_relax        : 37.5
-lca                  : 37.5
-
-Dataset nh=50;np=50;rb=1.0;pc=1;pj=0.2;d=20;
-segdup               : 50.0
-fastmultrec          : 50.0
-insider_relax        : 50.0
-lca                  : 50.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=25;
-segdup               : 181.3
-fastmultrec          : 181.3
-insider_relax        : 181.3
-lca                  : 181.3
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=5;
-segdup               : 37.0
-fastmultrec          : 37.0
-insider_relax        : 37.0
-lca                  : 37.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=10;
-segdup               : 64.5
-fastmultrec          : 64.5
-insider_relax        : 64.5
-lca                  : 64.5
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=15;
-segdup               : 100.5
-fastmultrec          : 100.5
-insider_relax        : 100.5
-lca                  : 100.5
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=1;d=20;
-segdup               : 137.0
-fastmultrec          : 137.0
-insider_relax        : 137.0
-lca                  : 137.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=25;
-segdup               : 155.0
-fastmultrec          : 155.0
-insider_relax        : 155.0
-lca                  : 155.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=5;
-segdup               : 38.0
-fastmultrec          : 38.0
-insider_relax        : 38.0
-lca                  : 38.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=10;
-segdup               : 58.0
-fastmultrec          : 58.0
-insider_relax        : 58.0
-lca                  : 58.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=15;
-segdup               : 111.75
-fastmultrec          : 111.75
-insider_relax        : 111.75
-lca                  : 111.75
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.5;d=20;
-segdup               : 127.0
-fastmultrec          : 127.0
-insider_relax        : 127.0
-lca                  : 127.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=25;
-segdup               : 190.0
-fastmultrec          : 190.0
-insider_relax        : 190.0
-lca                  : 190.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=5;
-segdup               : 39.5
-fastmultrec          : 39.5
-insider_relax        : 39.5
-lca                  : 39.5
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=10;
-segdup               : 71.0
-fastmultrec          : 71.0
-insider_relax        : 71.0
-lca                  : 71.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=15;
-segdup               : 113.25
-fastmultrec          : 113.25
-insider_relax        : 113.25
-lca                  : 113.25
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.8;d=20;
-segdup               : 153.0
-fastmultrec          : 153.0
-insider_relax        : 153.0
-lca                  : 153.0
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=25;
-segdup               : 163.75
-fastmultrec          : 163.75
-insider_relax        : 163.75
-lca                  : 163.75
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=5;
-segdup               : 33.75
-fastmultrec          : 33.75
-insider_relax        : 33.75
-lca                  : 33.75
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=10;
-segdup               : 62.5
-fastmultrec          : 62.35
-insider_relax        : 62.35
-lca                  : 62.5
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=15;
-segdup               : 87.15
-fastmultrec          : 87.15
-insider_relax        : 87.15
-lca                  : 87.75
-
-Dataset nh=20;np=20;rb=3.0;pc=1;pj=0.2;d=20;
-segdup               : 126.3
-fastmultrec          : 126.3
-insider_relax        : 126.3
-lca                  : 127.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=25;
-segdup               : 62.5
-fastmultrec          : 62.5
-insider_relax        : 62.5
-lca                  : 62.5
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=5;
-segdup               : 9.5
-fastmultrec          : 9.5
-insider_relax        : 9.5
-lca                  : 9.5
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=10;
-segdup               : 12.0
-fastmultrec          : 12.0
-insider_relax        : 12.0
-lca                  : 12.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=15;
-segdup               : 46.5
-fastmultrec          : 46.5
-insider_relax        : 46.5
-lca                  : 46.5
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=1;d=20;
-segdup               : 38.0
-fastmultrec          : 38.0
-insider_relax        : 38.0
-lca                  : 38.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=25;
-segdup               : 40.0
-fastmultrec          : 40.0
-insider_relax        : 40.0
-lca                  : 40.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=5;
-segdup               : 11.0
-fastmultrec          : 11.0
-insider_relax        : 11.0
-lca                  : 11.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=10;
-segdup               : 27.0
-fastmultrec          : 27.0
-insider_relax        : 27.0
-lca                  : 27.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=15;
-segdup               : 42.0
-fastmultrec          : 42.0
-insider_relax        : 42.0
-lca                  : 42.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.5;d=20;
-segdup               : 42.0
-fastmultrec          : 42.0
-insider_relax        : 42.0
-lca                  : 42.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=25;
-segdup               : 62.5
-fastmultrec          : 62.5
-insider_relax        : 62.5
-lca                  : 62.5
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=5;
-segdup               : 11.0
-fastmultrec          : 11.0
-insider_relax        : 11.0
-lca                  : 11.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=10;
-segdup               : 23.0
-fastmultrec          : 23.0
-insider_relax        : 23.0
-lca                  : 23.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=15;
-segdup               : 31.5
-fastmultrec          : 31.5
-insider_relax        : 31.5
-lca                  : 31.5
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.8;d=20;
-segdup               : 44.0
-fastmultrec          : 44.0
-insider_relax        : 44.0
-lca                  : 44.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=25;
-segdup               : 75.0
-fastmultrec          : 75.0
-insider_relax        : 75.0
-lca                  : 75.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=5;
-segdup               : 12.0
-fastmultrec          : 12.0
-insider_relax        : 12.0
-lca                  : 12.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=10;
-segdup               : 18.0
-fastmultrec          : 18.0
-insider_relax        : 18.0
-lca                  : 18.0
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=15;
-segdup               : 34.5
-fastmultrec          : 34.5
-insider_relax        : 34.5
-lca                  : 34.5
-
-Dataset nh=20;np=20;rb=1.0;pc=1;pj=0.2;d=20;
-segdup               : 34.0
-fastmultrec          : 34.0
-insider_relax        : 34.0
-lca                  : 34.0
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=25;
-segdup               : 186.25
-fastmultrec          : 186.25
-insider_relax        : 186.25
-lca                  : 186.25
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=5;
-segdup               : 32.75
-fastmultrec          : 32.75
-insider_relax        : 32.75
-lca                  : 32.75
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=10;
-segdup               : 60.0
-fastmultrec          : 60.0
-insider_relax        : 60.0
-lca                  : 60.0
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=15;
-segdup               : 113.25
-fastmultrec          : 113.25
-insider_relax        : 97.5
-lca                  : 113.25
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=1;d=20;
-segdup               : 132.0
-fastmultrec          : 132.0
-insider_relax        : 132.0
-lca                  : 132.0
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=25;
-segdup               : 158.75
-fastmultrec          : 158.75
-insider_relax        : 158.75
-lca                  : 158.75
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=5;
-segdup               : 34.25
-fastmultrec          : 34.25
-insider_relax        : 34.25
-lca                  : 34.25
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=10;
-segdup               : 73.5
-fastmultrec          : 73.5
-insider_relax        : 73.5
-lca                  : 73.5
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=15;
-segdup               : 97.5
-fastmultrec          : 97.5
-insider_relax        : 97.5
-lca                  : 97.5
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.5;d=20;
-segdup               : 140.0
-fastmultrec          : 140.0
-insider_relax        : 140.0
-lca                  : 140.0
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=25;
-segdup               : 158.75
-fastmultrec          : 158.75
-insider_relax        : 158.75
-lca                  : 158.75
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=5;
-segdup               : 38.0
-fastmultrec          : 38.0
-insider_relax        : 38.0
-lca                  : 38.0
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=10;
-segdup               : 68.0
-fastmultrec          : 68.0
-insider_relax        : 68.0
-lca                  : 68.0
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=15;
-segdup               : 99.0
-fastmultrec          : 99.0
-insider_relax        : 99.0
-lca                  : 99.0
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.8;d=20;
-segdup               : 141.0
-fastmultrec          : 141.0
-insider_relax        : 141.0
-lca                  : 141.0
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=25;
-segdup               : 177.5
-fastmultrec          : 177.5
-insider_relax        : 177.5
-lca                  : 177.5
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=5;
-segdup               : 30.75
-fastmultrec          : 30.75
-insider_relax        : 30.75
-lca                  : 30.75
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=10;
-segdup               : 60.3
-fastmultrec          : 60.3
-insider_relax        : 60.3
-lca                  : 61.0
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=15;
-segdup               : 104.25
-fastmultrec          : 103.8
-insider_relax        : 103.8
-lca                  : 104.25
-
-Dataset nh=20;np=50;rb=3.0;pc=1;pj=0.2;d=20;
-segdup               : 115.0
-fastmultrec          : 115.0
-insider_relax        : 115.0
-lca                  : 115.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=25;
-segdup               : 70.0
-fastmultrec          : 70.0
-insider_relax        : 70.0
-lca                  : 70.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=5;
-segdup               : 14.0
-fastmultrec          : 14.0
-insider_relax        : 14.0
-lca                  : 14.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=10;
-segdup               : 18.0
-fastmultrec          : 18.0
-insider_relax        : 18.0
-lca                  : 18.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=15;
-segdup               : 33.0
-fastmultrec          : 33.0
-insider_relax        : 33.0
-lca                  : 33.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=1;d=20;
-segdup               : 54.0
-fastmultrec          : 54.0
-insider_relax        : 54.0
-lca                  : 54.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=25;
-segdup               : 42.5
-fastmultrec          : 42.5
-insider_relax        : 42.5
-lca                  : 42.5
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=5;
-segdup               : 8.5
-fastmultrec          : 8.5
-insider_relax        : 8.5
-lca                  : 8.5
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=10;
-segdup               : 28.0
-fastmultrec          : 28.0
-insider_relax        : 28.0
-lca                  : 28.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=15;
-segdup               : 39.0
-fastmultrec          : 39.0
-insider_relax        : 39.0
-lca                  : 39.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.5;d=20;
-segdup               : 58.0
-fastmultrec          : 58.0
-insider_relax        : 58.0
-lca                  : 58.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=25;
-segdup               : 50.0
-fastmultrec          : 50.0
-insider_relax        : 50.0
-lca                  : 50.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=5;
-segdup               : 13.5
-fastmultrec          : 13.5
-insider_relax        : 13.5
-lca                  : 13.5
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=10;
-segdup               : 20.0
-fastmultrec          : 20.0
-insider_relax        : 20.0
-lca                  : 20.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=15;
-segdup               : 40.5
-fastmultrec          : 40.5
-insider_relax        : 40.5
-lca                  : 40.5
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.8;d=20;
-segdup               : 44.0
-fastmultrec          : 44.0
-insider_relax        : 44.0
-lca                  : 44.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=25;
-segdup               : 45.0
-fastmultrec          : 45.0
-insider_relax        : 45.0
-lca                  : 45.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=5;
-segdup               : 9.5
-fastmultrec          : 9.5
-insider_relax        : 9.5
-lca                  : 9.5
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=10;
-segdup               : 22.0
-fastmultrec          : 22.0
-insider_relax        : 22.0
-lca                  : 22.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=15;
-segdup               : 36.0
-fastmultrec          : 36.0
-insider_relax        : 36.0
-lca                  : 36.0
-
-Dataset nh=20;np=50;rb=1.0;pc=1;pj=0.2;d=20;
-segdup               : 40.0
-fastmultrec          : 40.0
-insider_relax        : 40.0
-lca                  : 40.0
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=25;
+segdup               : 330.8
+fastmultrec          : 330.8
+insider_relax        : 330.8
+lca                  : 397.0
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=5;
+segdup               : 299.2
+fastmultrec          : 299.2
+insider_relax        : 299.0
+lca                  : 310.1
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=10;
+segdup               : 244.9
+fastmultrec          : 244.9
+insider_relax        : 244.9
+lca                  : 268.0
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=15;
+segdup               : 297.6
+fastmultrec          : 297.6
+insider_relax        : 297.6
+lca                  : 320.3
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.5;d=20;
+segdup               : 539.0
+fastmultrec          : 535.9
+insider_relax        : 535.9
+lca                  : 584.3
+
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=25;
+segdup               : 567.7
+fastmultrec          : 569.2
+insider_relax        : 567.7
+lca                  : 622.4
+
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=5;
+segdup               : 493.6
+fastmultrec          : 493.6
+insider_relax        : 493.6
+lca                  : 503.4
+
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=10;
+segdup               : 534.9
+fastmultrec          : 534.9
+insider_relax        : 534.9
+lca                  : 558.4
+
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=15;
+segdup               : 452.2
+fastmultrec          : 451.5
+insider_relax        : 451.5
+lca                  : 498.2
+
+Dataset nh=100;np=20;rb=2.0;pc=0.5;pj=0.5;d=20;
+segdup               : 447.2
+fastmultrec          : 447.2
+insider_relax        : 447.2
+lca                  : 492.6
+
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=25;
+segdup               : 966.2
+fastmultrec          : 966.2
+insider_relax        : 966.2
+lca                  : 1086.3
+
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=5;
+segdup               : 639.4
+fastmultrec          : 639.4
+insider_relax        : 639.4
+lca                  : 648.7
+
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=10;
+segdup               : 729.1
+fastmultrec          : 728.2
+insider_relax        : 728.2
+lca                  : 766.9
+
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=15;
+segdup               : 750.2
+fastmultrec          : 746.2
+insider_relax        : 744.3
+lca                  : 812.2
+
+Dataset nh=50;np=50;rb=2.0;pc=0.5;pj=0.5;d=20;
+segdup               : 646.9
+fastmultrec          : 644.5
+insider_relax        : 644.5
+lca                  : 732.1
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=25;
+segdup               : 1316.3
+fastmultrec          : 1312.4
+insider_relax        : 1309.8
+lca                  : 1401.5
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=5;
+segdup               : 1169.9
+fastmultrec          : 1169.8
+insider_relax        : 1169.8
+lca                  : 1183.5
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=10;
+segdup               : 1673.4
+fastmultrec          : 1673.1
+insider_relax        : 1673.1
+lca                  : 1721.6
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=15;
+segdup               : 1541.3
+fastmultrec          : 1534.4
+insider_relax        : 1533.9
+lca                  : 1586.8
+
+Dataset nh=50;np=100;rb=2.0;pc=0.5;pj=0.5;d=20;
+segdup               : 1498.2
+fastmultrec          : 1488.9
+insider_relax        : 1487.4
+lca                  : 1590.2
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=25;
+segdup               : 282.6
+fastmultrec          : 282.6
+insider_relax        : 282.6
+lca                  : 324.1
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=5;
+segdup               : 271.1
+fastmultrec          : 271.1
+insider_relax        : 271.1
+lca                  : 275.9
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=10;
+segdup               : 212.4
+fastmultrec          : 212.4
+insider_relax        : 212.4
+lca                  : 220.1
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=15;
+segdup               : 278.3
+fastmultrec          : 278.3
+insider_relax        : 278.3
+lca                  : 300.4
+
+Dataset nh=50;np=20;rb=1.0;pc=0.5;pj=0.5;d=20;
+segdup               : 220.9
+fastmultrec          : 220.9
+insider_relax        : 220.9
+lca                  : 246.6
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=25;
+segdup               : 583.1
+fastmultrec          : 578.3
+insider_relax        : 578.3
+lca                  : 679.4
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=5;
+segdup               : 452.9
+fastmultrec          : 453.1
+insider_relax        : 452.9
+lca                  : 461.2
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=10;
+segdup               : 543.2
+fastmultrec          : 542.7
+insider_relax        : 542.7
+lca                  : 578.5
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=15;
+segdup               : 648.8
+fastmultrec          : 647.0
+insider_relax        : 646.1
+lca                  : 705.5
+
+Dataset nh=50;np=20;rb=3.0;pc=0.5;pj=0.5;d=20;
+segdup               : 885.1
+fastmultrec          : 881.3
+insider_relax        : 880.4
+lca                  : 1000.2
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=25;
+segdup               : 903.6
+fastmultrec          : 891.4
+insider_relax        : 889.5
+lca                  : 1063.2
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=5;
+segdup               : 746.4
+fastmultrec          : 746.1
+insider_relax        : 746.0
+lca                  : 763.2
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=10;
+segdup               : 2038.9
+fastmultrec          : 2028.7
+insider_relax        : 2028.7
+lca                  : 2079.8
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=15;
+segdup               : 450.0
+fastmultrec          : 449.1
+insider_relax        : 448.3
+lca                  : 508.9
+
+Dataset nh=50;np=20;rb=4.0;pc=0.5;pj=0.5;d=20;
+segdup               : 552.7
+fastmultrec          : 550.9
+insider_relax        : 550.9
+lca                  : 649.8
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=25;
+segdup               : 1809.4
+fastmultrec          : 1782.5
+insider_relax        : 1782.5
+lca                  : 2005.0
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=5;
+segdup               : 1049.6
+fastmultrec          : 1045.5
+insider_relax        : 1045.5
+lca                  : 1065.2
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=10;
+segdup               : 1622.3
+fastmultrec          : 1608.8
+insider_relax        : 1607.8
+lca                  : 1679.9
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=15;
+segdup               : 1076.6
+fastmultrec          : 1071.6
+insider_relax        : 1070.5
+lca                  : 1198.3
+
+Dataset nh=50;np=20;rb=5.0;pc=0.5;pj=0.5;d=20;
+segdup               : 2454.5
+fastmultrec          : 2410.4
+insider_relax        : 2410.4
+lca                  : 2560.5
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=25;
+segdup               : 266.9
+fastmultrec          : 269.0
+insider_relax        : 266.9
+lca                  : 290.2
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=5;
+segdup               : 196.3
+fastmultrec          : 196.3
+insider_relax        : 196.3
+lca                  : 200.7
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=10;
+segdup               : 235.8
+fastmultrec          : 237.0
+insider_relax        : 235.8
+lca                  : 252.3
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=15;
+segdup               : 238.4
+fastmultrec          : 238.4
+insider_relax        : 238.4
+lca                  : 252.8
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.2;d=20;
+segdup               : 338.3
+fastmultrec          : 338.3
+insider_relax        : 338.3
+lca                  : 358.2
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=25;
+segdup               : 432.8
+fastmultrec          : 432.8
+insider_relax        : 432.8
+lca                  : 517.4
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=5;
+segdup               : 376.6
+fastmultrec          : 376.4
+insider_relax        : 376.4
+lca                  : 388.1
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=10;
+segdup               : 630.6
+fastmultrec          : 629.5
+insider_relax        : 629.5
+lca                  : 664.9
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=15;
+segdup               : 564.6
+fastmultrec          : 564.9
+insider_relax        : 563.7
+lca                  : 628.1
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=0.8;d=20;
+segdup               : 534.1
+fastmultrec          : 531.0
+insider_relax        : 531.0
+lca                  : 618.0
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=25;
+segdup               : 1130.4
+fastmultrec          : 1114.3
+insider_relax        : 1114.3
+lca                  : 1238.1
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=5;
+segdup               : 563.6
+fastmultrec          : 561.0
+insider_relax        : 561.0
+lca                  : 573.0
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=10;
+segdup               : 896.5
+fastmultrec          : 890.2
+insider_relax        : 890.2
+lca                  : 925.8
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=15;
+segdup               : 1566.7
+fastmultrec          : 1553.4
+insider_relax        : 1552.9
+lca                  : 1607.3
+
+Dataset nh=50;np=20;rb=2.0;pc=0.5;pj=1.0;d=20;
+segdup               : 539.2
+fastmultrec          : 535.0
+insider_relax        : 533.7
+lca                  : 617.5
