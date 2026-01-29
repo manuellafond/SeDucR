@@ -15,10 +15,11 @@ specified by key-value pairs of the form (display_name_of_param,colname_of_param
 
 
 
-kowhai_mode = True
+#kowhai_mode = True
+kowhai_mode = False
 
 
-stats_file = "stats.csv"
+stats_file = "stats_wgd.csv"
 if kowhai_mode:
     stats_file = "stats_kowhai.csv"
 
