@@ -1,0 +1,564 @@
+Average times (seconds)
+
+Dataset WGD=1;duprate=7;d=5;
+segdup               : 166.61983
+insider              : 0.22533
+insider_relax        : 0.25453
+fastmultrec_greedy   : 4.15242
+lcamap               : 0.06730
+
+Dataset WGD=1;duprate=7;d=10;
+segdup               : 164.56963
+insider              : 0.39929
+insider_relax        : 0.49017
+fastmultrec_greedy   : 6.40670
+lcamap               : 0.06692
+
+Dataset WGD=1;duprate=7;d=15;
+segdup               : 163.49525
+insider              : 0.92289
+insider_relax        : 1.21308
+fastmultrec_greedy   : 7.46614
+lcamap               : 0.06698
+
+Dataset WGD=1;duprate=7;d=20;
+segdup               : 163.08858
+insider              : 2.73477
+insider_relax        : 4.66147
+fastmultrec_greedy   : 8.16684
+lcamap               : 0.06679
+
+Dataset WGD=1;duprate=8;d=5;
+segdup               : 92.35437
+insider              : 0.12314
+insider_relax        : 0.14922
+fastmultrec_greedy   : 0.37833
+lcamap               : 0.04707
+
+Dataset WGD=1;duprate=8;d=10;
+segdup               : 90.74296
+insider              : 0.21186
+insider_relax        : 0.30754
+fastmultrec_greedy   : 0.43804
+lcamap               : 0.04703
+
+Dataset WGD=1;duprate=8;d=15;
+segdup               : 86.22027
+insider              : 0.60789
+insider_relax        : 0.91686
+fastmultrec_greedy   : 0.44277
+lcamap               : 0.04703
+
+Dataset WGD=1;duprate=8;d=20;
+segdup               : 83.18602
+insider              : 4.55761
+insider_relax        : 10.95392
+fastmultrec_greedy   : 0.46380
+lcamap               : 0.04732
+
+Dataset WGD=1;duprate=9;d=5;
+segdup               : 102.98696
+insider              : 0.08113
+insider_relax        : 0.08867
+fastmultrec_greedy   : 0.24528
+lcamap               : 0.04340
+
+Dataset WGD=1;duprate=9;d=10;
+segdup               : 100.22322
+insider              : 0.08843
+insider_relax        : 0.10105
+fastmultrec_greedy   : 0.24465
+lcamap               : 0.04367
+
+Dataset WGD=1;duprate=9;d=15;
+segdup               : 86.44468
+insider              : 0.10379
+insider_relax        : 0.10834
+fastmultrec_greedy   : 0.24473
+lcamap               : 0.04363
+
+Dataset WGD=1;duprate=9;d=20;
+segdup               : 73.74808
+insider              : 0.15247
+insider_relax        : 0.17353
+fastmultrec_greedy   : 0.24434
+lcamap               : 0.04343
+
+Dataset WGD=1;duprate=10;d=5;
+segdup               : 111.42479
+insider              : 0.07376
+insider_relax        : 0.07641
+fastmultrec_greedy   : 0.23963
+lcamap               : 0.04332
+
+Dataset WGD=1;duprate=10;d=10;
+segdup               : 105.64272
+insider              : 0.07428
+insider_relax        : 0.07743
+fastmultrec_greedy   : 0.23932
+lcamap               : 0.04331
+
+Dataset WGD=1;duprate=10;d=15;
+segdup               : 88.34041
+insider              : 0.07528
+insider_relax        : 0.07746
+fastmultrec_greedy   : 0.23994
+lcamap               : 0.04312
+
+Dataset WGD=1;duprate=10;d=20;
+segdup               : 71.12284
+insider              : 0.07639
+insider_relax        : 0.07803
+fastmultrec_greedy   : 0.24007
+lcamap               : 0.04347
+
+Dataset WGD=1;duprate=11;d=5;
+segdup               : 113.66535
+insider              : 0.07477
+insider_relax        : 0.07679
+fastmultrec_greedy   : 0.24411
+lcamap               : 0.04453
+
+Dataset WGD=1;duprate=11;d=10;
+segdup               : 108.16203
+insider              : 0.07435
+insider_relax        : 0.07685
+fastmultrec_greedy   : 0.24407
+lcamap               : 0.04463
+
+Dataset WGD=1;duprate=11;d=15;
+segdup               : 87.30112
+insider              : 0.07472
+insider_relax        : 0.07701
+fastmultrec_greedy   : 0.24397
+lcamap               : 0.04467
+
+Dataset WGD=1;duprate=11;d=20;
+segdup               : 68.29485
+insider              : 0.07472
+insider_relax        : 0.07663
+fastmultrec_greedy   : 0.24353
+lcamap               : 0.04432
+
+Dataset WGD=2;duprate=7;d=5;
+segdup               : 316.87621
+insider              : 0.34908
+insider_relax        : 0.38262
+fastmultrec_greedy   : 6.81482
+lcamap               : 0.10409
+
+Dataset WGD=2;duprate=7;d=10;
+segdup               : 312.66901
+insider              : 0.56748
+insider_relax        : 0.67110
+fastmultrec_greedy   : 10.72157
+lcamap               : 0.10371
+
+Dataset WGD=2;duprate=7;d=15;
+segdup               : 310.07004
+insider              : 1.07549
+insider_relax        : 1.34020
+fastmultrec_greedy   : 12.54141
+lcamap               : 0.10387
+
+Dataset WGD=2;duprate=7;d=20;
+segdup               : 309.60875
+insider              : 2.58593
+insider_relax        : 3.96819
+fastmultrec_greedy   : 13.67301
+lcamap               : 0.10433
+
+Dataset WGD=2;duprate=8;d=5;
+segdup               : 157.59498
+insider              : 0.23291
+insider_relax        : 0.27131
+fastmultrec_greedy   : 0.80342
+lcamap               : 0.08069
+
+Dataset WGD=2;duprate=8;d=10;
+segdup               : 153.01070
+insider              : 0.41299
+insider_relax        : 0.56952
+fastmultrec_greedy   : 1.00328
+lcamap               : 0.08076
+
+Dataset WGD=2;duprate=8;d=15;
+segdup               : 145.66478
+insider              : 1.15761
+insider_relax        : 1.66645
+fastmultrec_greedy   : 1.08964
+lcamap               : 0.08148
+
+Dataset WGD=2;duprate=8;d=20;
+segdup               : 142.03183
+insider              : 5.70950
+insider_relax        : 11.14953
+fastmultrec_greedy   : 1.13312
+lcamap               : 0.08096
+
+Dataset WGD=2;duprate=9;d=5;
+segdup               : 168.51184
+insider              : 0.15043
+insider_relax        : 0.16252
+fastmultrec_greedy   : 0.43053
+lcamap               : 0.07517
+
+Dataset WGD=2;duprate=9;d=10;
+segdup               : 154.96142
+insider              : 0.17630
+insider_relax        : 0.21259
+fastmultrec_greedy   : 0.43039
+lcamap               : 0.07476
+
+Dataset WGD=2;duprate=9;d=15;
+segdup               : 125.46915
+insider              : 0.26041
+insider_relax        : 0.28714
+fastmultrec_greedy   : 0.43021
+lcamap               : 0.07420
+
+Dataset WGD=2;duprate=9;d=20;
+segdup               : 115.27309
+insider              : 0.60743
+insider_relax        : 0.80133
+fastmultrec_greedy   : 0.42987
+lcamap               : 0.07454
+
+Dataset WGD=2;duprate=11;d=5;
+segdup               : 201.08624
+insider              : 0.13361
+insider_relax        : 0.13333
+fastmultrec_greedy   : 0.42639
+lcamap               : 0.07635
+
+Dataset WGD=2;duprate=11;d=10;
+segdup               : 183.00434
+insider              : 0.13400
+insider_relax        : 0.13394
+fastmultrec_greedy   : 0.42683
+lcamap               : 0.07649
+
+Dataset WGD=2;duprate=11;d=15;
+segdup               : 132.04511
+insider              : 0.13363
+insider_relax        : 0.13331
+fastmultrec_greedy   : 0.42657
+lcamap               : 0.07601
+
+Dataset WGD=2;duprate=11;d=20;
+segdup               : 105.66869
+insider              : 0.13365
+insider_relax        : 0.13349
+fastmultrec_greedy   : 0.42613
+lcamap               : 0.07606
+
+Dataset WGD=2;duprate=10;d=5;
+segdup               : 202.03462
+insider              : 0.13648
+insider_relax        : 0.13868
+fastmultrec_greedy   : 0.44541
+lcamap               : 0.07809
+
+Dataset WGD=2;duprate=10;d=10;
+segdup               : 185.61783
+insider              : 0.13862
+insider_relax        : 0.14041
+fastmultrec_greedy   : 0.44640
+lcamap               : 0.07798
+
+Dataset WGD=2;duprate=10;d=15;
+segdup               : 126.91596
+insider              : 0.14128
+insider_relax        : 0.14048
+fastmultrec_greedy   : 0.44742
+lcamap               : 0.07787
+
+Dataset WGD=2;duprate=10;d=20;
+segdup               : 102.85109
+insider              : 0.14524
+insider_relax        : 0.14420
+fastmultrec_greedy   : 0.44560
+lcamap               : 0.07821
+
+-----------------------------------------
+Average solution costs
+
+Dataset WGD=1;duprate=7;d=5;
+segdup               : 2331.59
+insider              : 2303.85
+insider_relax        : 2303.85
+fastmultrec_greedy   : 2305.1
+lcamap               : 2331.72
+
+Dataset WGD=1;duprate=7;d=10;
+segdup               : 3114.68
+insider              : 2991.67
+insider_relax        : 2991.67
+fastmultrec_greedy   : 3015.82
+lcamap               : 3116.27
+
+Dataset WGD=1;duprate=7;d=15;
+segdup               : 3897.01
+insider              : 3634.0
+insider_relax        : 3634.0
+fastmultrec_greedy   : 3709.59
+lcamap               : 3900.82
+
+Dataset WGD=1;duprate=7;d=20;
+segdup               : 4676.86
+insider              : 4242.09
+insider_relax        : 4242.09
+fastmultrec_greedy   : 4393.37
+lcamap               : 4685.37
+
+Dataset WGD=1;duprate=8;d=5;
+segdup               : 357.15
+insider              : 356.23
+insider_relax        : 356.23
+fastmultrec_greedy   : 356.28
+lcamap               : 357.48
+
+Dataset WGD=1;duprate=8;d=10;
+segdup               : 611.28
+insider              : 602.05
+insider_relax        : 602.05
+fastmultrec_greedy   : 608.28
+lcamap               : 613.23
+
+Dataset WGD=1;duprate=8;d=15;
+segdup               : 864.12
+insider              : 836.19
+insider_relax        : 836.19
+fastmultrec_greedy   : 859.43
+lcamap               : 868.98
+
+Dataset WGD=1;duprate=8;d=20;
+segdup               : 1117.53
+insider              : 1061.15
+insider_relax        : 1061.15
+fastmultrec_greedy   : 1110.14
+lcamap               : 1124.73
+
+Dataset WGD=1;duprate=9;d=5;
+segdup               : 63.41
+insider              : 63.41
+insider_relax        : 63.41
+fastmultrec_greedy   : 63.41
+lcamap               : 63.43
+
+Dataset WGD=1;duprate=9;d=10;
+segdup               : 117.37
+insider              : 117.15
+insider_relax        : 117.15
+fastmultrec_greedy   : 117.41
+lcamap               : 117.48
+
+Dataset WGD=1;duprate=9;d=15;
+segdup               : 171.14
+insider              : 170.75
+insider_relax        : 170.75
+fastmultrec_greedy   : 171.41
+lcamap               : 171.53
+
+Dataset WGD=1;duprate=9;d=20;
+segdup               : 224.99
+insider              : 224.27
+insider_relax        : 224.27
+fastmultrec_greedy   : 225.41
+lcamap               : 225.58
+
+Dataset WGD=1;duprate=10;d=5;
+segdup               : 11.9
+insider              : 11.9
+insider_relax        : 11.9
+fastmultrec_greedy   : 11.9
+lcamap               : 11.9
+
+Dataset WGD=1;duprate=10;d=10;
+segdup               : 22.6
+insider              : 22.6
+insider_relax        : 22.6
+fastmultrec_greedy   : 22.6
+lcamap               : 22.6
+
+Dataset WGD=1;duprate=10;d=15;
+segdup               : 33.3
+insider              : 33.3
+insider_relax        : 33.3
+fastmultrec_greedy   : 33.3
+lcamap               : 33.3
+
+Dataset WGD=1;duprate=10;d=20;
+segdup               : 44.0
+insider              : 44.0
+insider_relax        : 44.0
+fastmultrec_greedy   : 44.0
+lcamap               : 44.0
+
+Dataset WGD=1;duprate=11;d=5;
+segdup               : 5.666666666666667
+insider              : 5.666666666666667
+insider_relax        : 5.666666666666667
+fastmultrec_greedy   : 5.666666666666667
+lcamap               : 5.666666666666667
+
+Dataset WGD=1;duprate=11;d=10;
+segdup               : 11.222222222222221
+insider              : 11.222222222222221
+insider_relax        : 11.222222222222221
+fastmultrec_greedy   : 11.222222222222221
+lcamap               : 11.222222222222221
+
+Dataset WGD=1;duprate=11;d=15;
+segdup               : 16.77777777777778
+insider              : 16.77777777777778
+insider_relax        : 16.77777777777778
+fastmultrec_greedy   : 16.77777777777778
+lcamap               : 16.77777777777778
+
+Dataset WGD=1;duprate=11;d=20;
+segdup               : 22.333333333333332
+insider              : 22.333333333333332
+insider_relax        : 22.333333333333332
+fastmultrec_greedy   : 22.333333333333332
+lcamap               : 22.333333333333332
+
+Dataset WGD=2;duprate=7;d=5;
+segdup               : 2708.2954545454545
+insider              : 2679.875
+insider_relax        : 2679.875
+fastmultrec_greedy   : 2680.8522727272725
+lcamap               : 2708.3295454545455
+
+Dataset WGD=2;duprate=7;d=10;
+segdup               : 3495.5
+insider              : 3367.659090909091
+insider_relax        : 3367.659090909091
+fastmultrec_greedy   : 3389.2727272727275
+lcamap               : 3495.659090909091
+
+Dataset WGD=2;duprate=7;d=15;
+segdup               : 4281.897727272727
+insider              : 4008.9772727272725
+insider_relax        : 4008.9772727272725
+fastmultrec_greedy   : 4077.943181818182
+lcamap               : 4282.988636363636
+
+Dataset WGD=2;duprate=7;d=20;
+segdup               : 5067.613636363636
+insider              : 4617.988636363636
+insider_relax        : 4617.988636363636
+fastmultrec_greedy   : 4756.988636363636
+lcamap               : 5070.318181818182
+
+Dataset WGD=2;duprate=8;d=5;
+segdup               : 526.578947368421
+insider              : 524.8105263157895
+insider_relax        : 524.8105263157895
+fastmultrec_greedy   : 524.8947368421053
+lcamap               : 526.7263157894737
+
+Dataset WGD=2;duprate=8;d=10;
+segdup               : 858.7263157894737
+insider              : 843.8526315789474
+insider_relax        : 843.8526315789474
+fastmultrec_greedy   : 852.0526315789474
+lcamap               : 859.4105263157895
+
+Dataset WGD=2;duprate=8;d=15;
+segdup               : 1190.0736842105264
+insider              : 1148.0315789473684
+insider_relax        : 1148.0315789473684
+fastmultrec_greedy   : 1177.7052631578947
+lcamap               : 1192.0947368421052
+
+Dataset WGD=2;duprate=8;d=20;
+segdup               : 1520.7578947368422
+insider              : 1437.842105263158
+insider_relax        : 1437.842105263158
+fastmultrec_greedy   : 1502.5157894736842
+lcamap               : 1524.778947368421
+
+Dataset WGD=2;duprate=9;d=5;
+segdup               : 90.4494382022472
+insider              : 90.4494382022472
+insider_relax        : 90.4494382022472
+fastmultrec_greedy   : 90.4494382022472
+lcamap               : 90.4494382022472
+
+Dataset WGD=2;duprate=9;d=10;
+segdup               : 165.73033707865167
+insider              : 165.03370786516854
+insider_relax        : 165.03370786516854
+fastmultrec_greedy   : 165.7865168539326
+lcamap               : 165.7865168539326
+
+Dataset WGD=2;duprate=9;d=15;
+segdup               : 240.95505617977528
+insider              : 238.68539325842696
+insider_relax        : 238.68539325842696
+fastmultrec_greedy   : 241.12359550561797
+lcamap               : 241.12359550561797
+
+Dataset WGD=2;duprate=9;d=20;
+segdup               : 316.02247191011236
+insider              : 311.86516853932585
+insider_relax        : 311.86516853932585
+fastmultrec_greedy   : 316.46067415730334
+lcamap               : 316.46067415730334
+
+Dataset WGD=2;duprate=11;d=5;
+segdup               : 1892.8666666666666
+insider              : 1892.8666666666666
+insider_relax        : 1892.8666666666666
+fastmultrec_greedy   : 1892.8666666666666
+lcamap               : 1892.8666666666666
+
+Dataset WGD=2;duprate=11;d=10;
+segdup               : 1905.7555555555555
+insider              : 1905.7555555555555
+insider_relax        : 1905.7555555555555
+fastmultrec_greedy   : 1905.7555555555555
+lcamap               : 1905.7555555555555
+
+Dataset WGD=2;duprate=11;d=15;
+segdup               : 1918.6444444444444
+insider              : 1918.6444444444444
+insider_relax        : 1918.6444444444444
+fastmultrec_greedy   : 1918.6444444444444
+lcamap               : 1918.6444444444444
+
+Dataset WGD=2;duprate=11;d=20;
+segdup               : 1931.5333333333333
+insider              : 1931.5333333333333
+insider_relax        : 1931.5333333333333
+fastmultrec_greedy   : 1931.5333333333333
+lcamap               : 1931.5333333333333
+
+Dataset WGD=2;duprate=10;d=5;
+segdup               : 20.010752688172044
+insider              : 20.010752688172044
+insider_relax        : 20.010752688172044
+fastmultrec_greedy   : 20.010752688172044
+lcamap               : 20.010752688172044
+
+Dataset WGD=2;duprate=10;d=10;
+segdup               : 38.344086021505376
+insider              : 38.344086021505376
+insider_relax        : 38.344086021505376
+fastmultrec_greedy   : 38.344086021505376
+lcamap               : 38.344086021505376
+
+Dataset WGD=2;duprate=10;d=15;
+segdup               : 56.67741935483871
+insider              : 56.67741935483871
+insider_relax        : 56.67741935483871
+fastmultrec_greedy   : 56.67741935483871
+lcamap               : 56.67741935483871
+
+Dataset WGD=2;duprate=10;d=20;
+segdup               : 75.01075268817205
+insider              : 75.01075268817205
+insider_relax        : 75.01075268817205
+fastmultrec_greedy   : 75.01075268817205
+lcamap               : 75.01075268817205

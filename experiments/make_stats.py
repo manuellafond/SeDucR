@@ -1,11 +1,60 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
 
 data = dict()
 colmap = dict() #key = colname, value = column index, built from 1st row
 
+
+'''
+This script takes your stats file and outputs the average costs and times, 
+where averages are grouped by [param1,param2,...,paramk]
+where the list of params that form a group is specified by colnames_in_key.
+The latter is a dict that contains all column names that are part of a key group, 
+specified by key-value pairs of the form (display_name_of_param,colname_of_param)
+'''
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--kowhai",
+    action="store_true",
+    help="Set kowhai mode to True"
+)
+
+args = parser.parse_args()
+
+kowhai_mode = args.kowhai
+
+
+
+stats_file = "stats_wgd.csv"
+if kowhai_mode:
+    stats_file = "stats_kowhai.csv"
+
+
+colnames_in_key = dict()
+
+if kowhai_mode:
+    colnames_in_key = { "nh" : "nh", "np" : "np" , "rb" : "rb" , "pc" : "pc", "pj" : "pj" , "d" : "dup_cost" }
+else:
+    colnames_in_key["WGD"] = "planted_wgds"
+    colnames_in_key["duprate"] = "duprate"
+    colnames_in_key["d"] = "dup_cost"
+
+
+def get_key(vals, colmap):
+   global colnames_in_key
+   
+   key = ""
+   for name in colnames_in_key:
+       key += f"{name}={vals[colmap[colnames_in_key[name]]]};"
+   return key
+   
+
+
+longest_key = 20
 seen_head = False
-with open("stats.csv", "r") as f:
+with open(stats_file, "r") as f:
     for line in f:
         
         line = line.strip()
@@ -26,7 +75,10 @@ with open("stats.csv", "r") as f:
         #col 0 = algo, 1 = wgd, 2 = duprate
         
         algo = vals[colmap["method"]]
-        key = f'WGD={vals[colmap["planted_wgds"]]}, duprate={vals[colmap["duprate"]]}, d={vals[colmap["dup_cost"]]}'
+        #key = f'WGD={vals[colmap["planted_wgds"]]}, duprate={vals[colmap["duprate"]]}, d={vals[colmap["dup_cost"]]}'
+        key = get_key(vals, colmap)
+        
+        longest_key = max(longest_key, len(key))
         
         if key not in data:
             data[key] = dict()
