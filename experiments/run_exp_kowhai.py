@@ -45,7 +45,7 @@ pJ_vals = [0.5]
 #segdup/multrec options
 d_vals = [25,5,10,15,20]
 l = 1
-iterations = 100    #nb reps that segdup will make
+iterations = 20000    #nb reps that segdup will make
 
 #replicates
 replicates = 10
