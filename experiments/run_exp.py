@@ -4,14 +4,14 @@ import re
 import itertools
 import time
 from ete3 import Tree
-
+from pathlib import Path
 
 #this script assumes the existence of directories of the form 
 #"{datadir}/sim_{[1,2]}WGD_D{[7,10]}/sim_{[1..25]}
 #and it outputs stats.csv with everything
 
 datadir = "/home/manuel/git/wgddata_full"
-output_filename = "stats_wgd.csv"
+output_filename = "stats_wgd_d25.csv"
 
 workdir = "./workwgd"
 os.makedirs(workdir, exist_ok=True)
@@ -22,10 +22,10 @@ skip_existing_csv = True
 segdup_reps = 20000
 segdup_initial_temp = 3
 
-wgd_nb = [1,2]
+wgd_nb = [2, 1]
 dup_rates = [7,8,9,10,11]
-dup_costs = [5, 10, 15, 20]     #values of argument -d to test
-#dup_costs = [10]
+#dup_costs = [5, 10, 15, 20]     #values of argument -d to test
+dup_costs = [25]
 runs = range(1, 100+1)
 
 #wgd_nb = [1]
@@ -36,12 +36,12 @@ runs = range(1, 100+1)
 
 #set to directories containing binaries of the programs to test
 fastmultrec_dir = "/home/manuel/git/FastMultRec/FastMultRec/build"
-insider_dir = "/home/manuel/git/ybrec/build"
+insider_dir = "/home/manuel/git/inSiDeR/build"
 insider_relax_dir = "/home/manuel/git/ybrec2/build"
 segdup_dir = ""
 
 #available methods here
-methods = ["insider", "insider_relax", "lca", "fastmultrec", "segdup"] 
+methods = ["insider", "lca", "fastmultrec", "segdup"] 
 
 
 #fetches reconciliation costs from a file in insider format (also works for fastmultrec)
@@ -186,7 +186,7 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
         print(f"SPECIES TREE FILE DOES NOT EXIST, SKIPPING {speciestree_file}")
         continue
         
-    #for some reason, that input crashes segdup
+    #for some reason, that input crashes segdup, so we just skip them
     if wgd == 2 and simid == 44 and duprate == 9:
         continue
     if wgd == 2 and simid == 47 and duprate == 11:
@@ -303,12 +303,22 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
             print(cmd)
         
             start = time.perf_counter()
-            os.system(cmd)
+            retcode = os.system(cmd)
             end = time.perf_counter()
             elapsed = time.perf_counter() - start 
         
-            (cost, nbdups, nblosses) = get_insider_costs(outfilename)
-            ybcost = cost
+            print(f"inSiDeR return with code {retcode}")
+            if retcode < 0:
+                print("but it failed...")
+        
+            #if out file does not exist, we assume that inSiDeR was killed
+            if not Path(outfilename).exists():
+                (cost, nbdups, nblosses) = (-1, -1, -1)
+                elapsed = 9999999999
+                ybcost = -1
+            else:
+                (cost, nbdups, nblosses) = get_insider_costs(outfilename)
+                ybcost = cost
 
             out.write(f"insider,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.6f}\n")
             run_csv_file.write(f"insider,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.6f}\n")
