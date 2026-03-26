@@ -10,8 +10,24 @@ from pathlib import Path
 #"{datadir}/sim_{[1,2]}WGD_D{[7,10]}/sim_{[1..25]}
 #and it outputs stats.csv with everything
 
+'''
+The script saves one csv per simulation directory in the work directory.  
+If the script fails or is stopped, when it is run again it will not recalculate simulations 
+for which the csv file exists.  However, stats.csv will be overwritten.  
+The full stats file can be recovered with (this is chatgpt's solution):
+head -n 1 "$(ls workwgdd25/*.csv | head -n 1)" > stats_wgd25.csv
+tail -n +2 -q workwgdd25/*.csv >> stats_wgd25.csv
+
+eg for WGD,
+head -n 1 workwgdd25/*.csv > stats_wgd25.csv
+tail -n +2 -q workwgdd25/*.csv >> stats_wgd25.csv
+'''
+
+
+
 datadir = "/home/manuel/git/wgddata_full"
-output_filename = "stats_wgd_d25.csv"
+#datadir = "/home/manuel/git/wgddata"
+output_filename = "stats_wgd_19mar.csv"
 
 workdir = "./workwgd"
 os.makedirs(workdir, exist_ok=True)
@@ -23,9 +39,9 @@ segdup_reps = 20000
 segdup_initial_temp = 3
 
 wgd_nb = [2, 1]
-dup_rates = [7,8,9,10,11]
+dup_rates = [8,9,10,11,15]
 #dup_costs = [5, 10, 15, 20]     #values of argument -d to test
-dup_costs = [25]
+dup_costs = [25, 20, 15, 10, 5]
 runs = range(1, 100+1)
 
 #wgd_nb = [1]
@@ -85,7 +101,8 @@ def get_segdup_costs(filename):
         d, l, c = m.groups()
         return (d, l, c)
     else:
-        print("ERROR: segdup out not formed as expected.")        
+        print("ERROR: segdup out not formed as expected.")     
+        return (-1, -1, -1)   
 
 
 
@@ -176,7 +193,7 @@ out.write(header_line)
 for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates, dup_costs):
     
     
-    directory = f"{datadir}/sim_{wgd}WGD_D{duprate}/sim_{simid}"
+    #directory = f"{datadir}/sim_{wgd}WGD_D{duprate}/sim_{simid}"
     
     directory = f"{datadir}/WGD{wgd}Simphy_S1_G100_Duprate-{duprate}/sim_{simid}"
     genetree_file = directory + "/all_genetrees_edited.txt"
@@ -186,7 +203,8 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
         print(f"SPECIES TREE FILE DOES NOT EXIST, SKIPPING {speciestree_file}")
         continue
         
-    #for some reason, that input crashes segdup, so we just skip them
+    #for some reason, the following inputs have invalid format (genes without species), so we just skip them
+    
     if wgd == 2 and simid == 44 and duprate == 9:
         continue
     if wgd == 2 and simid == 47 and duprate == 11:
@@ -197,6 +215,19 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
         continue
     if wgd == 2 and simid == 88 and duprate == 7:
         continue
+    if wgd == 1 and simid == 9 and duprate == 6:
+        continue
+    if wgd == 2 and simid == 24 and duprate == 6:
+        continue
+    if wgd == 1 and simid == 35 and duprate == 6:
+        continue
+    if wgd == 1 and simid == 37 and duprate == 6:
+        continue
+    if wgd == 1 and simid == 7 and duprate == 15:
+        continue
+    if wgd == 2 and simid == 18 and duprate == 15:
+        continue
+    
     
     
     
@@ -254,15 +285,17 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
         command = f"{segdup_dir}segdup {stree_str} -Gfile {genetree_segdup_outfilename} -d {dup_cost} -n {segdup_reps} -Tinit {segdup_initial_temp} -Tfinal 0 > {segdup_outfilename}"
         print(command)
         
-        #if not os.path.exists(segdup_outfilename):
+        Path(segdup_outfilename).unlink(missing_ok=True)
+        
         start = time.perf_counter()
         os.system(command)
         elapsed = time.perf_counter() - start 
 
-
-        
-        #get segdup's cost line, which has the form nCospec,nSegDup,nLoss,cost
-        (nbdups, nblosses, cost) = get_segdup_costs(segdup_outfilename)
+        if not Path(segdup_outfilename).exists():
+            (cost, nbdups, nblosses) = (-1, -1, -1)
+        else:
+            #get segdup's cost line, which has the form nCospec,nSegDup,nLoss,cost
+            (nbdups, nblosses, cost) = get_segdup_costs(segdup_outfilename)
         
         
         out.write(f"segdup,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.6f}\n")
@@ -314,7 +347,6 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
             #if out file does not exist, we assume that inSiDeR was killed
             if not Path(outfilename).exists():
                 (cost, nbdups, nblosses) = (-1, -1, -1)
-                elapsed = 9999999999
                 ybcost = -1
             else:
                 (cost, nbdups, nblosses) = get_insider_costs(outfilename)
