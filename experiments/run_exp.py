@@ -18,9 +18,6 @@ The full stats file can be recovered with (this is chatgpt's solution):
 head -n 1 "$(ls workwgdd25/*.csv | head -n 1)" > stats_wgd25.csv
 tail -n +2 -q workwgdd25/*.csv >> stats_wgd25.csv
 
-eg for WGD,
-head -n 1 workwgdd25/*.csv > stats_wgd25.csv
-tail -n +2 -q workwgdd25/*.csv >> stats_wgd25.csv
 '''
 
 

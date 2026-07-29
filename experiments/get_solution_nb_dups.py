@@ -3,6 +3,8 @@ import sys
 
 
 #WARNING: this is all chatgpt
+#This script outputs the number of segmental dups per method per duprate for a given csv
+#that contains the columns method, duprate, and solution_nbdups
 
 def main(csv_file):
     # Read the CSV file
