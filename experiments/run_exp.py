@@ -50,8 +50,11 @@ runs = range(1, 100+1)
 #set to directories containing binaries of the programs to test
 fastmultrec_dir = "/home/manuel/git/FastMultRec/FastMultRec/build"
 insider_dir = "/home/manuel/git/inSiDeR/build"
-insider_relax_dir = "/home/manuel/git/ybrec2/build"
 segdup_dir = ""
+
+
+#this can be ignored, it was used to test an insider variant
+insider_relax_dir = "/home/manuel/git/ybrec2/build"
 
 #available methods here
 methods = ["insider", "lca", "fastmultrec", "segdup"] 
@@ -200,8 +203,7 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
         print(f"SPECIES TREE FILE DOES NOT EXIST, SKIPPING {speciestree_file}")
         continue
         
-    #for some reason, the following inputs have invalid format (genes without species), so we just skip them
-    
+    #for some reason, the following inputs have invalid format (genes that have no associated species), so we just skip them
     if wgd == 2 and simid == 44 and duprate == 9:
         continue
     if wgd == 2 and simid == 47 and duprate == 11:

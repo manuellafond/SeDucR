@@ -37,6 +37,15 @@ parser.add_argument(
 )
 
 
+parser.add_argument(
+    "--outformat",
+    type=str,
+    default="text",
+    help="If csv, outputs error in a comma separated manner, with header.  If csvnoheader, omits the header."
+)
+
+
+
 
 args = parser.parse_args()
 
@@ -44,7 +53,8 @@ kowhai_mode = args.kowhai
 
 
 
-stats_file = "stats_wgd.csv"
+#stats_file = "stats_wgd.csv"
+stats_file = "stats_wgd_all.csv"
 if kowhai_mode:
     stats_file = "stats_kowhai.csv"
 
@@ -152,21 +162,52 @@ elif args.mode == "error":
             opt = data[key]["insider"]["solution_cost"][0]
             algocost = data[key][algo]["solution_cost"][0]
             
+            
+            #IF INSIDER FAILED: we just ignore the entry, no point in trying to calculate the error
+            if opt < 0:
+                continue
+            
             if len(data[key][algo]["solution_cost"]) > 1:
                 print(f"Warning: entry {key}.{algo} has multiple solution costs, no supposed to happen in mode error")
             
-            if algocost > opt:
+            #SOmetimes segdup fails and we have a -1.  In that case, we count it as suboptimal.  (doesn't happen often)
+            if algocost > opt or algocost < 0:
                 err_per_method[algo] += 1
             elif algocost < opt:
                 print(f"WARNING: better than insider: {key}.{algo}")
+       
+       
+    if args.outformat == "text":
         
-    print("Nb suboptimal solutions per method")
-    print(err_per_method)
+        print("Nb suboptimal solutions per method")
+        print(err_per_method)
     
-    print("Nb instances per method")
-    print(instances_per_method)
+        print("Nb instances per method")
+        print(instances_per_method)
+    
         
+    else:
+    
+        strout = ""
+        keys = []
         
+        if args.outformat == "csv":
+            strout += "duprate,nbinstances"
+        for key in err_per_method:
+            keys.append(key)
+            if args.outformat == "csv":
+                strout += f",{key}"
+            
+        if args.outformat == "csv":
+             strout += "\n"        
+        
+        strout += f"{args.duprate},{instances_per_method['insider']}"
+        
+        for key in keys:
+            strout += f",{err_per_method[key]}"
+        
+        print(strout)
+            
     
     
     
