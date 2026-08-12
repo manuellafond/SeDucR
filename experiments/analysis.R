@@ -1,5 +1,25 @@
 library(ggplot2)
+library(scales)
 theme_set(theme_bw(base_size=20))
+
+#helper function for axis breaks
+lb = function(maj, by=1, lower=0.1, radix=10) {
+  function(x) {
+    minx         = floor(max(-10,min(logb(x,radix), na.rm=T))) - 1
+    maxx         = ceiling(max(logb(x,radix), na.rm=T)) + 1
+    n_major      = maxx - minx + 1
+    major_breaks = seq(minx, maxx, by=1)
+    if (maj) {
+      breaks = major_breaks
+    } else {
+      steps = logb(seq(by,radix-by,by=by),radix)
+      breaks = rep(steps, times=n_major) +
+               rep(major_breaks, each=floor(radix/by)-1)
+    }
+    radix^breaks
+  }
+}
+
 
 dat <- read.csv("stats_kowhai.csv", header=T)
 
@@ -38,14 +58,16 @@ pdf("figures/nH-cost-insidervlca.pdf")
 ggplot(data=nHcost) + geom_point(aes(nh,ratio)) +
 	geom_errorbar(aes(nh,ymin=ratio-2*nHcostsds$ratio/sqrt(reps),ymax=ratio+2*nHcostsds$ratio/sqrt(reps)), width=2) + 
 	scale_x_continuous(breaks=seq(0,100,by=20)) +
-	xlab("nH") + ylab("Cost ratio")
+	xlab(bquote(n[H])) + ylab("Cost ratio")
 dev.off()
 
 pdf("figures/nH-time.pdf")
-ggplot(data=nHmeans) + geom_point(aes(nh,time, col=Group.3)) +
-	geom_errorbar(aes(nh,ymin=time-2*nHsds$time/sqrt(reps),ymax=time+2*nHsds$time/sqrt(reps),col=Group.3), width=2) + 
-	scale_x_continuous(breaks=seq(0,100,by=20)) + scale_y_continuous(trans="log") +
-	xlab("nH") + ylab("Time")
+ggplot(data=nHmeans) + geom_point(aes(nh,time, col=Group.2)) +
+	geom_errorbar(aes(nh,ymin=time-2*nHsds$time/sqrt(reps),ymax=time+2*nHsds$time/sqrt(reps),col=Group.2), width=2) + 
+	scale_x_continuous(breaks=seq(0,100,by=20)) + scale_y_log10(minor_breaks=lb(FALSE,by=2)) +
+	scale_colour_manual(values=c(3,1,2,4), labels=c("FastMultRec","inSiDeR","LCA","segdup")) +
+	theme(legend.title=element_blank(), legend.position = c(.95, .75), legend.justification = c("right", "top"), legend.box.just = "right", legend.margin = margin(6, 6, 6, 6)) +
+	xlab(bquote(n[H])) + ylab("Time (s)")
 dev.off()
 
 
@@ -65,16 +87,18 @@ dcostsds <- aggregate(dcostlca, by=list(dcostlca$dup_cost), FUN=sd)
 
 pdf("figures/d-cost-insidervlca.pdf")
 ggplot(data=dcost) + geom_point(aes(dup_cost,ratio)) +
-	geom_errorbar(aes(dup_cost,ymin=ratio-2*dcostsds$ratio/sqrt(reps),ymax=ratio+2*dcostsds$ratio/sqrt(reps)), width=2) + 
+	geom_errorbar(aes(dup_cost,ymin=ratio-2*dcostsds$ratio/sqrt(reps),ymax=ratio+2*dcostsds$ratio/sqrt(reps)), width=1) + 
 	scale_x_continuous(breaks=seq(0,100,by=5)) +
-	xlab("d") + ylab("Cost ratio")
+	xlab(bquote(delta)) + ylab("Cost ratio")
 dev.off()
 
 pdf("figures/d-time.pdf")
 ggplot(data=dmeans) + geom_point(aes(dup_cost,time, col=Group.2)) +
-	geom_errorbar(aes(dup_cost,ymin=time-2*dsds$time/sqrt(reps),ymax=time+2*dsds$time/sqrt(reps),col=Group.2), width=2) + 
-	scale_x_continuous(breaks=seq(0,100,by=5)) + scale_y_continuous(trans="log") +
-	xlab("d") + ylab("Time")
+	geom_errorbar(aes(dup_cost,ymin=time-2*dsds$time/sqrt(reps),ymax=time+2*dsds$time/sqrt(reps),col=Group.2), width=1) + 
+	scale_x_continuous(breaks=seq(0,100,by=5)) + scale_y_log10(minor_breaks=lb(FALSE,by=2)) +
+	scale_colour_manual(values=c(3,1,2,4), labels=c("FastMultRec","inSiDeR","LCA","segdup")) +
+	theme(legend.title=element_blank(), legend.position = c(.95, .85), legend.justification = c("right", "top"), legend.box.just = "right", legend.margin = margin(6, 6, 6, 6)) +
+	xlab(bquote(delta)) + ylab("Time (s)")
 dev.off()
 
 
@@ -96,14 +120,16 @@ pdf("figures/nP-cost-insidervlca.pdf")
 ggplot(data=nPcost) + geom_point(aes(np,ratio)) +
 	geom_errorbar(aes(np,ymin=ratio-2*nPcostsds$ratio/sqrt(reps),ymax=ratio+2*nPcostsds$ratio/sqrt(reps)), width=2) + 
 	scale_x_continuous(breaks=seq(0,100,by=20)) +
-	xlab("nP") + ylab("Cost ratio")
+	xlab(bquote(n[P])) + ylab("Cost ratio")
 dev.off()
 
 pdf("figures/nP-time.pdf")
 ggplot(data=nPmeans) + geom_point(aes(np,time, col=Group.2)) +
 	geom_errorbar(aes(np,ymin=time-2*nPsds$time/sqrt(reps),ymax=time+2*nPsds$time/sqrt(reps),col=Group.2), width=2) + 
-	scale_x_continuous(breaks=seq(0,100,by=20)) + scale_y_continuous(trans="log") +
-	xlab("nP") + ylab("Time")
+	scale_x_continuous(breaks=seq(0,100,by=20)) + scale_y_log10(minor_breaks=lb(FALSE,by=2)) +
+	scale_colour_manual(values=c(3,1,2,4), labels=c("FastMultRec","inSiDeR","LCA","segdup")) +
+	theme(legend.title=element_blank(), legend.position = c(.95, .75), legend.justification = c("right", "top"), legend.box.just = "right", legend.margin = margin(6, 6, 6, 6)) +
+	xlab(bquote(n[P])) + ylab("Time (s)")
 dev.off()
 
 
@@ -125,14 +151,16 @@ pdf("figures/rB-cost-insidervlca.pdf")
 ggplot(data=rBcost) + geom_point(aes(rb,ratio)) +
 	geom_errorbar(aes(rb,ymin=ratio-2*rBcostsds$ratio/sqrt(reps),ymax=ratio+2*rBcostsds$ratio/sqrt(reps)), width=0.2) + 
 	scale_x_continuous(breaks=seq(0,100,by=1)) +
-	xlab("rB") + ylab("Cost ratio")
+	xlab(bquote(r[B])) + ylab("Cost ratio")
 dev.off()
 
 pdf("figures/rB-time.pdf")
-ggplot(data=rBmeans) + geom_point(aes(rb,time, col=Group.2)) +
-	geom_errorbar(aes(rb,ymin=time-2*rBsds$time/sqrt(reps),ymax=time+2*rBsds$time/sqrt(reps),col=Group.2), width=0.2) + 
-	scale_x_continuous(breaks=seq(0,100,by=1)) + scale_y_continuous(trans="log") +
-	xlab("rB") + ylab("Time")
+ggplot(data=rBmeans) + geom_point(aes(rb,time, col=Group.2),position=position_dodge(width=0.2)) +
+	geom_errorbar(aes(rb,ymin=pmax(0,time-2*rBsds$time/sqrt(reps)),ymax=time+2*rBsds$time/sqrt(reps),col=Group.2), width=0.2,position=position_dodge(width=0.2)) + 
+	scale_x_continuous(breaks=seq(0,100,by=1)) + scale_y_log10(minor_breaks=lb(FALSE,by=2)) +
+	scale_colour_manual(values=c(3,1,2,4), labels=c("FastMultRec","inSiDeR","LCA","segdup")) +
+	theme(legend.title=element_blank(), legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right", legend.margin = margin(6, 6, 6, 6)) +
+	xlab(bquote(r[B])) + ylab("Time (s)")
 dev.off()
 
 
@@ -154,12 +182,14 @@ pdf("figures/pJ-cost-insidervlca.pdf")
 ggplot(data=pJcost) + geom_point(aes(pj,ratio)) +
 	geom_errorbar(aes(pj,ymin=ratio-2*pJcostsds$ratio/sqrt(reps),ymax=ratio+2*pJcostsds$ratio/sqrt(reps)), width=0.02) + 
 	scale_x_continuous(breaks=seq(0,100,by=0.2)) +
-	xlab("pJ") + ylab("Cost ratio")
+	xlab(bquote(p[J])) + ylab("Cost ratio")
 dev.off()
 
 pdf("figures/pJ-time.pdf")
-ggplot(data=pJmeans) + geom_point(aes(pj,time, col=Group.2)) +
-	geom_errorbar(aes(pj,ymin=time-2*pJsds$time/sqrt(reps),ymax=time+2*pJsds$time/sqrt(reps),col=Group.2), width=0.02) + 
-	scale_x_continuous(breaks=seq(0,100,by=0.2)) + scale_y_continuous(trans="log") +
-	xlab("pJ") + ylab("Time")
+ggplot(data=pJmeans) + geom_point(aes(pj,time, col=Group.2),position=position_dodge(width=0.05)) +
+	geom_errorbar(aes(pj,ymin=pmax(0,time-2*pJsds$time/sqrt(reps)),ymax=time+2*pJsds$time/sqrt(reps),col=Group.2), width=0.1,position=position_dodge(width=0.05)) + 
+	scale_x_continuous(breaks=seq(0,100,by=0.2)) + scale_y_log10(minor_breaks=lb(FALSE,by=2)) +
+	scale_colour_manual(values=c(3,1,2,4), labels=c("FastMultRec","inSiDeR","LCA","segdup")) +
+	theme(legend.title=element_blank(), legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right", legend.margin = margin(6, 6, 6, 6)) +
+	xlab(bquote(p[J])) + ylab("Time (s)")
 dev.off()
