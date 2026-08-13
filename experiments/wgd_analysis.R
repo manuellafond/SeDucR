@@ -59,7 +59,7 @@ sds <- aggregate(time ~ duprate + method, data = subdat, FUN=sd)
 pdf("figures/wgd-duprate.pdf")
 ggplot(data=means) + geom_point(aes(duprate, time, col=method)) +
 	geom_errorbar(aes(duprate,ymin=time-2*sds$time/sqrt(counts$time),ymax=time+2*sds$time/sqrt(counts$time), col=method), width=0.2) + 
-	scale_x_log10(minor_breaks=lb(FALSE,by=2)) + scale_y_log10(minor_breaks=lb(FALSE,by=2)) +
+	scale_x_log10(minor_breaks=lb(TRUE)) + scale_y_log10(minor_breaks=lb(FALSE,by=2)) +
 	scale_colour_manual(values=c(3,1,2,4), labels=c("FastMultRec","inSiDeR","LCA","segdup")) +
 	theme(legend.position = c(.05, .85), legend.justification = c("left", "top"), legend.box.just = "right", legend.margin = margin(6, 6, 6, 6)) +
 	xlab("Duplication/loss rate") + ylab("Time (s)")
@@ -75,7 +75,7 @@ subopt <- melt(subopt, measure.vars = c("segdup","fastmultrec_greedy","lcamap"))
 
 pdf("figures/wgd-subopt.pdf")
 ggplot(data=subopt) + geom_point(aes(duprate,value, col=variable)) + 
-	scale_x_log10(minor_breaks=lb(FALSE,by=2)) +
+	scale_x_log10(minor_breaks=lb(TRUE)) +
 	ylim(c(0,1)) +
 	scale_colour_manual(values=c(4,3,2), labels=c("segdup","FastMultRec","LCA")) +
 	theme(legend.title=element_blank(),legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right", legend.margin = margin(6, 6, 6, 6)) +
