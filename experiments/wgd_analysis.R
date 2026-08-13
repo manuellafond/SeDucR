@@ -1,5 +1,6 @@
 library(ggplot2)
 library(scales)
+library(reshape2)
 theme_set(theme_bw(base_size=20))
 
 #helper function for axis breaks
@@ -62,4 +63,21 @@ ggplot(data=means) + geom_point(aes(duprate, time, col=method)) +
 	scale_colour_manual(values=c(3,1,2,4), labels=c("FastMultRec","inSiDeR","LCA","segdup")) +
 	theme(legend.position = c(.05, .85), legend.justification = c("left", "top"), legend.box.just = "right", legend.margin = margin(6, 6, 6, 6)) +
 	xlab("Duplication/loss rate") + ylab("Time (s)")
+dev.off()
+
+
+### 3. percentage of suboptimal instances
+
+subopt <- read.csv("subopt.csv")
+subopt$duprate <- 10^(-subopt$duprate)
+subopt[,-1] <- subopt[,-1]/subopt$nbinstances
+subopt <- melt(subopt, measure.vars = c("segdup","fastmultrec_greedy","lcamap"))
+
+pdf("figures/wgd-subopt.pdf")
+ggplot(data=subopt) + geom_point(aes(duprate,value, col=variable)) + 
+	scale_x_log10(minor_breaks=lb(FALSE,by=2)) +
+	ylim(c(0,1)) +
+	scale_colour_manual(values=c(4,3,2), labels=c("segdup","FastMultRec","LCA")) +
+	theme(legend.title=element_blank(),legend.position = c(.05, .95), legend.justification = c("left", "top"), legend.box.just = "right", legend.margin = margin(6, 6, 6, 6)) +
+	xlab("Duplication/loss rate") + ylab("Proportion of suboptimal instances")
 dev.off()
