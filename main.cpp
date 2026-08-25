@@ -55,7 +55,8 @@ int main(int argc, char** argv)
     if (args.find("help") != args.end() || hasHelp)
     {
 		cout<<"SeDucR finds a most parsimonious reconciliation between gene trees and a species tree by minimizing the number of segmental duplications and losses." << endl <<
-			"Each gene tree leaf must be mapped to a species tree leaf, using their labels.  The program uses a given separator to split the gene tree leaf labels, and the chosen index in the split string must be the species label.  For example, if spsep='_' and spindex=0, a gene tree leaf with label 23_abc_xyz will be mapped to species 23 (this is the default)." << endl <<
+			"Each gene tree leaf must be mapped to a species tree leaf, using their labels.  The program uses a given separator to split the gene tree leaf labels, and the chosen index in the split string must be the species label.  For example, if spsep='_' and spindex=0, a gene tree leaf with label 23_abc_xyz will be mapped to species 23 (this is the default)." << endl << 
+			"The output contains the optimal cost found, along with the given dup cost, loss cost, species tree, and gene trees.  The internal nodes of the species tree are given a label trees, and the internal nodes of the gene trees as well.  The format of the internal gene tree node labels has the form '[species tree label]_[Dup or Spec]'.  From this, the reconciliation can be reconstructed.  The output also contains, for each species, the labels of the gene tree nodes that are in a duplication in that species."<<endl<<endl<<
 			"Example command line call (from the build directory):"<<endl<<
 			" ./seducr -d 10 -l 1 -gf ../data/gt6_0.newick -sf ../data/sp6_0.newick"<<endl<<endl<<
 			"The list of arguments is the following:" << endl <<
