@@ -6,12 +6,19 @@ import time
 from ete3 import Tree
 from pathlib import Path
 
-#this script assumes the existence of directories of the form 
-#"{datadir}/sim_{[1,2]}WGD_D{[7,10]}/sim_{[1..25]}
-#and it outputs stats.csv with everything
 
 '''
-The script saves one csv per simulation directory in the work directory.  
+This script assumes the existence of directories of the form 
+"{datadir}/sim_{[1,2]}WGD_D{[7,10]}/sim_{[1..25]}
+which should contain WGD datasets generated from Kalhor et al. 
+If you need these directories, please contact manuel.lafond@USherbrooke.ca
+
+Note that SeDucR was previously named insider.  Hence you will find the name 
+insider scattered around this script.
+
+The script runs the chosen methods (see the variable "methods = [...]" below) on each simphy directory.
+It outputs a stats file, including running times and reconciliation cost. 
+The script also saves one csv per simulation directory in the work directory.  
 If the script fails or is stopped, when it is run again it will not recalculate simulations 
 for which the csv file exists.  However, stats.csv will be overwritten.  
 The full stats file can be recovered with (this is chatgpt's solution):
@@ -20,17 +27,19 @@ tail -n +2 -q workwgdd25/*.csv >> stats_wgd25.csv
 
 '''
 
+'''
+******************************************************************************
+Variables below need to be configured for reproducibility.
+'''
 
 
-datadir = "/home/manuel/git/wgddata_full"
-#datadir = "/home/manuel/git/wgddata"
+datadir = "/home/manuel/git/wgddata_full"   
 output_filename = "stats_wgd_19mar.csv"
 
 workdir = "./workwgd"
 os.makedirs(workdir, exist_ok=True)
 
 skip_existing_csv = True
-
 
 segdup_reps = 20000
 segdup_initial_temp = 3
@@ -49,15 +58,20 @@ runs = range(1, 100+1)
 
 #set to directories containing binaries of the programs to test
 fastmultrec_dir = "/home/manuel/git/FastMultRec/FastMultRec/build"
-insider_dir = "/home/manuel/git/inSiDeR/build"
+insider_dir = "/home/manuel/git/SeDucR/build"
 segdup_dir = ""
 
 
 #this can be ignored, it was used to test an insider variant
 insider_relax_dir = "/home/manuel/git/ybrec2/build"
 
-#available methods here
+#methods to run on here, remove from array if you want to skip some
 methods = ["insider", "lca", "fastmultrec", "segdup"] 
+
+
+'''
+******************************************************************************
+'''
 
 
 #fetches reconciliation costs from a file in insider format (also works for fastmultrec)
@@ -86,7 +100,8 @@ def get_insider_costs(filename):
     return (cost, nbdups, nblosses)
 
 
-
+#fetches reconciliation costs from a file in segdup format (also works for fastmultrec)
+#returns (total cost, nbdups, nblosses)
 def get_segdup_costs(filename):
     pattern = r"(\d+)d\+(\d+)l\t(\d+)"
 
@@ -107,7 +122,7 @@ def get_segdup_costs(filename):
 
 
 
-
+#get segdup species tree
 def get_segdup_stree_str(s_tree_filename):
     print(f"Opening {s_tree_filename}")
     tree = Tree(s_tree_filename, quoted_node_names=True, format=1);
@@ -117,7 +132,7 @@ def get_segdup_stree_str(s_tree_filename):
         
 
 
-
+#renames gene tree labels to make sure they can be read from segdup
 def get_cleaned_gtree_str(newick, gtree_index):
     tree = Tree(newick, quoted_node_names=True, format=1)
     
@@ -192,9 +207,7 @@ out.write(header_line)
 
 for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates, dup_costs):
     
-    
-    #directory = f"{datadir}/sim_{wgd}WGD_D{duprate}/sim_{simid}"
-    
+
     directory = f"{datadir}/WGD{wgd}Simphy_S1_G100_Duprate-{duprate}/sim_{simid}"
     genetree_file = directory + "/all_genetrees_edited.txt"
     speciestree_file = directory + "/s_tree.newick"
@@ -330,8 +343,8 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
         
         if "insider" in methods:
             outfilename = f"{workdir}/insider_out_{suffix}.txt"
-            #cmd = f"{insider_dir}/ybrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_file}' -sf '{speciestree_file}'"
-            cmd = f"{insider_dir}/ybrec -d {dup_cost} -l 1 -o {outfilename} -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}'"
+            #cmd = f"{insider_dir}/seducr -d {dup_cost} -l 1 -o out.txt -gf '{genetree_file}' -sf '{speciestree_file}'"
+            cmd = f"{insider_dir}/seducr -d {dup_cost} -l 1 -o {outfilename} -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}'"
             print(cmd)
         
             start = time.perf_counter()
@@ -355,7 +368,7 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
             run_csv_file.write(f"insider,{wgd},{duprate},{simid},{dup_cost},{cost},{nbdups},{nblosses},{elapsed:.6f}\n")
         
         if "insider_relax" in methods:
-            #cmd = f"{insider_dir}/ybrec -d {dup_cost} -l 1 -o out.txt -gf '{genetree_file}' -sf '{speciestree_file}'"
+            
             outfilename_relax = f"{workdir}/insiderrelax_out_{suffix}.txt"
             cmd = f"{insider_relax_dir}/ybrec -d {dup_cost} -l 1 -o {outfilename_relax} -gf '{genetree_insider_filename}' -sf '{sptree_insider_filename}'"
             print(cmd)
@@ -426,23 +439,4 @@ for (simid, wgd, duprate, dup_cost) in itertools.product(runs, wgd_nb, dup_rates
     run_csv_file.close()
 
 
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
 out.close()

@@ -18,24 +18,9 @@
 using namespace std;
 
 
-/**
-That function generate_worst_case is defined at the end of the .cpp
-It generates a full binary species tree of height h = height, so 2^h leaves (and an outgroup just because)
-Then for each species leaf x, it generates one gene tree that has dups only in x.  It takes the species tree 
-and replaces leaf x with a subtree of height "subheight" leaves, all mapped to x.  
-If subheight = 0, you just get the species tree, if subheight = 1, you get one dup with two x children, etc.
-
-The sp tree is written in ../data/sp_[height]_[subheight].newick.  Gene trees are also written in that directory.
-Output location is hardcoded for now.
-
-To use this:
-./ybrec --mode "worstcase" --height 6 --subheight 1
-
-For curiosity, there's also a "three leaves" mode, where each gene tree has three leaves, two mapped to x, plus an outgroup.
-./ybrec --mode "worstcase" --height 6 --subheight 1 --threeleaves true
-
-**/
+/** That function generate_worst_case is defined at the end of the .cpp **/
 void generate_worst_case(int height, int subheight, bool three_leaves_mode);
+
 
 
 int main(int argc, char** argv)
@@ -54,7 +39,7 @@ int main(int argc, char** argv)
         if (string(argv[i]) == "-v") {
             prevArg = "";
         }
-        else if (string(argv[i]) == "--help") {
+        else if (string(argv[i]) == "--help" || string(argv[i]) == "-h") {
             hasHelp = true;
         }
         else {
@@ -69,7 +54,20 @@ int main(int argc, char** argv)
 
     if (args.find("help") != args.end() || hasHelp)
     {
-        cout << "Here is an unhelpful help message" << endl;
+		cout<<"SeDucR finds a most parsimonious reconciliation between gene trees and a species tree by minimizing the number of segmental duplications and losses." << endl <<
+			"Each gene tree leaf must be mapped to a species tree leaf, using their labels.  The program uses a given separator to split the gene tree leaf labels, and the chosen index in the split string must be the species label.  For example, if spsep='_' and spindex=0, a gene tree leaf with label 23_abc_xyz will be mapped to species 23 (this is the default)." << endl <<
+			"Example command line call (from the build directory):"<<endl<<
+			" ./seducr -d 10 -l 1 -gf ../data/gt6_0.newick -sf ../data/sp6_0.newick"<<endl<<endl<<
+			"The list of arguments is the following:" << endl <<
+			"-d		Duplication cost [default=5]" << endl <<
+			"-l		Loss cost [default=1]" << endl <<
+			"-o		Output file, contains optimal cost plus all reconciliation info [default=stdout]" << endl <<
+			"-g		String that contains gene trees in newick format, separated by semi-colon" << endl <<
+			"-gf		File that contains gene trees in newick format, one per line" << endl <<
+			"-s 		Species tree newick " << endl <<
+			"-sf		File with species tree newick" << endl <<
+			"-spsep	Separator to use in gene leaf labels [default=_]" << endl <<
+			"-spindex	Index in the gene tree label with the species name, after separating with spsep [default=0]" << endl;
     }
     else
     {
@@ -164,6 +162,10 @@ int main(int argc, char** argv)
                 geneTrees.push_back(tree);
             }
         }
+		else{
+			cout<<"No gene tree given.  Run seducr --help for help."<<endl;
+			return 0;
+		}
 
 
         //parse species trees, either from command line or from file
@@ -185,6 +187,10 @@ int main(int argc, char** argv)
                 return 0;
             }
         }
+		else{
+			cout<<"No species tree given.  Run seducr --help for help."<<endl;
+			return 0;
+		}
 
 
 
@@ -324,6 +330,26 @@ Node* get_full_binary_tree_to_delete(int height, string default_leaf_label = "")
 }
 
 
+
+
+
+
+/**
+generate_worst_case generates a full binary species tree of height h = height, so 2^h leaves (and an outgroup just because).
+This is to test the worst case for the algorithm.
+Then for each species leaf x, it generates one gene tree that has dups only in x.  It takes the species tree 
+and replaces leaf x with a subtree of height "subheight" leaves, all mapped to x.  
+If subheight = 0, you just get the species tree, if subheight = 1, you get one dup with two x children, etc.
+
+The sp tree is written in ../data/sp_[height]_[subheight].newick.  Gene trees are also written in that directory.
+Output location is hardcoded for now.
+
+To use this:
+./seducr --mode "worstcase" --height 6 --subheight 1
+
+For curiosity, there's also a "three leaves" mode, where each gene tree has three leaves, two mapped to x, plus an outgroup.
+./seducr --mode "worstcase" --height 6 --subheight 1 --threeleaves true
+**/
 void generate_worst_case(int height, int subheight, bool three_leaves_mode){
 	SNode* stree_left = get_full_binary_tree_to_delete(height);
 	

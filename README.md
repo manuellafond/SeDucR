@@ -1,6 +1,11 @@
 # ybrec
 
-A tentative implementation of Yao-Ban's algorithm for reconciliation with segmental duplications.
+
+An exact algorithm to compute most parsimonious reconciliations with segmental duplications and losses.  
+The implementation is from the paper :
+
+Yao-Ban Chan and Manuel Lafond, "A fast and exact algorithm for gene-species reconciliation with segmental duplications and losses]{A fast and exact algorithm for gene-species reconciliation with segmental duplications and losses".
+
 
 ## To compile:
 ```

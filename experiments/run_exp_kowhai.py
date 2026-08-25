@@ -7,12 +7,33 @@ import time
 import itertools
 import shutil
 
+
+'''
+This script runs some kowhai simulations and then runs each chosen method on them. 
+Variables below need to be set.
+
+Note that SeDucR was previously named insider.  Hence you will find the name 
+insider scattered around this script.
+
+The script runs the chosen methods (see the variable "methods = [...]" below) on each simphy directory.
+It outputs a stats file, including running times and reconciliation cost. 
+The script also saves one csv per simulation directory in the work directory.  
+If the script fails or is stopped, when it is run again it will not recalculate simulations 
+for which the csv file exists.  However, stats.csv will be overwritten.  
+The full stats file can be recovered with (this is chatgpt's solution):
+head -n 1 "$(ls work_kowhai/*.csv | head -n 1)" > stats_wgd25.csv
+tail -n +2 -q work_kowhai/*.csv >> stats_wgd25.csv
+
+'''
+
+
 #directories
 segdupDir = ""
 kowhaiDir = "~/git/kowhai/"
 fastmultrecDir = "/home/manuel/git/FastMultRec/FastMultRec/build/"
-insider_dir = "/home/manuel/git/ybrec/build/"
-insider_relax_dir = "/home/manuel/git/ybrec2/build/"
+insider_dir = "/home/manuel/git/SeDucR/build/"
+
+insider_relax_dir = "/home/manuel/git/ybrec2/build/"    #old test, please ignore
 
 workdir = "./work_kowhai/"
 os.makedirs(workdir, exist_ok=True)
@@ -292,7 +313,7 @@ for ((nH, nP, rB, pC, pJ), r) in itertools.product(param_combos, range(replicate
         if "insider" in methods:
             start = time.perf_counter()
             #command = insider_relax_dir + "ybrec -d " + str(d) + " -l " + str(l) + " " + multrecInput[:-3] + "\" -o insider-output.txt"
-            command = f"{insider_dir}ybrec -d {str(d)} -l {str(l)} -sf {sptree_filename} -gf {gt_multrec_tree_filename} -o {workdir}insider-output_{suffix_d}.txt"
+            command = f"{insider_dir}seducr -d {str(d)} -l {str(l)} -sf {sptree_filename} -gf {gt_multrec_tree_filename} -o {workdir}insider-output_{suffix_d}.txt"
             print(command)
             system(command)
             elapsed = time.perf_counter() - start 

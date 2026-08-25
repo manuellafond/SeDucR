@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(segrec)
+project(seducr)
 
 
 
@@ -13,5 +13,5 @@ set(CMAKE_BUILD_TYPE Release)
 
 
 
-add_executable(ybrec main.cpp genespeciestreeutil.h genespeciestreeutil.cpp ybrec.h treeutils/define.h treeutils/newicklex.h treeutils/newicklex.cpp treeutils/node.h treeutils/treeutil.h treeutils/util.h treeutils/ewah/ewah.h)
+add_executable(seducr main.cpp genespeciestreeutil.h genespeciestreeutil.cpp ybrec.h treeutils/define.h treeutils/newicklex.h treeutils/newicklex.cpp treeutils/node.h treeutils/treeutil.h treeutils/util.h treeutils/ewah/ewah.h)
 
